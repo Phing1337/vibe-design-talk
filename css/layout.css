@@ -1,0 +1,155 @@
+/* ============================================================
+   layout.css — Global Header, Progress Bar, Slide Container,
+   Slide Base, Slide Layouts (center, split), Nav Hint
+   ============================================================ */
+
+/* GLOBAL HEADER */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-xl);
+  z-index: 100;
+  background: none;
+  pointer-events: none;
+}
+
+.header-title {
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(120, 120, 120, 0.8);
+  text-shadow: 0 0 8px rgba(0,0,0,0.5);
+}
+
+.header-indicator {
+  font-size: var(--font-size-xs);
+  font-weight: 400;
+  color: rgba(120, 120, 120, 0.8);
+  text-align: right;
+  text-shadow: 0 0 8px rgba(0,0,0,0.5);
+}
+
+.header-indicator .slide-number {
+  color: rgba(150, 150, 150, 0.9);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.header-indicator .next-topic {
+  display: block;
+  font-size: 0.65rem;
+  color: var(--color-text-dim);
+  margin-top: 2px;
+}
+
+/* PROGRESS BAR */
+.progress-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: var(--progress-height);
+  background: var(--color-accent);
+  z-index: 100;
+  transition: width var(--duration-normal) var(--ease-out);
+  opacity: 0.6;
+}
+
+/* SLIDE CONTAINER */
+.slides-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* SLIDE BASE — Each <section> is a slide */
+.slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--header-height) var(--slide-padding) var(--space-xl);
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity var(--duration-slow) var(--ease-out),
+    transform var(--duration-slow) var(--ease-out);
+  pointer-events: none;
+  will-change: opacity, transform;
+}
+
+.slide.active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.slide.exiting {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition:
+    opacity var(--duration-normal) var(--ease-in-out),
+    transform var(--duration-normal) var(--ease-in-out);
+}
+
+/* SLIDE LAYOUTS */
+
+/* Centered — single column, centered content */
+.slide-center {
+  text-align: center;
+  max-width: 900px;
+}
+
+/* Split — 50/50 grid layout */
+.slide-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3xl);
+  width: 100%;
+  max-width: 1400px;
+  align-items: center;
+}
+
+.slide-split .content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-lg);
+}
+
+.slide-split .visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* NAV HINT (bottom) */
+.nav-hint {
+  position: fixed;
+  bottom: var(--space-lg);
+  right: var(--space-xl);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-dim);
+  z-index: 100;
+  pointer-events: none;
+  transition: opacity var(--duration-normal) var(--ease-out);
+}
+
+.nav-hint kbd {
+  display: inline-block;
+  padding: 2px 8px;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  font-family: var(--font-family);
+  font-size: var(--font-size-xs);
+  margin: 0 2px;
+}

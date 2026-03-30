@@ -1,0 +1,162 @@
+/* ============================================================
+   game.css — Game Mode Styles
+   Includes: game overlay, HUD, controls hint, tutorial panel,
+   crosshair, info points (prompt + panel).
+   ============================================================ */
+
+.slide-game {
+  padding: 0 !important;
+}
+
+.game-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: var(--space-xl);
+}
+
+.game-hud {
+  display: flex;
+  justify-content: center;
+}
+
+.game-controls-hint {
+  background: rgba(10, 10, 10, 0.7);
+  backdrop-filter: blur(8px);
+  padding: var(--space-sm) var(--space-lg);
+  border-radius: 8px;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  display: flex;
+  gap: var(--space-md);
+  align-items: center;
+}
+
+.game-controls-hint kbd {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: var(--font-size-xs);
+  font-family: var(--font-family);
+  color: var(--color-text);
+  margin-right: 2px;
+}
+
+.game-tutorial-panel {
+  align-self: center;
+  max-width: 500px;
+  background: rgba(10, 10, 10, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--color-accent-dim);
+  border-radius: 12px;
+  padding: var(--space-lg) var(--space-xl);
+  text-align: center;
+  transition: opacity var(--duration-normal) var(--ease-out);
+}
+
+.game-tutorial-text {
+  font-size: var(--font-size-base);
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+/* Info point prompt — "Press E" */
+#infoPrompt {
+  position: fixed;
+  bottom: 120px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  background: rgba(10, 10, 10, 0.7);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--color-accent-dim);
+  border-radius: 8px;
+  padding: var(--space-sm) var(--space-lg);
+  font-size: var(--font-size-sm);
+  color: var(--color-accent);
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* Info panel — floating card when E pressed */
+#infoPanel {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.9);
+  z-index: 25;
+  background: rgba(12, 12, 18, 0.92);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--color-accent-dim);
+  border-radius: 16px;
+  padding: var(--space-2xl) var(--space-3xl);
+  max-width: 480px;
+  width: 90%;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s var(--ease-out), transform 0.4s var(--ease-out);
+}
+#infoPanel.visible {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: auto;
+}
+#infoPanelTitle {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: var(--space-md);
+}
+#infoPanelBody {
+  font-size: var(--font-size-base);
+  color: var(--color-text-muted);
+  line-height: 1.7;
+}
+#infoPanelHint {
+  margin-top: var(--space-lg);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-dim);
+}
+
+/* Crosshair for first-person mode */
+.crosshair {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  z-index: 15;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--duration-fast);
+}
+.crosshair.visible {
+  opacity: 0.5;
+}
+.crosshair::before, .crosshair::after {
+  content: '';
+  position: absolute;
+  background: var(--color-text);
+}
+.crosshair::before {
+  width: 2px;
+  height: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.crosshair::after {
+  height: 2px;
+  width: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+}

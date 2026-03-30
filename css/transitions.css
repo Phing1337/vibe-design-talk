@@ -1,0 +1,155 @@
+/* ============================================================
+   transitions.css — Slide Transition Types & Entrance Animations
+   Includes: fade-up (default), fade, slide-left, slide-right,
+   zoom, rise transitions + staggered fade-in delays.
+   ============================================================ */
+
+/* STAGGERED ENTRANCE ANIMATIONS */
+.slide.active .fade-in {
+  animation: fadeInUp var(--duration-gentle) var(--ease-out) both;
+}
+
+.slide.active .fade-in-1 { animation-delay: 0ms; }
+.slide.active .fade-in-2 { animation-delay: 150ms; }
+.slide.active .fade-in-3 { animation-delay: 300ms; }
+.slide.active .fade-in-4 { animation-delay: 450ms; }
+.slide.active .fade-in-5 { animation-delay: 600ms; }
+.slide.active .fade-in-6 { animation-delay: 750ms; }
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Reset animations when slide is not active */
+.slide:not(.active) .fade-in {
+  opacity: 0;
+}
+
+/* SLIDE TRANSITION VARIANTS */
+.slide[data-transition="fade"] {
+  transform: none;
+  opacity: 0;
+}
+.slide[data-transition="fade"].active {
+  opacity: 1;
+  transform: none;
+}
+.slide[data-transition="fade"].exiting {
+  opacity: 0;
+  transform: none;
+  transition: opacity var(--duration-normal) var(--ease-in-out);
+}
+
+.slide[data-transition="slide-left"] {
+  transform: translateX(60px);
+  opacity: 0;
+}
+.slide[data-transition="slide-left"].active {
+  transform: translateX(0);
+  opacity: 1;
+}
+.slide[data-transition="slide-left"].exiting {
+  transform: translateX(-60px);
+  opacity: 0;
+  transition:
+    opacity var(--duration-normal) var(--ease-in-out),
+    transform var(--duration-normal) var(--ease-in-out);
+}
+
+.slide[data-transition="slide-right"] {
+  transform: translateX(-60px);
+  opacity: 0;
+}
+.slide[data-transition="slide-right"].active {
+  transform: translateX(0);
+  opacity: 1;
+}
+.slide[data-transition="slide-right"].exiting {
+  transform: translateX(60px);
+  opacity: 0;
+  transition:
+    opacity var(--duration-normal) var(--ease-in-out),
+    transform var(--duration-normal) var(--ease-in-out);
+}
+
+.slide[data-transition="zoom"] {
+  transform: scale(0.95);
+  opacity: 0;
+}
+.slide[data-transition="zoom"].active {
+  transform: scale(1);
+  opacity: 1;
+}
+.slide[data-transition="zoom"].exiting {
+  transform: scale(0.95);
+  opacity: 0;
+  transition:
+    opacity var(--duration-normal) var(--ease-in-out),
+    transform var(--duration-normal) var(--ease-in-out);
+}
+
+.slide[data-transition="rise"] {
+  transform: translateY(40px);
+  opacity: 0;
+  transition:
+    opacity 1200ms var(--ease-out),
+    transform 1200ms var(--ease-out);
+}
+.slide[data-transition="rise"].active {
+  transform: translateY(0);
+  opacity: 1;
+}
+.slide[data-transition="rise"].exiting {
+  transform: translateY(-20px);
+  opacity: 0;
+  transition:
+    opacity var(--duration-normal) var(--ease-in-out),
+    transform var(--duration-normal) var(--ease-in-out);
+}
+
+/* Zoom-into — like flying through the outgoing slide into the next one */
+.slide[data-transition="zoom-into"] {
+  transform: scale(0.5);
+  opacity: 0;
+  transition:
+    opacity 1000ms var(--ease-out),
+    transform 1000ms var(--ease-out);
+}
+.slide[data-transition="zoom-into"].active {
+  transform: scale(1);
+  opacity: 1;
+}
+.slide[data-transition="zoom-into"].exiting {
+  transform: scale(2.5);
+  opacity: 0;
+  transition:
+    opacity 800ms var(--ease-in-out),
+    transform 800ms var(--ease-in-out);
+}
+
+/* Gravity-fall — incoming content drops from above */
+.slide[data-transition="gravity-fall"] {
+  transform: translateY(-30px);
+  opacity: 0;
+  transition:
+    opacity 600ms var(--ease-out),
+    transform 600ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.slide[data-transition="gravity-fall"].active {
+  transform: translateY(0);
+  opacity: 1;
+}
+.slide[data-transition="gravity-fall"].exiting {
+  transform: translateY(40px);
+  opacity: 0;
+  transition:
+    opacity var(--duration-normal) var(--ease-in-out),
+    transform var(--duration-normal) cubic-bezier(0.55, 0, 1, 0.45);
+}

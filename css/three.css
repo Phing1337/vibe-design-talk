@@ -1,0 +1,83 @@
+/* ============================================================
+   three.css — Three.js Canvas, Space Mode, 3D Backdrop, Debug Panel
+   ============================================================ */
+
+#three-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  transition: opacity 1s ease;
+  pointer-events: none;
+}
+#three-canvas.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+/* In space mode, canvas renders over text so planets can pass in front */
+#three-canvas.space-mode {
+  z-index: 2;
+  pointer-events: auto;
+  cursor: grab;
+}
+
+/* Debug marker panel */
+#debugPanel {
+  position: fixed;
+  bottom: 60px;
+  left: var(--space-xl);
+  z-index: 200;
+  background: rgba(10, 10, 10, 0.9);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: var(--space-md) var(--space-lg);
+  font-family: 'Courier New', monospace;
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+  max-width: 400px;
+  max-height: 300px;
+  overflow-y: auto;
+  display: none;
+  pointer-events: auto;
+}
+#debugPanel.visible { display: block; }
+#debugPanel .debug-title {
+  font-family: var(--font-family);
+  font-weight: 600;
+  color: var(--color-accent);
+  margin-bottom: var(--space-sm);
+  font-size: var(--font-size-sm);
+}
+#debugPanel .debug-marker {
+  padding: 4px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  cursor: pointer;
+}
+#debugPanel .debug-marker:hover {
+  color: var(--color-text);
+}
+#debugPanel .debug-coords {
+  position: fixed;
+  top: 60px;
+  left: var(--space-xl);
+  z-index: 200;
+  font-family: 'Courier New', monospace;
+  font-size: var(--font-size-xs);
+  color: var(--color-accent);
+  background: rgba(10, 10, 10, 0.7);
+  padding: 4px 10px;
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+/* Slide content backdrop when 3D is active */
+.slide[data-3d]:not(.slide-game):not(.slide-space):not(.slide-primitives) .slide-center,
+.slide[data-3d]:not(.slide-game):not(.slide-space):not(.slide-primitives) .slide-split {
+  background: rgba(10, 10, 10, 0.45);
+  padding: var(--space-2xl);
+  border-radius: 16px;
+  backdrop-filter: blur(6px);
+  position: relative;
+  z-index: 2;
+}

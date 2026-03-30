@@ -1,0 +1,115 @@
+/* ============================================================
+   video.css — Video Theater Styles
+   Includes: video-theater, vignette, ambilight, video container,
+   reflection, caption.
+   ============================================================ */
+
+.video-theater {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1200px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.video-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center 40%, transparent 20%, rgba(0, 0, 0, 0.8) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.video-stage-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 1060px;
+  z-index: 1;
+}
+
+/* Ambilight — canvas that samples video edges and projects glow */
+.video-ambilight {
+  position: absolute;
+  inset: -60px;
+  z-index: -1;
+  filter: blur(60px);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.video-ambilight canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.video-container {
+  position: relative;
+  width: 100%;
+  border-radius: 6px;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.video-aspect {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+}
+
+.video-aspect video,
+.video-aspect iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 6px;
+}
+
+/* Reflection — flipped video below */
+.video-reflection-real {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  overflow: hidden;
+  z-index: 1;
+  margin-top: 0;
+}
+
+.video-reflection-inner {
+  transform: scaleY(-1);
+  transform-origin: top center;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  filter: blur(2px);
+  opacity: 0.35;
+}
+
+.video-reflection-inner video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.video-reflection-fade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(10, 10, 10, 0.4) 30%,
+    rgba(10, 10, 10, 0.85) 70%,
+    var(--color-bg) 100%
+  );
+  pointer-events: none;
+}
+
+.video-caption {
+  margin-top: var(--space-lg);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-dim);
+  z-index: 1;
+}

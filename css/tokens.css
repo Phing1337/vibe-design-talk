@@ -1,0 +1,51 @@
+/* ============================================================
+   tokens.css — CSS Custom Properties (Design Tokens)
+   Colors, typography, spacing, animation, layout variables.
+   ============================================================ */
+:root {
+  /* Colors — Dark Theme (default) */
+  --color-bg: #0a0a0a;
+  --color-bg-subtle: #141414;
+  --color-surface: #1a1a1a;
+  --color-text: #f0f0f0;
+  --color-text-muted: #888888;
+  --color-text-dim: #555555;
+  --color-accent: #d4a053;
+  --color-accent-dim: rgba(212, 160, 83, 0.3);
+  --color-border: #2a2a2a;
+
+  /* Typography */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 2rem;
+  --font-size-3xl: 2.75rem;
+  --font-size-4xl: 3.5rem;
+  --font-size-hero: 4.5rem;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 4rem;
+  --space-4xl: 6rem;
+
+  /* Animation */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast: 300ms;
+  --duration-normal: 600ms;
+  --duration-slow: 1000ms;
+  --duration-gentle: 1400ms;
+
+  /* Layout */
+  --header-height: 3.5rem;
+  --slide-padding: var(--space-4xl);
+  --progress-height: 3px;
+}

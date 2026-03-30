@@ -1,0 +1,9 @@
+# Large files not needed for the live presentation
+assets/2024-talk/Design-talks-original.pptx
+assets/2024-talk/extracted/rustic_kitchen_with_natural_light_2m.ply
+assets/2024-talk/extracted/rustic_kitchen_with_natural_light_hq.glb
+assets/2024-talk/extracted/elegant_library_with_fireplace_2m.spz
+assets/2024-talk/extracted/rustic_kitchen_with_natural_light_2m.spz
+
+# Video too large for GitHub (53MB) — host separately
+assets/2024-talk/extracted/bretvictortalk.mp4

@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design Is Not Decoration — Vibe Design Talk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/transitions.css">
+  <link rel="stylesheet" href="css/slides.css">
+  <link rel="stylesheet" href="css/weather.css">
+  <link rel="stylesheet" href="css/video.css">
+  <link rel="stylesheet" href="css/game.css">
+  <link rel="stylesheet" href="css/three.css">
+
+
+  <!-- Three.js CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/MTLLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+</head>
+
+<body>
+
+  <!-- Three.js 3D Canvas — sits behind all slide content -->
+  <canvas id="three-canvas"></canvas>
+  <div class="crosshair" id="crosshair"></div>
+
+  <!-- Info point UI -->
+  <div id="infoPrompt"></div>
+  <div id="infoPanel">
+    <div id="infoPanelTitle"></div>
+    <div id="infoPanelBody"></div>
+    <div id="infoPanelHint">Press <kbd style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:3px;padding:1px 6px;font-size:11px;">E</kbd> to close</div>
+  </div>
+
+  <!-- Zoom transition overlay for index -->
+  <div class="index-zoom-overlay" id="indexZoomOverlay"></div>
+
+  <!-- ============================================================
+       GLOBAL HEADER
+       ============================================================ -->
+  <header class="header">
+    <div class="header-title">Vibe Design &amp; The Dynamic Medium</div>
+    <div class="header-indicator">
+      <span class="slide-number" id="slideNumber" style="cursor: pointer; pointer-events: auto;" title="Back to index">1 / 17</span>
+      <span class="next-topic" id="nextTopic"></span>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       PROGRESS BAR
+       ============================================================ -->
+  <div class="progress-bar" id="progressBar"></div>
+
+  <!-- ============================================================
+       SLIDES
+       ============================================================ -->
+  <div class="slides-container" id="slidesContainer">
+
+    <!-- ========================================================
+         TITLE SLIDE
+         ======================================================== -->
+
+    <!-- Title -->
+    <section class="slide slide-title-shader" data-beat="0" data-title="Title" data-transition="rise">
+      <canvas id="titleShader" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0;"></canvas>
+      <div class="slide-center" style="position: relative; z-index: 1;">
+        <p class="label fade-in fade-in-1" style="margin-bottom: var(--space-lg);">Fix Hack Learn 2026</p>
+        <h1 class="heading-hero fade-in fade-in-2" style="line-height: 1.1;">
+          Vibe Design<br><span class="accent">&amp; The Dynamic Medium</span>
+        </h1>
+        <p class="body fade-in fade-in-3" style="margin-top: var(--space-2xl); color: var(--color-text-muted);">
+          Created and illustrated by Nick McVey · Xbox
+        </p>
+      </div>
+    </section>
+
+    <!-- Index / Navigation — Visual Slide Grid -->
+    <section class="slide slide-index" data-beat="0" data-title="Index" data-transition="fade">
+      <div style="width: 100%; height: 100%; display: flex; flex-direction: column; padding: calc(var(--header-height) + var(--space-lg)) var(--space-2xl) var(--space-xl);">
+        <p class="label fade-in fade-in-1" style="margin-bottom: var(--space-lg);">Click any slide to jump to it</p>
+        <div class="index-grid fade-in fade-in-2" id="indexGrid"></div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         BEAT 1 — THE HOOK
+         ======================================================== -->
+
+    <!-- Slide: Opening -->
+    <section class="slide" data-id="evolution" data-beat="1" data-title="The Hook" data-transition="rise" style="background: #fff !important; padding: 0 !important;">
+      <img src="assets/2024-talk/extracted/image-3-1.png" alt="The evolution of communication tools" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: left bottom; z-index: 0;" />
+      <div style="position: absolute; top: 0; right: var(--space-3xl); width: 38%; height: 100%; display: flex; flex-direction: column; justify-content: center; padding-bottom: 15%; z-index: 1;">
+        <p class="label fade-in fade-in-1" style="color: #888;">The evolution of tools</p>
+        <h1 class="heading-2 fade-in fade-in-2" style="margin-top: var(--space-md); color: #1a1a1a; line-height: 1.3;">
+          We haven't learned how to push our tools <span style="color: var(--color-accent);">yet.</span>
+        </h1>
+        <p class="body fade-in fade-in-3" style="margin-top: var(--space-lg); color: #555; line-height: 1.7;">
+          From cave paintings to printing presses to computers — every leap in tools changed how we communicate. We're at that cusp again. This presentation will show you how.
+        </p>
+      </div>
+    </section>
+
+    <!-- Slide 2: The Promise -->
+    <section class="slide" data-beat="1" data-title="The Hook" data-transition="fade" style="background: #f5f5f5 !important; padding: 0 !important;">
+      <img src="assets/2024-talk/extracted/image-11-1.png" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: bottom right; z-index: 0;" />
+      <div style="position: absolute; top: 0; left: 0; width: 42%; height: 65%; display: flex; flex-direction: column; justify-content: center; padding: var(--space-3xl) var(--space-3xl) 0; z-index: 1;">
+        <p class="label fade-in fade-in-1" style="color: #666;">This talk</p>
+        <h1 class="heading-2 fade-in fade-in-2" style="margin-top: var(--space-md); color: #1a1a1a; line-height: 1.3;">
+          I can't teach you taste. But I can teach you the <span style="color: var(--color-accent);">language.</span>
+        </h1>
+        <p class="body fade-in fade-in-3" style="margin-top: var(--space-lg); color: #555; line-height: 1.7;">
+          Style is personal. But the skills designers use to communicate visually? Those are learnable. And when you know the language, the tools become powerful.
+        </p>
+      </div>
+    </section>
+
+    <!-- What This IS / What This ISN'T — set expectations early -->
+    <section class="slide" data-beat="1" data-title="Setting Expectations" data-transition="fade" data-theme="purple" style="background: #000 !important; padding: 0 !important;">
+      <img src="assets/2024-talk/extracted/image-12-2.png" alt="" style="position: absolute; bottom: -20px; right: -20px; max-width: 90%; max-height: 95%; object-fit: contain; object-position: bottom right; z-index: 0; mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 85%, transparent 100%), linear-gradient(to right, transparent 0%, black 8%, black 85%, transparent 100%); mask-composite: intersect; -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 85%, transparent 100%), linear-gradient(to right, transparent 0%, black 8%, black 85%, transparent 100%); -webkit-mask-composite: destination-in;" />
+      <div style="position: absolute; top: 0; left: 0; width: 50%; height: 100%; display: flex; flex-direction: column; justify-content: center; padding: var(--space-3xl); z-index: 1; text-align: left;">
+        <h2 class="heading-2 fade-in fade-in-1" style="margin-bottom: var(--space-2xl);">
+          What this <span class="accent">is</span> and <span class="dim">isn't</span>
+        </h2>
+        <table class="comparison-table fade-in fade-in-2" style="max-width: 500px;">
+          <thead>
+            <tr>
+              <th>✦ What This IS</th>
+              <th style="color: var(--color-text-dim);">✕ What This ISN'T</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Visual communication as a skill</td>
+              <td>An XDS tutorial</td>
+            </tr>
+            <tr>
+              <td>Illustrating ideas &amp; prototyping</td>
+              <td>Vibe-coding production features</td>
+            </tr>
+            <tr>
+              <td>Learning a design vocabulary</td>
+              <td>A way to replace designers</td>
+            </tr>
+            <tr>
+              <td>Ideas people can react to</td>
+              <td>Specific to one design system</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         BEAT 2 — THE REFRAME
+         ======================================================== -->
+
+    <!-- Slide 3: New tools, new art -->
+    <section class="slide" data-beat="2" data-title="The Reframe" data-transition="slide-left" data-3d="float" style="background: #f5f5f5 !important; padding: 0 !important;">
+      <img src="assets/2024-talk/extracted/image-9-1.png" alt="Code carved in stone with a hammer and chisel" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: left center; z-index: 0;" />
+      <div style="position: absolute; top: 0; right: 0; width: 40%; height: 100%; display: flex; flex-direction: column; justify-content: center; padding: var(--space-3xl); z-index: 1;">
+        <h1 class="heading-2 fade-in fade-in-1" style="color: #1a1a1a; line-height: 1.3;">
+          The ways we communicate have <span style="color: var(--color-accent);">expanded.</span>
+        </h1>
+        <p class="body-large fade-in fade-in-2" style="margin-top: var(--space-lg); color: #444;">
+          New tools don't just make old things faster. They make new things possible.
+        </p>
+      </div>
+    </section>
+
+    <!-- Slide 4: The Dynamic Medium -->
+    <section class="slide slide-light-bg" data-beat="2" data-title="The Dynamic Medium" data-transition="fade-up">
+      <div class="slide-split">
+        <div class="content">
+          <p class="label fade-in fade-in-1">Bret Victor</p>
+          <h2 class="heading-2 fade-in fade-in-2">The Dynamic Medium</h2>
+          <blockquote class="quote fade-in fade-in-3" style="margin-top: var(--space-lg);">
+            "A dynamic medium doesn't just present ideas, it responds to them. It adapts, evolves, and shapes itself around how we think, feel, and create."
+          </blockquote>
+          <p class="quote-attribution fade-in fade-in-4">— Bret Victor</p>
+        </div>
+        <div class="visual fade-in fade-in-3">
+          <img src="assets/2024-talk/extracted/image-6-1.png" alt="What is a dynamic medium?" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 5: Bret Victor Video -->
+    <section class="slide" data-beat="2" data-title="Inventing on Principle" data-transition="zoom">
+      <div class="video-vignette"></div>
+      <div class="video-theater">
+        <div class="video-stage-wrapper">
+          <!-- Ambilight glow canvas -->
+          <div class="video-ambilight"><canvas id="ambilightCanvas"></canvas></div>
+          <div class="video-container fade-in fade-in-1">
+            <div class="video-aspect">
+              <video id="bretVideo" controls preload="metadata">
+                <source src="assets/2024-talk/extracted/bretvictortalk.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+        </div>
+        <!-- Reflection -->
+        <div class="video-reflection-real fade-in fade-in-2">
+          <div class="video-reflection-inner">
+            <video id="bretVideoReflection" muted preload="metadata">
+              <source src="assets/2024-talk/extracted/bretvictortalk.mp4" type="video/mp4">
+            </video>
+          </div>
+          <div class="video-reflection-fade"></div>
+        </div>
+        <p class="video-caption fade-in fade-in-3">Bret Victor — Inventing on Principle</p>
+      </div>
+    </section>
+
+    <!-- Slide: Weather — Live Data Showcase -->
+    <section class="slide slide-weather" data-id="weather" data-beat="2" data-title="Live Data" data-transition="fade">
+      <!-- Fixed weather background (covers right half) -->
+      <div class="weather-bg" id="weatherBg">
+        <div class="weather-particles" id="weatherParticles"></div>
+      </div>
+
+      <!-- 50/50 split: static content left, scrollable weather right -->
+      <div class="weather-split">
+        <!-- LEFT — Static context -->
+        <div class="weather-left">
+          <p class="label fade-in fade-in-1">Real-time data</p>
+          <h2 class="heading-2 fade-in fade-in-2">Presentations can<br>react to the <span class="accent">real world</span></h2>
+          <div class="body fade-in fade-in-3" style="margin-top: var(--space-lg);">
+            <p style="margin-bottom: var(--space-md);">
+              The weather visualization on the right is pulling <strong style="color: var(--color-text);">live data from Seattle right now</strong>. The background, stats, and charts all update in real time.
+            </p>
+            <p style="margin-bottom: var(--space-md);">
+              This isn't about putting weather in your presentations. It's about what becomes possible when your slides can talk to APIs, databases, and live systems.
+            </p>
+            <p style="color: var(--color-text-dim);">
+              Imagine: a sprint review where the burndown chart is live. A sales pitch where the numbers update as you present. A design review where the prototype is running, not screenshotted.
+            </p>
+          </div>
+          <p class="fade-in fade-in-4" style="margin-top: var(--space-xl); font-size: var(--font-size-sm); color: var(--color-text-dim);">↓ Scroll the right panel to explore more data</p>
+
+          <!-- Weather picker -->
+          <div class="weather-picker fade-in fade-in-5">
+            <span class="weather-picker-label">Preview:</span>
+            <button class="weather-pick" data-weather="sunny" title="Sunny">☀️</button>
+            <button class="weather-pick" data-weather="cloudy" title="Cloudy">☁️</button>
+            <button class="weather-pick" data-weather="rain" title="Rain">🌧️</button>
+            <button class="weather-pick" data-weather="storm" title="Storm">⛈️</button>
+            <button class="weather-pick active" data-weather="live" title="Live data">📡</button>
+          </div>
+        </div>
+
+        <!-- RIGHT — Scrollable weather data -->
+        <div class="weather-right" id="weatherRight">
+          <!-- Hero -->
+          <div class="weather-hero">
+            <div class="weather-location">
+              <span class="weather-city">Seattle, WA</span>
+              <span class="weather-timestamp" id="weatherTimestamp"></span>
+            </div>
+            <div class="weather-temp-row">
+              <span class="weather-icon" id="weatherIcon">🌧️</span>
+              <span class="weather-temp" id="weatherTemp">--°</span>
+            </div>
+            <div class="weather-condition">
+              <span class="weather-desc" id="weatherDesc">Loading...</span>
+              <span class="weather-details" id="weatherDetails"></span>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="weather-stats">
+            <div class="weather-stat">
+              <span class="weather-stat-label">Humidity</span>
+              <span class="weather-stat-value" id="weatherHumidity">--%</span>
+              <div class="weather-stat-bar"><div class="weather-stat-fill" id="humidityBar"></div></div>
+            </div>
+            <div class="weather-stat">
+              <span class="weather-stat-label">Wind</span>
+              <span class="weather-stat-value" id="weatherWind">-- mph</span>
+              <div class="weather-stat-bar"><div class="weather-stat-fill" id="windBar"></div></div>
+            </div>
+            <div class="weather-stat">
+              <span class="weather-stat-label">Visibility</span>
+              <span class="weather-stat-value" id="weatherVisibility">-- mi</span>
+              <div class="weather-stat-bar"><div class="weather-stat-fill" id="visibilityBar"></div></div>
+            </div>
+            <div class="weather-stat">
+              <span class="weather-stat-label">Pressure</span>
+              <span class="weather-stat-value" id="weatherPressure">-- mb</span>
+              <div class="weather-stat-bar"><div class="weather-stat-fill" id="pressureBar"></div></div>
+            </div>
+          </div>
+
+          <!-- Historical -->
+          <div class="weather-history">
+            <p class="weather-history-label">On this day in history</p>
+            <div class="weather-history-chart" id="weatherHistoryChart"></div>
+          </div>
+
+          <!-- Hourly Forecast -->
+          <div class="weather-section">
+            <h3 class="weather-section-title">Hourly Forecast</h3>
+            <div class="weather-hourly" id="weatherHourly"></div>
+          </div>
+
+          <!-- 7-Day Forecast -->
+          <div class="weather-section">
+            <h3 class="weather-section-title">7-Day Forecast</h3>
+            <div class="weather-weekly" id="weatherWeekly"></div>
+          </div>
+
+          <!-- Temperature Sparkline -->
+          <div class="weather-section">
+            <h3 class="weather-section-title">Temperature — Last 24 Hours</h3>
+            <div class="sparkline-container">
+              <canvas id="tempSparkline" width="400" height="150"></canvas>
+            </div>
+          </div>
+
+          <!-- Sunrise/Sunset & UV Index -->
+          <div class="weather-section">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg);">
+              <div class="weather-sun-card">
+                <h3 class="weather-section-title">Sunrise & Sunset</h3>
+                <canvas id="sunArc" width="400" height="200"></canvas>
+                <div class="sun-times">
+                  <span class="sun-time"><span class="sun-label">↑</span> <span id="sunriseTime">6:42 AM</span></span>
+                  <span class="sun-time"><span class="sun-label">↓</span> <span id="sunsetTime">7:28 PM</span></span>
+                </div>
+              </div>
+              <div class="weather-uv-card">
+                <h3 class="weather-section-title">UV Index</h3>
+                <div class="uv-gauge" id="uvGauge">
+                  <div class="uv-gauge-bar">
+                    <div class="uv-gauge-fill" id="uvFill"></div>
+                    <div class="uv-gauge-marker" id="uvMarker"></div>
+                  </div>
+                  <div class="uv-gauge-labels">
+                    <span>Low</span><span>Moderate</span><span>High</span><span>Very High</span>
+                  </div>
+                  <div class="uv-value" id="uvValue">1</div>
+                  <div class="uv-desc" id="uvDesc">Low</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="height: var(--space-3xl);"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive 3D Walkthrough -->
+    <section class="slide slide-game" data-id="interactive" data-beat="2" data-title="Interactive Demo" data-transition="fade" data-3d="game">
+      <div class="game-overlay" id="gameOverlay">
+        <div class="game-hud">
+          <div class="game-controls-hint">
+            <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> Move
+            <kbd>Space</kbd> Jump
+            <kbd>F</kbd> Flashlight
+            <kbd>E</kbd> Interact
+            <kbd>→</kbd> Continue
+          </div>
+        </div>
+        <div class="game-tutorial-panel" id="gameTutorial">
+          <p class="game-tutorial-text">Walk around to explore. This voxel apartment was built in MagicaVoxel — and now it's a live, interactive presentation slide.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 7: Most people just need a dinghy -->
+    <section class="slide slide-boat" data-beat="2" data-title="Right-Sized Tools" data-transition="fade-up">
+      <canvas id="boatSunrise" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0;"></canvas>
+      <div class="boat-content fade-in fade-in-1">
+        <p class="label">The right tool for the job</p>
+        <h2 class="heading-2 fade-in fade-in-2" style="margin-top: var(--space-md);">
+          Most people need a <span class="accent">dinghy</span>,<br>not an aircraft carrier.
+        </h2>
+        <p class="body fade-in fade-in-3" style="margin-top: var(--space-lg); max-width: 420px;">
+          Today's software is built to fit every use case. It's complex because it has to be everything for everyone. But what if you could build exactly what you need — nothing more?
+        </p>
+        <p class="body fade-in fade-in-4" style="margin-top: var(--space-md); max-width: 420px; color: var(--color-text-dim);">
+          Vibe design makes purpose-built tools possible. Personal, precise, and yours.
+        </p>
+      </div>
+      <div class="boat-image fade-in fade-in-2">
+        <img id="boatImg" src="assets/2024-talk/extracted/image-13-1.png" alt="A tiny tugboat next to a massive aircraft carrier" />
+      </div>
+    </section>
+
+    <!-- ========================================================
+         BEAT 3 — THE VOCABULARY
+         ======================================================== -->
+
+    <!-- Slide 9: You need to speak the language -->
+    <section class="slide slide-space" data-id="vocabulary" data-beat="3" data-title="The Vocabulary" data-transition="zoom" data-3d="space" style="background: #000 !important;">
+      <div class="space-bg"><div class="stars" id="starsContainer"></div></div>
+      <div class="slide-center" style="text-shadow: 0 0 20px rgba(0,0,0,0.8);">
+        <p class="label fade-in fade-in-1">The designer's toolkit</p>
+        <h1 class="heading-1 fade-in fade-in-2" style="margin-top: var(--space-md);">
+          Good design<br><span class="accent">communicates clearly.</span>
+        </h1>
+        <p class="body-large fade-in fade-in-3" style="margin-top: var(--space-xl); max-width: 650px; margin-left: auto; margin-right: auto;">
+          These are the building blocks I use every day. Not style — vocabulary. Learn the words, and you can talk to the tools the way a designer does.
+        </p>
+      </div>
+    </section>
+
+    <!-- STORYTELLING TOPIC 1: Design Primitives — white bg, planet shadows -->
+    <section class="slide slide-primitives" data-beat="3" data-title="Design Primitives" data-transition="fade" data-3d="space" style="background: transparent !important;">
+      <div class="slide-center" style="position: relative; z-index: 1;">
+        <p class="label fade-in fade-in-1" style="color: #888;">Storytelling with design</p>
+        <h1 class="heading-1 fade-in fade-in-2" style="margin-top: var(--space-md); color: #1a1a1a;">
+          Design <span style="color: var(--color-accent);">Primitives</span>
+        </h1>
+        <p class="body-large fade-in fade-in-3" style="margin-top: var(--space-xl); max-width: 700px; margin-left: auto; margin-right: auto; color: #444;">
+          When something feels off but you can't explain why — these are the words for that. Composition. White space. Balance. Alignment. Proximity.
+        </p>
+        <p class="body fade-in fade-in-4" style="margin-top: var(--space-md); max-width: 600px; margin-left: auto; margin-right: auto; color: #888;">
+          The 3D objects cast real shadows on this surface. Their placement, spacing, and weight — that's composition in action.
+        </p>
+      </div>
+    </section>
+
+    <!-- STORYTELLING TOPIC 2: Animation, Motion & Simulation -->
+    <section class="slide slide-primitives" data-beat="3" data-title="Animation" data-transition="fade" data-3d="space-fall" style="background: transparent !important;">
+      <div class="slide-center" style="position: relative; z-index: 1;">
+        <p class="label fade-in fade-in-1" style="color: #888;">Storytelling with motion</p>
+        <h1 class="heading-1 fade-in fade-in-2" style="margin-top: var(--space-md); color: #1a1a1a;">
+          Animation, Motion<br>&amp; <span style="color: var(--color-accent);">Simulation</span>
+        </h1>
+        <p class="body-large fade-in fade-in-3" style="margin-top: var(--space-xl); max-width: 700px; margin-left: auto; margin-right: auto; color: #444;">
+          That moment before the planets dropped? That's <strong>anticipation</strong>. The bounce at the bottom? That's <strong>easing</strong>. The way they settled? That's <strong>weight</strong>.
+        </p>
+        <p class="body fade-in fade-in-4" style="margin-top: var(--space-md); max-width: 600px; margin-left: auto; margin-right: auto; color: #888;">
+          Motion tells a story. Timing, acceleration, and rhythm guide attention and create emotion. These aren't just effects — they're communication tools.
+        </p>
+      </div>
+    </section>
+
+    <!-- STORYTELLING TOPIC 3: Visual Storytelling (the Gaussian splat scene) -->
+    <section class="slide" data-beat="3" data-title="Visual Storytelling" data-transition="slide-left" style="background: #0a0a0a !important;">
+      <!-- Loading indicator -->
+      <div id="splatLoader" style="position: absolute; inset: 0; z-index: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: #666; font-size: 13px;">
+        <div style="width: 40px; height: 40px; border: 2px solid #222; border-top-color: #d4a053; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <div>Loading 3D scene...</div>
+      </div>
+      <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+      <!-- Gaussian splat viewer -->
+      <iframe id="splatViewer" data-src="splat-viewer.html" style="position: absolute; inset: 0; width: 100%; height: 100%; border: none; z-index: 0;"></iframe>
+      <div class="slide-split" style="position: relative; z-index: 1;">
+        <div class="content" style="background: rgba(10,10,10,0.5); backdrop-filter: blur(8px); padding: var(--space-2xl); border-radius: 16px;">
+          <p class="label fade-in fade-in-1">Storytelling with environment</p>
+          <h2 class="heading-2 fade-in fade-in-2">Visual <span class="accent">Storytelling</span></h2>
+          <p class="body fade-in fade-in-3" style="margin-top: var(--space-md);">
+            A scene tells a story through light, space, and arrangement. This AI-generated kitchen uses warm tones, natural light, and deliberate clutter to feel <em>lived in</em>.
+          </p>
+          <p class="body fade-in fade-in-4" style="margin-top: var(--space-md); color: var(--color-text-muted);">
+            The same principles apply to a dashboard, a slide deck, or a prototype. Every visual choice is a narrative choice. Use WASD to explore.
+          </p>
+        </div>
+        <div class="visual"></div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         BEAT 4 — THE WORKFLOW
+         ======================================================== -->
+
+    <!-- Slide 13: Here's how it actually works -->
+    <section class="slide" data-id="workflow" data-beat="4" data-title="The Workflow" data-transition="zoom" data-3d="float">
+      <div class="slide-center">
+        <p class="label fade-in fade-in-1">Putting it into practice</p>
+        <h1 class="heading-1 fade-in fade-in-2" style="margin-top: var(--space-md);">
+          Here's how it<br><span class="accent">actually works.</span>
+        </h1>
+        <p class="body-large fade-in fade-in-3" style="margin-top: var(--space-xl); max-width: 650px; margin-left: auto; margin-right: auto;">
+          Vocabulary transforms your prompts. Let's see the difference.
+        </p>
+      </div>
+    </section>
+
+    <!-- Slide 14: Before/After -->
+    <section class="slide" data-beat="4" data-title="Before / After" data-transition="zoom" data-3d="earth">
+      <div class="slide-center" style="max-width: 1100px;">
+        <h2 class="heading-3 fade-in fade-in-1" style="margin-bottom: var(--space-2xl);">The power of vocabulary</h2>
+        <div class="before-after fade-in fade-in-2">
+          <div class="panel">
+            <div class="panel-label bad">✕ Without vocabulary</div>
+            <p class="prompt-text">
+              "Make me a dashboard that looks good. It should show user stats and have some charts. Make it modern and clean."
+            </p>
+          </div>
+          <div class="panel">
+            <div class="panel-label good">✦ With vocabulary</div>
+            <p class="prompt-text">
+              "Create a dashboard with a clear visual hierarchy: primary metric cards at the top with large type, secondary charts below. Use 24px spacing rhythm, muted backgrounds for data containers, and a single accent color for CTAs. Left sidebar navigation, content area uses a 12-column grid."
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 15: The Tools -->
+    <section class="slide" data-beat="4" data-title="The Tools" data-transition="zoom" style="background: #f5f5f5 !important;">
+      <div class="slide-split">
+        <div class="content">
+          <p class="label fade-in fade-in-1" style="color: #888;">Your next steps</p>
+          <h2 class="heading-2 fade-in fade-in-2" style="color: #1a1a1a;">Working With the Tools</h2>
+          <div class="body fade-in fade-in-3" style="margin-top: var(--space-md);">
+            <p style="margin-bottom: var(--space-lg); color: #444;">
+              <strong style="color: #1a1a1a;">1. Get a Figma link</strong><br>
+              Ask your designer for a file prepared for AI. A well-structured Figma file dramatically increases your output.
+            </p>
+            <p style="margin-bottom: var(--space-lg); color: #444;">
+              <strong style="color: #1a1a1a;">2. Figma MCP</strong><br>
+              Connect AI directly to the design file. Read components, inspect tokens, understand the system.
+              <br><a href="https://modelcontextprotocol.io" target="_blank" style="color: var(--color-accent); text-decoration: underline;">📎 MCP Documentation</a>
+            </p>
+            <p style="margin-bottom: var(--space-lg); color: #444;">
+              <strong style="color: #1a1a1a;">3. Design Partner Skill</strong><br>
+              An AI skill with design vocabulary, heuristics, and component knowledge baked in. Install it and start designing.
+              <br><a href="#" onclick="document.getElementById('glossaryDialog').showModal(); return false;" style="color: var(--color-accent); text-decoration: underline;">📖 Open Design Glossary</a>
+            </p>
+          </div>
+        </div>
+        <div class="visual fade-in fade-in-4">
+          <img src="assets/2024-talk/extracted/image-16-1.png" alt="Evolution from coding to direct manipulation" style="border-radius: 12px;" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Design Glossary Dialog -->
+    <dialog id="glossaryDialog" style="max-width: 700px; width: 90%; max-height: 80vh; border: 1px solid #333; border-radius: 16px; background: #111; color: #eee; padding: 0; overflow: hidden;">
+      <div style="padding: var(--space-xl) var(--space-2xl); display: flex; flex-direction: column; height: 100%;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg);">
+          <h2 style="font-size: var(--font-size-xl); font-weight: 700;">📖 Design Vocabulary Glossary</h2>
+          <button onclick="this.closest('dialog').close()" style="all: unset; cursor: pointer; font-size: 20px; color: #888; padding: 4px 8px;">✕</button>
+        </div>
+        <div style="overflow-y: auto; flex: 1; font-size: var(--font-size-sm); line-height: 1.8; color: #ccc;">
+          <p><strong style="color: #d4a053;">Composition</strong> — The arrangement of visual elements to create a cohesive whole.</p>
+          <p><strong style="color: #d4a053;">White Space</strong> — Empty area that gives elements room to breathe. Not wasted — intentional.</p>
+          <p><strong style="color: #d4a053;">Hierarchy</strong> — Visual priority. What the eye sees first, second, third.</p>
+          <p><strong style="color: #d4a053;">Alignment</strong> — Elements sharing a common edge or centerline. Creates order.</p>
+          <p><strong style="color: #d4a053;">Proximity</strong> — Related elements placed near each other. Distance implies relationship.</p>
+          <p><strong style="color: #d4a053;">Contrast</strong> — Difference between elements. Size, color, weight — contrast creates focus.</p>
+          <p><strong style="color: #d4a053;">Balance</strong> — Visual weight distributed evenly (symmetrical) or intentionally offset (asymmetrical).</p>
+          <p><strong style="color: #d4a053;">Rhythm</strong> — Repeated patterns of spacing, size, or color. Creates flow and consistency.</p>
+          <p><strong style="color: #d4a053;">Typography</strong> — The art of arranging type. Font, size, weight, spacing, line height.</p>
+          <p><strong style="color: #d4a053;">Component</strong> — A reusable UI building block. Buttons, cards, inputs, modals.</p>
+          <p><strong style="color: #d4a053;">Token</strong> — A named design value (color, spacing, font size) that ensures consistency.</p>
+          <p><strong style="color: #d4a053;">Progressive Disclosure</strong> — Showing only what's needed now. Reveal complexity as needed.</p>
+          <p><strong style="color: #d4a053;">Affordance</strong> — A visual cue that suggests how to interact. A button looks pressable.</p>
+          <p><strong style="color: #d4a053;">Delight</strong> — Small moments of joy. Animation, micro-interactions, unexpected polish.</p>
+          <p><strong style="color: #d4a053;">Easing</strong> — How animation accelerates/decelerates. Ease-in, ease-out, bounce.</p>
+          <p><strong style="color: #d4a053;">Anticipation</strong> — A brief motion before the main action. Prepares the viewer.</p>
+          <p><strong style="color: #d4a053;">Visual Weight</strong> — How much attention an element demands. Size, color, density.</p>
+          <p><strong style="color: #d4a053;">Grid</strong> — An invisible structure that aligns content. Columns, gutters, margins.</p>
+        </div>
+        <div style="margin-top: var(--space-lg); display: flex; gap: var(--space-md);">
+          <a id="downloadGlossary" href="#" style="background: var(--color-accent); color: #000; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: var(--font-size-sm); font-weight: 600;">⬇ Download .md</a>
+          <button onclick="this.closest('dialog').close()" style="all: unset; cursor: pointer; padding: 8px 16px; border: 1px solid #333; border-radius: 8px; font-size: var(--font-size-sm); color: #888;">Close</button>
+        </div>
+      </div>
+    </dialog>
+
+    <!-- ========================================================
+         BEAT 5 — THE TAKEAWAY
+         ======================================================== -->
+
+    <!-- Slide 16: What you're leaving with -->
+    <section class="slide" data-beat="5" data-title="The Takeaway" data-transition="rise" style="background: #f5f5f5 !important;">
+      <div class="slide-split">
+        <div class="content">
+          <p class="label fade-in fade-in-1" style="color: #888;">The takeaway</p>
+          <h2 class="heading-2 fade-in fade-in-2" style="color: #1a1a1a;">Creativity lies<br>within each of us.</h2>
+          <div class="body fade-in fade-in-3" style="margin-top: var(--space-lg);">
+            <p style="margin-bottom: var(--space-lg); color: #444;">
+              <strong style="color: #1a1a1a;">Design is a learnable skill.</strong><br>
+              Not the taste part — the communication part. And that's the part that matters most.
+            </p>
+            <p style="margin-bottom: var(--space-lg); color: #444;">
+              <strong style="color: #1a1a1a;">Talk to your designer.</strong><br>
+              Ask for a Figma file structured for AI. Ask about components, tokens, and patterns. The conversation itself makes you better.
+            </p>
+            <p style="color: #444;">
+              <strong style="color: #1a1a1a;">Anyone can learn to communicate visually.</strong><br>
+              The tools are no longer gated. The vocabulary is the key.
+            </p>
+          </div>
+        </div>
+        <div class="visual fade-in fade-in-4">
+          <img src="assets/2024-talk/extracted/image-14-1.png" alt="Collaboration matrix" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide: How This Was Made (Meta) -->
+    <section class="slide" data-beat="5" data-title="How This Was Made" data-transition="zoom" data-theme="teal">
+      <div class="slide-split">
+        <div class="content">
+          <p class="label fade-in fade-in-1">Meta moment</p>
+          <h2 class="heading-2 fade-in fade-in-2">How this presentation<br>was <span class="accent">vibe coded</span></h2>
+          <div class="body fade-in fade-in-3" style="margin-top: var(--space-lg);">
+            <p style="margin-bottom: var(--space-md);">
+              This entire presentation is a single HTML file — built through conversation with an AI copilot.
+            </p>
+            <p style="margin-bottom: var(--space-md);">
+              No PowerPoint. No Keynote. No design tool. Just ideas → words → code.
+            </p>
+            <p style="color: var(--color-text-muted);">
+              The 3D models are voxel art from MagicaVoxel. The weather is live. The transitions are CSS. The whole thing is ~1,500 lines of hand-shaped HTML.
+            </p>
+          </div>
+        </div>
+        <div class="visual fade-in fade-in-4">
+          <div style="background: var(--color-surface); border-radius: 12px; padding: var(--space-xl); border: 1px solid var(--color-border);">
+            <p class="label" style="margin-bottom: var(--space-lg);">The stack</p>
+            <div style="display: flex; flex-direction: column; gap: var(--space-md);">
+              <div style="display: flex; align-items: center; gap: var(--space-md);">
+                <span style="font-size: 1.5rem;">💬</span>
+                <div>
+                  <strong style="color: var(--color-text);">Conversation</strong>
+                  <p style="font-size: var(--font-size-sm); color: var(--color-text-muted);">Brainstorm → outline → narrative arc</p>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; gap: var(--space-md);">
+                <span style="font-size: 1.5rem;">🧱</span>
+                <div>
+                  <strong style="color: var(--color-text);">HTML + CSS + JS</strong>
+                  <p style="font-size: var(--font-size-sm); color: var(--color-text-muted);">Vanilla web — no frameworks needed</p>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; gap: var(--space-md);">
+                <span style="font-size: 1.5rem;">🎮</span>
+                <div>
+                  <strong style="color: var(--color-text);">Three.js + MagicaVoxel</strong>
+                  <p style="font-size: var(--font-size-sm); color: var(--color-text-muted);">3D voxel art in the browser</p>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; gap: var(--space-md);">
+                <span style="font-size: 1.5rem;">🌧️</span>
+                <div>
+                  <strong style="color: var(--color-text);">Live data</strong>
+                  <p style="font-size: var(--font-size-sm); color: var(--color-text-muted);">Weather API → real-time visuals</p>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; gap: var(--space-md);">
+                <span style="font-size: 1.5rem;">🎬</span>
+                <div>
+                  <strong style="color: var(--color-text);">CSS animations</strong>
+                  <p style="font-size: var(--font-size-sm); color: var(--color-text-muted);">6 transition types, per-slide theming</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 17: Closing -->
+    <section class="slide" data-beat="5" data-title="Closing" data-transition="rise" data-theme="warm">
+      <div class="slide-center">
+        <h1 class="heading-1 fade-in fade-in-1">
+          Creativity lies within<br><span class="accent">each of us.</span>
+        </h1>
+        <p class="heading-3 fade-in fade-in-2" style="margin-top: var(--space-lg); font-weight: 300; color: var(--color-text-muted);">
+          Now you have the language to prove it.
+        </p>
+        <ul class="resource-list fade-in fade-in-3" style="margin-top: var(--space-3xl); max-width: 500px; margin-left: auto; margin-right: auto;">
+          <li><span class="resource-icon">🎨</span> Design Partner skill</li>
+          <li><span class="resource-icon">🔗</span> Figma MCP setup guide</li>
+          <li><span class="resource-icon">📖</span> Design vocabulary reference</li>
+          <li><span class="resource-icon">💬</span> Nick McVey &amp; Greg Gonyea</li>
+        </ul>
+      </div>
+    </section>
+
+  </div><!-- /slides-container -->
+
+  <!-- ============================================================
+       NAV HINT
+       ============================================================ -->
+  <div class="nav-hint" id="navHint">
+
+  <!-- Debug tools for 3D marker placement -->
+  <div id="debugCoords" style="position:fixed;top:60px;left:var(--space-xl);z-index:200;font-family:'Courier New',monospace;font-size:var(--font-size-xs);color:var(--color-accent);background:rgba(10,10,10,0.7);padding:4px 10px;border-radius:6px;pointer-events:none;display:none;"></div>
+  <div id="debugPanel">
+    <div class="debug-title">📍 Markers <button onclick="copyMarkers()" style="float:right;background:var(--color-accent);border:none;color:#000;padding:2px 8px;border-radius:4px;font-size:10px;cursor:pointer;">Copy JSON</button></div>
+    <div id="debugMarkerList"></div>
+    <div style="margin-top:12px;border-top:1px solid rgba(255,255,255,0.1);padding-top:10px;">
+      <div class="debug-title">📷 Camera</div>
+      <div style="font-size:10px;color:var(--color-text-dim);line-height:1.8;">
+        <kbd style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:3px;padding:1px 5px;">1</kbd>/<kbd style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:3px;padding:1px 5px;">2</kbd> Distance: <span id="camDistVal" style="color:var(--color-accent);">4</span><br>
+        <kbd style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:3px;padding:1px 5px;">3</kbd>/<kbd style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:3px;padding:1px 5px;">4</kbd> Height: <span id="camHeightVal" style="color:var(--color-accent);">2.5</span><br>
+        <kbd style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:3px;padding:1px 5px;">5</kbd>/<kbd style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:3px;padding:1px 5px;">6</kbd> FOV: <span id="camFovVal" style="color:var(--color-accent);">75</span><br>
+        <kbd style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:3px;padding:1px 5px;">7</kbd>/<kbd style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:3px;padding:1px 5px;">8</kbd> Speed: <span id="camSpeedVal" style="color:var(--color-accent);">5</span>
+      </div>
+    </div>
+  </div>
+    <kbd>←</kbd> <kbd>→</kbd> to navigate
+  </div>
+
+  <!-- JS (order matters) -->
+  <script>window.PRES = {};</script>
+  <script src="js/navigation.js"></script>
+  <script src="js/three-setup.js"></script>
+  <script src="js/planets.js"></script>
+  <script src="js/earth.js"></script>
+  <script src="js/game-controller.js"></script>
+  <script src="js/game-objects.js"></script>
+  <script src="js/weather.js"></script>
+  <script src="js/effects.js"></script>
+  <script src="js/video-theater.js"></script>
+  <script src="js/index-grid.js"></script>
+  <script>PRES.init();</script>
+
+</body>
+</html>
