@@ -5,7 +5,7 @@
 
 /* GLOBAL HEADER */
 .header {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   right: 0;
@@ -24,49 +24,59 @@
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: rgba(120, 120, 120, 0.8);
-  text-shadow: 0 0 8px rgba(0,0,0,0.5);
+  color: var(--color-signal);
+  opacity: 0.7;
 }
 
 .header-indicator {
   font-size: var(--font-size-xs);
   font-weight: 400;
-  color: rgba(120, 120, 120, 0.8);
+  color: var(--color-signal);
+  opacity: 0.6;
   text-align: right;
-  text-shadow: 0 0 8px rgba(0,0,0,0.5);
 }
 
 .header-indicator .slide-number {
-  color: rgba(150, 150, 150, 0.9);
+  color: var(--color-signal);
+  opacity: 1;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
 
 .header-indicator .next-topic {
   display: block;
-  font-size: 0.65rem;
-  color: var(--color-text-dim);
+  font-size: 0.62rem;
+  color: var(--color-signal);
+  opacity: 0.5;
   margin-top: 2px;
+  font-family: var(--font-body);
+  font-style: italic;
 }
 
 /* PROGRESS BAR */
 .progress-bar {
-  position: fixed;
+  position: absolute;
   bottom: 0;
   left: 0;
   height: var(--progress-height);
-  background: var(--color-accent);
+  background: var(--color-signal);
   z-index: 100;
-  transition: width var(--duration-normal) var(--ease-out);
+  transition: width var(--duration-normal) var(--ease-mechanical);
   opacity: 0.6;
 }
 
-/* SLIDE CONTAINER */
+/* SLIDE CONTAINER — fixed 1920×1080 canvas, scaled to fit viewport by js/scaler.js */
 .slides-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
+  position: fixed;
+  width: 1920px;
+  height: 1080px;
+  top: 0;
+  left: 0;
+  transform-origin: top left;
+  /* transform: translate(Xpx, Ypx) scale(S) — set dynamically by js/scaler.js */
   z-index: 1;
+  overflow: hidden;
+  background: var(--color-bg);
 }
 
 /* SLIDE BASE — Each <section> is a slide */
@@ -84,6 +94,7 @@
     transform var(--duration-slow) var(--ease-out);
   pointer-events: none;
   will-change: opacity, transform;
+  overflow: hidden;
 }
 
 .slide.active {
@@ -133,7 +144,7 @@
 
 /* NAV HINT (bottom) */
 .nav-hint {
-  position: fixed;
+  position: absolute;
   bottom: var(--space-lg);
   right: var(--space-xl);
   font-size: var(--font-size-xs);

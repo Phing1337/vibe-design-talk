@@ -42,6 +42,17 @@
     model.position.sub(center.multiplyScalar(scale));
   }
 
+  // Hide game info point meshes (spheres + rings from voxel level)
+  function hideInfoPoints() {
+    var meshes = PRES.infoPointMeshes || [];
+    meshes.forEach(function(ip) {
+      if (ip.sphere) ip.sphere.visible = false;
+      if (ip.ring) ip.ring.visible = false;
+    });
+    // Also hide the deadline object
+    if (PRES.deadlineObj) PRES.deadlineObj.visible = false;
+  }
+
   function loadApartmentModel() {
     if (typeof THREE.MTLLoader === 'undefined' || typeof THREE.OBJLoader === 'undefined') return;
 
@@ -239,6 +250,11 @@
     current3DMode = mode;
     PRES.current3DMode = mode;
 
+    // Reset layout-compose interaction when leaving the space slide
+    if (mode !== 'space' && PRES.resetLayoutCompose) {
+      PRES.resetLayoutCompose();
+    }
+
     if (mode === 'apartment') {
       canvas.classList.add('visible');
       canvasVisible = true;
@@ -256,6 +272,7 @@
 
     } else if (mode === 'float') {
       canvas.classList.add('visible');
+      canvas.classList.remove('space-mode');
       canvasVisible = true;
       PRES.canvasVisible = true;
       if (controls) {
@@ -264,19 +281,31 @@
       }
       if (apartmentModel) apartmentModel.visible = false;
       if (sputnikModel) sputnikModel.visible = true;
+      if (kitchenModel) kitchenModel.visible = false;
+      if (PRES.hideSpacePlanets) PRES.hideSpacePlanets();
+      if (PRES.hideEarth) PRES.hideEarth();
+      hideInfoPoints();
+      renderer.setClearColor(0x000000, 0);
 
     } else if (mode === 'game') {
       canvas.classList.add('visible');
+      canvas.classList.remove('space-mode');
       canvasVisible = true;
       PRES.canvasVisible = true;
+      renderer.setClearColor(0x000000, 0);
+      if (camera.fov !== 90) { camera.fov = 90; camera.updateProjectionMatrix(); }
       if (controls) {
         controls.enabled = false;
         controls.autoRotate = false;
       }
       if (apartmentModel) apartmentModel.visible = true;
       if (sputnikModel) sputnikModel.visible = false;
+      if (kitchenModel) kitchenModel.visible = false;
       if (PRES.hideSpacePlanets) PRES.hideSpacePlanets();
+      if (PRES.hideEarth) PRES.hideEarth();
 
+      // Make sure the apartment is loaded
+      if (!apartmentModel) loadApartmentModel();
       if (!marvModel) loadMarv();
 
       if (PRES.activateGameMode) PRES.activateGameMode();
@@ -285,14 +314,13 @@
       canvasVisible = true;
       PRES.canvasVisible = true;
       canvas.classList.add('visible');
-      // Only use space-mode (z-index 2) on dark slides, not white primitives slides
       var isPrimitives = slide.classList.contains('slide-primitives');
       if (isPrimitives) {
         canvas.classList.remove('space-mode');
-        renderer.setClearColor(0xf5f5f5, 1); // white background
+        renderer.setClearColor(0xf5f5f5, 1);
       } else {
         canvas.classList.add('space-mode');
-        renderer.setClearColor(0x000000, 0); // transparent/black
+        renderer.setClearColor(0x000000, 0);
       }
       if (controls) {
         controls.enabled = false;
@@ -300,8 +328,10 @@
       }
       if (apartmentModel) apartmentModel.visible = false;
       if (sputnikModel) sputnikModel.visible = false;
+      if (kitchenModel) kitchenModel.visible = false;
       if (PRES.showSpacePlanets) PRES.showSpacePlanets();
       if (PRES.hideEarth) PRES.hideEarth();
+      hideInfoPoints();
       // Reset planets to orbits
       var pv = PRES.planetVelocities;
       if (pv) {
@@ -317,7 +347,6 @@
       canvas.classList.remove('space-mode');
       canvasVisible = true;
       PRES.canvasVisible = true;
-      // White bg for primitives slides, transparent otherwise
       var isFallPrim = slide.classList.contains('slide-primitives');
       if (isFallPrim) {
         renderer.setClearColor(0xf5f5f5, 1);
@@ -330,7 +359,9 @@
       }
       if (apartmentModel) apartmentModel.visible = false;
       if (sputnikModel) sputnikModel.visible = false;
+      if (kitchenModel) kitchenModel.visible = false;
       if (PRES.hideEarth) PRES.hideEarth();
+      hideInfoPoints();
       // Only trigger gravity if coming from 'space' mode (first time falling)
       // If already in space-fall, planets keep their current state
       var prevMode = PRES._prevMode || null;
@@ -360,8 +391,9 @@
       if (apartmentModel) apartmentModel.visible = false;
       if (PRES.hideSpacePlanets) PRES.hideSpacePlanets();
       if (PRES.showEarth) PRES.showEarth();
+      hideInfoPoints();
       var eg = PRES.earthGroup;
-      if (eg) eg.position.set(10, -4, -5);
+      if (eg) eg.position.set(18, -8, -5);
       if (sputnikModel) {
         sputnikModel.visible = true;
         sputnikModel.scale.set(0.2, 0.2, 0.2);
@@ -375,14 +407,12 @@
       canvas.classList.remove('space-mode');
       canvasVisible = true;
       PRES.canvasVisible = true;
-      // Load kitchen on first visit
       if (!kitchenModel) loadKitchenModel();
       if (kitchenModel) {
         kitchenModel.visible = true;
         var box = new THREE.Box3().setFromObject(kitchenModel);
         var center = box.getCenter(new THREE.Vector3());
         camera.position.copy(center);
-        // Target slightly ahead — OrbitControls needs distance > 0
         controls.target.set(center.x, center.y, center.z - 0.01);
         controls.minDistance = 0;
         controls.maxDistance = 0.1;
@@ -392,7 +422,7 @@
       if (sputnikModel) sputnikModel.visible = false;
       if (PRES.hideSpacePlanets) PRES.hideSpacePlanets();
       if (PRES.hideEarth) PRES.hideEarth();
-      // Enable orbit controls so user can drag to look around
+      hideInfoPoints();
       if (controls) {
         controls.enabled = true;
         controls.autoRotate = false;
@@ -407,7 +437,7 @@
       canvas.classList.remove('visible', 'space-mode');
       canvasVisible = false;
       PRES.canvasVisible = false;
-      renderer.setClearColor(0x000000, 0); // reset to transparent
+      renderer.setClearColor(0x000000, 0);
       if (camera && camera.fov !== 60) { camera.fov = 60; camera.updateProjectionMatrix(); }
       if (controls) {
         controls.enabled = false;
@@ -416,8 +446,10 @@
       if (apartmentModel) apartmentModel.visible = false;
       if (sputnikModel) sputnikModel.visible = false;
       if (kitchenModel) kitchenModel.visible = false;
+      if (marvModel) marvModel.visible = false;
       if (PRES.hideSpacePlanets) PRES.hideSpacePlanets();
       if (PRES.hideEarth) PRES.hideEarth();
+      hideInfoPoints();
     }
   }
 
@@ -449,10 +481,12 @@
     var spacePlanets = PRES.spacePlanets || [];
     if (current3DMode === 'space' && spacePlanets.length > 0) {
       if (camera.fov !== 45) { camera.fov = 45; camera.updateProjectionMatrix(); }
-      camera.position.x = 0;
+      // Lerp camera right when layout-compose is active (planets visually cluster on right)
+      var targetCamX = PRES.layoutComposeActive ? 7 : 0;
+      camera.position.x += (targetCamX - camera.position.x) * 0.06;
       camera.position.z = 20;
       camera.position.y = 0;
-      camera.lookAt(0, 0, 0);
+      camera.lookAt(camera.position.x, 0, 0);
     }
 
     // Space-fall mode
@@ -468,12 +502,35 @@
     var planetVelocities = PRES.planetVelocities || [];
     var draggedPlanet = PRES.draggedPlanet;
     if ((current3DMode === 'space' || current3DMode === 'space-fall') && spacePlanets.length > 0) {
+      var time = Date.now() * 0.001;
       spacePlanets.forEach(function(p, i) {
         var pv = planetVelocities[i];
-        if (!pv || !pv.free) return;
+        if (!pv) return;
         if (i === draggedPlanet) return;
 
+        // Slow rotation
         p.mesh.rotation.y += 0.0008 * (i + 1);
+
+        if (!pv.free) {
+          // Orbital motion — smooth circular paths
+          var angle = time * p.orbitSpeed + p.orbitOffset;
+          p.mesh.position.x = Math.cos(angle) * p.orbitRadius;
+          p.mesh.position.z = Math.sin(angle) * p.orbitRadius * 0.3;
+          p.mesh.position.y = p.baseY + Math.sin(angle * 0.7) * 1.5;
+          return;
+        }
+
+        if (pv.free && pv.toX !== undefined) {
+          // Smooth glide toward compose target
+          p.mesh.position.x += (pv.toX - p.mesh.position.x) * 0.06;
+          p.mesh.position.y += (pv.toY - p.mesh.position.y) * 0.06;
+          pv.vx = 0; pv.vy = 0;
+          if (Math.abs(p.mesh.position.x - pv.toX) < 0.05 &&
+              Math.abs(p.mesh.position.y - pv.toY) < 0.05) {
+            delete pv.toX; delete pv.toY;
+          }
+          return;
+        }
 
         if (pv.falling) {
           pv.vy -= 15 * 0.016;
@@ -539,11 +596,18 @@
     renderer.render(scene, camera);
   }
 
+  function getContainerSize() {
+    var container = document.getElementById('slidesContainer');
+    if (container) return { w: container.clientWidth, h: container.clientHeight };
+    return { w: window.innerWidth, h: window.innerHeight };
+  }
+
   function onWindowResize() {
     if (!camera || !renderer) return;
-    camera.aspect = window.innerWidth / window.innerHeight;
+    var size = getContainerSize();
+    camera.aspect = size.w / size.h;
     camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(size.w, size.h);
   }
 
   function initThreeJS() {
@@ -551,10 +615,11 @@
     if (!canvas || typeof THREE === 'undefined') return;
 
     try {
+      var size = getContainerSize();
       scene = new THREE.Scene();
 
       camera = new THREE.PerspectiveCamera(
-        90, window.innerWidth / window.innerHeight, 0.1, 1000
+        90, size.w / size.h, 0.1, 1000
       );
       camera.position.set(0, 2, 0);
 
@@ -563,7 +628,7 @@
         antialias: true,
         alpha: true
       });
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setSize(size.w, size.h);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
       renderer.setClearColor(0x000000, 0);
       renderer.shadowMap.enabled = true;

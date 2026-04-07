@@ -1,0 +1,639 @@
+/* ============================================================
+   interactive-doc.css — Interactive Document Demo Slide
+   Slide: "Interactive Documents"
+   Features: paper card, 3D flip, tooltip dataviz, analytics back
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Great+Vibes&display=swap');
+
+/* ── Slide layout ── */
+.slide-idoc {
+  display: flex !important;
+  align-items: stretch !important;
+  padding: 0 !important;
+}
+
+.idoc-left {
+  width: 35%;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: calc(var(--header-height) + 7%) 5% 7% 7%;
+}
+
+.idoc-right {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: calc(var(--header-height) + 16px) 40px 0;
+  position: relative;
+  overflow: hidden; /* static bg — no panel scroll, only paper scrolls internally */
+  /* Warm desert gradient — always visible. PNG overlays on top if it loads. */
+  background: linear-gradient(
+    168deg,
+    #e8d8b8 0%,
+    #d9c090 22%,
+    #c8a060 45%,
+    #b87c3a 70%,
+    #9e6428 100%
+  );
+}
+
+/* Static desert background photo — sits above gradient, no-repeat in case PNG is blank */
+.idoc-right::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url('../assets/desert-palm-bg.png') center center / cover no-repeat;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ── Palm leaf shadow overlay ── */
+.idoc-palm-shadows {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  opacity: 0.38;
+  z-index: 5;
+  overflow: hidden;
+}
+
+.idoc-palm-shadows svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ── Wind sway animations ── */
+.palm-sway-l {
+  transform-origin: -10% -5%;
+  animation: palmSwayL 5.4s ease-in-out infinite;
+}
+.palm-sway-r {
+  transform-origin: 110% -8%;
+  animation: palmSwayR 6.9s ease-in-out infinite;
+}
+.palm-sway-c {
+  transform-origin: 55% -15%;
+  animation: palmSwayC 4.7s ease-in-out infinite;
+}
+
+@keyframes palmSwayL {
+  0%   { transform: rotate(-2.8deg) skewX( 0.4deg); }
+  40%  { transform: rotate( 1.6deg) skewX(-0.3deg); }
+  70%  { transform: rotate( 2.2deg) skewX( 0.2deg); }
+  100% { transform: rotate(-2.8deg) skewX( 0.4deg); }
+}
+@keyframes palmSwayR {
+  0%   { transform: rotate( 2.0deg) skewX(-0.3deg); }
+  45%  { transform: rotate(-2.6deg) skewX( 0.4deg); }
+  75%  { transform: rotate(-1.8deg) skewX(-0.2deg); }
+  100% { transform: rotate( 2.0deg) skewX(-0.3deg); }
+}
+@keyframes palmSwayC {
+  0%   { transform: rotate(-1.4deg); }
+  35%  { transform: rotate( 2.8deg); }
+  65%  { transform: rotate( 0.6deg); }
+  100% { transform: rotate(-1.4deg); }
+}
+
+/* Paper scene sits above bg but below shadows */
+.idoc-right .paper-scene { position: relative; z-index: 2; }
+
+.idoc-right::-webkit-scrollbar { display: none; }
+
+/* ── 3D scene wrapper ── */
+.paper-scene {
+  perspective: 1600px;
+  perspective-origin: 50% 15%;
+  position: relative;
+  width: 1000px;
+}
+
+/* Ambient reflected warmth from the desk surface rising up around the card */
+.paper-scene::after {
+  content: '';
+  position: absolute;
+  bottom: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120%;
+  height: 200px;
+  background: radial-gradient(ellipse, rgba(180, 150, 100, 0.12) 0%, transparent 65%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* ── Flipping wrapper ── */
+.paper-wrapper {
+  position: relative;
+  width: 1000px;
+  height: 1500px;
+  transform-style: preserve-3d;
+  transition: transform 0.75s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.paper-wrapper.flipped {
+  transform: rotateY(180deg);
+}
+
+/* ── Both faces ── */
+.paper-face {
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow: hidden;
+  /* Stacked doubling shadows — simulates natural light falloff from overhead */
+  box-shadow:
+    0    1px   1px  rgba(110, 82, 46, 0.09),
+    0    2px   2px  rgba(105, 78, 44, 0.09),
+    0    4px   4px  rgba(100, 75, 42, 0.08),
+    0    8px   8px  rgba(95,  70, 38, 0.08),
+    0   16px  16px  rgba(88,  65, 35, 0.07),
+    0   32px  32px  rgba(80,  58, 30, 0.06),
+    0   64px  64px  rgba(70,  50, 25, 0.05),
+    0  128px 128px  rgba(60,  44, 22, 0.04),
+    /* Emboss — paper edge with light from above */
+    inset  0  1px 0  rgba(255, 255, 255, 0.75),
+    inset  0 -1px 0  rgba(0,   0,   0,   0.07),
+    inset  1px 0  0  rgba(255, 255, 255, 0.38),
+    inset -1px 0  0  rgba(0,   0,   0,   0.04);
+}
+
+/* ── FRONT: the paper article ── */
+.paper-front {
+  /* Organic paper feel — warm center, cooler aged edges */
+  background-color: #fdf8ef;
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 27px,
+      rgba(0,0,0,0.026) 27px,
+      rgba(0,0,0,0.026) 28px
+    ),
+    radial-gradient(
+      ellipse 110% 75% at 48% 22%,
+      rgba(255, 253, 244, 0.9) 0%,
+      transparent 52%,
+      rgba(218, 198, 168, 0.38) 100%
+    );
+  display: flex;
+  flex-direction: column;
+  /* NOTE: do NOT add position here — .paper-face already sets position: absolute; inset: 0 */
+}
+
+.paper-header {
+  padding: 38px 44px 24px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  flex-shrink: 0;
+  background: transparent;
+  position: relative;
+  z-index: 2;
+}
+
+.paper-title {
+  font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: #1a1612;
+  line-height: 1.22;
+  margin: 0 0 8px;
+}
+
+.paper-byline {
+  font-family: 'Great Vibes', 'Brush Script MT', cursive;
+  font-size: 1.6rem;
+  color: #8b7355;
+  margin: 0;
+  line-height: 1;
+}
+
+/* Scrollable interior with fade masks */
+.paper-front-inner {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+.paper-front-inner::before,
+.paper-front-inner::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 28px;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.paper-front-inner::before {
+  top: 0;
+  background: linear-gradient(to bottom, #fdf8ef, transparent);
+}
+
+.paper-front-inner::after {
+  bottom: 0;
+  background: linear-gradient(to top, #f8f0e4, transparent);
+}
+
+.paper-scroll {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  padding: 24px 44px 80px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(139,115,85,0.3) transparent;
+}
+
+.paper-scroll::-webkit-scrollbar { width: 3px; }
+.paper-scroll::-webkit-scrollbar-track { background: transparent; }
+.paper-scroll::-webkit-scrollbar-thumb {
+  background: rgba(139,115,85,0.35);
+  border-radius: 2px;
+}
+
+.paper-section-label {
+  font-family: 'Crimson Text', 'Palatino Linotype', Georgia, serif;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #8b7355;
+  margin: 16px 0 5px;
+  display: block;
+}
+
+.paper-section-label:first-child { margin-top: 0; }
+
+.paper-text {
+  font-family: 'Crimson Text', 'Palatino Linotype', Georgia, serif;
+  font-size: 1.0rem;
+  line-height: 1.82;
+  /* Warm ink on aged paper — not pure black, slightly warm and blended */
+  color: #26190e;
+  text-shadow: 0 0.4px 0 rgba(255, 245, 225, 0.22);
+  margin: 0 0 10px;
+}
+
+.paper-text:last-child { margin-bottom: 0; }
+
+/* ── Tooltip-annotated words ── */
+.doc-word {
+  border-bottom: 1.5px dotted #8b7355;
+  cursor: default;
+  color: #5c3d1e;
+  font-weight: 600;
+}
+
+/* ── Flip button (inside scroll area, end of article) ── */
+.paper-flip-btn {
+  display: block;
+  margin: 28px auto 8px;
+  padding: 9px 22px;
+  background: transparent;
+  border: 1px solid rgba(139,115,85,0.28);
+  border-radius: 24px;
+  font-family: 'Crimson Text', serif;
+  font-size: 0.82rem;
+  color: #7a6244;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  user-select: none;
+  letter-spacing: 0.04em;
+}
+
+.paper-flip-btn:hover {
+  background: rgba(139,115,85,0.08);
+  border-color: rgba(139,115,85,0.45);
+}
+
+/* ── BACK: analytics dashboard ── */
+.paper-back {
+  background: #fdf8f0;
+  background-image: radial-gradient(
+    ellipse 100% 65% at 50% 0%,
+    rgba(255, 252, 244, 0.8) 0%,
+    transparent 60%
+  );
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px 18px 14px;
+}
+
+/* ── New analytics layout classes ── */
+.av-section { flex-shrink: 0; }
+
+.av-label {
+  display: block;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.52rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8b7355;
+  margin-bottom: 4px;
+}
+
+.av-row {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.av-card {
+  background: rgba(139,115,85,0.05);
+  border: 1px solid rgba(139,115,85,0.13);
+  border-radius: 5px;
+  padding: 8px 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.av-card-wide { flex: 1; }
+
+.av-card-cohort {
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.av-stats-strip {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.av-stat {
+  flex: 1;
+  background: rgba(139,115,85,0.05);
+  border: 1px solid rgba(139,115,85,0.13);
+  border-radius: 5px;
+  padding: 7px 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.av-stat-num {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #1a1612;
+  line-height: 1;
+}
+
+.av-stat-lbl {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.52rem;
+  color: #8b7355;
+  margin-top: 3px;
+}
+
+.analytics-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  flex-shrink: 0;
+}
+
+.analytics-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1a1612;
+  flex: 1;
+}
+
+.analytics-badge {
+  background: #f97316;
+  color: #fff;
+  font-size: 0.52rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 3px;
+  font-family: 'Inter', sans-serif;
+}
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  flex: 1;
+  min-height: 0;
+}
+
+.analytics-card {
+  background: rgba(139,115,85,0.055);
+  border: 1px solid rgba(139,115,85,0.14);
+  border-radius: 5px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.analytics-card.full-width {
+  grid-column: 1 / -1;
+}
+
+.analytics-card-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8b7355;
+  margin-bottom: 7px;
+  flex-shrink: 0;
+}
+
+.analytics-value {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #1a1612;
+  line-height: 1;
+}
+
+.analytics-sub {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.56rem;
+  color: #8b7355;
+  margin-top: 4px;
+}
+
+/* Donut */
+.donut-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.donut-pct-label {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #1a1612;
+  line-height: 1;
+}
+
+/* Section engagement bars */
+.eng-bar-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  flex: 1;
+}
+
+.eng-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.eng-bar-name {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.56rem;
+  color: #6b5335;
+  width: 58px;
+  flex-shrink: 0;
+  line-height: 1.2;
+}
+
+.eng-bar-track {
+  flex: 1;
+  height: 5px;
+  background: rgba(139,115,85,0.14);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.eng-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: #8b7355;
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 0.85s ease-out;
+}
+
+.eng-bar-fill.hot { background: #f97316; }
+
+.eng-bar-pct {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.56rem;
+  color: #8b7355;
+  width: 24px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.eng-hot-badge {
+  background: #f97316;
+  color: #fff;
+  font-size: 0.42rem;
+  padding: 1px 3px;
+  border-radius: 2px;
+  font-weight: 700;
+  font-family: 'Inter', sans-serif;
+  flex-shrink: 0;
+}
+
+/* Sparkline */
+.sparkline-wrap { margin-top: 3px; flex-shrink: 0; }
+
+/* Analytics footer */
+.analytics-footer {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(0,0,0,0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.analytics-disclaimer {
+  font-family: 'Crimson Text', serif;
+  font-size: 0.62rem;
+  color: rgba(139,115,85,0.55);
+  font-style: italic;
+}
+
+.paper-back-btn {
+  background: rgba(139,115,85,0.1);
+  border: 1px solid rgba(139,115,85,0.22);
+  border-radius: 20px;
+  padding: 4px 10px;
+  font-family: 'Crimson Text', serif;
+  font-size: 0.72rem;
+  color: #8b7355;
+  cursor: pointer;
+  transition: background 0.2s;
+  user-select: none;
+}
+
+.paper-back-btn:hover { background: rgba(139,115,85,0.2); }
+
+/* ── Tooltip card ── */
+#doc-tooltip {
+  position: fixed;
+  z-index: 9999;
+  width: 220px;
+  background: #fff;
+  border: 1px solid rgba(0,0,0,0.09);
+  border-radius: 8px;
+  padding: 11px 12px;
+  box-shadow:
+    0 4px 14px rgba(0,0,0,0.12),
+    0 1px 3px rgba(0,0,0,0.08);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.16s, transform 0.16s;
+  transform: translateY(-6px);
+}
+
+#doc-tooltip.visible {
+  opacity: 1;
+  transform: translateY(-12px);
+}
+
+.tip-title {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #f97316;
+  margin-bottom: 7px;
+}
+
+/* Tooltip caret (points down toward the word) */
+#doc-tooltip::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid #fff;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.08));
+}

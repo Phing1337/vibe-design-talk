@@ -34,6 +34,11 @@
     var outgoing = slides[currentIndex];
     var incoming = slides[newIndex];
 
+    // Update 3D immediately so the scene is ready
+    if (PRES.update3DVisibility) {
+      PRES.update3DVisibility(newIndex);
+    }
+
     outgoing.classList.add('exiting');
     outgoing.classList.remove('active');
 
@@ -47,12 +52,116 @@
       PRES.currentIndex = newIndex;
       updateUI();
 
+      transitioning = false;
+    }, 200);
+  }
+
+  // Zoom from a card rect into a slide (index → slide)
+  function zoomToSlide(newIndex, cardRect) {
+    if (transitioning) return;
+    if (newIndex < 0 || newIndex >= totalSlides) return;
+    transitioning = true;
+
+    var outgoing = slides[currentIndex]; // the index slide
+    var incoming = slides[newIndex];
+
+    // Calculate transform to place the slide at the card's position
+    var vw = window.innerWidth;
+    var vh = window.innerHeight;
+    var scaleX = cardRect.width / vw;
+    var scaleY = cardRect.height / vh;
+    var scale = Math.max(scaleX, scaleY);
+    var tx = cardRect.left + cardRect.width / 2 - vw / 2;
+    var ty = cardRect.top + cardRect.height / 2 - vh / 2;
+
+    // Set up the incoming slide at the card's position (no transition)
+    incoming.classList.add('zoom-enter', 'zoom-no-stagger');
+    incoming.style.transform = 'translate(' + tx + 'px, ' + ty + 'px) scale(' + scale.toFixed(4) + ')';
+
+    // Set 3D visibility immediately so the right scene is ready
+    if (PRES.update3DVisibility) {
+      PRES.update3DVisibility(newIndex);
+    }
+
+    // Force reflow then animate to fullscreen
+    incoming.offsetWidth;
+    requestAnimationFrame(function() {
+      incoming.classList.add('zoom-enter-active');
+
+      // Fade out the index
+      outgoing.style.transition = 'opacity 300ms ease';
+      outgoing.style.opacity = '0';
+      outgoing.classList.remove('active');
+    });
+
+    // Clean up after animation
+    setTimeout(function() {
+      incoming.classList.remove('zoom-enter', 'zoom-enter-active', 'zoom-no-stagger');
+      incoming.style.transform = '';
+      incoming.classList.add('active');
+      outgoing.style.transition = '';
+      outgoing.style.opacity = '';
+      outgoing.classList.remove('exiting');
+
+      currentIndex = newIndex;
+      PRES.currentIndex = newIndex;
+      updateUI();
+
       if (PRES.update3DVisibility) {
         PRES.update3DVisibility(newIndex);
       }
 
       transitioning = false;
-    }, 200);
+    }, 750);
+  }
+
+  // Zoom from a slide back to the index, targeting a card rect
+  function zoomToIndex(cardRect) {
+    if (transitioning) return;
+    transitioning = true;
+
+    var outgoing = slides[currentIndex];
+    var indexSlide = slides[1]; // the index
+
+    var vw = window.innerWidth;
+    var vh = window.innerHeight;
+    var scaleX = cardRect.width / vw;
+    var scaleY = cardRect.height / vh;
+    var scale = Math.max(scaleX, scaleY);
+    var tx = cardRect.left + cardRect.width / 2 - vw / 2;
+    var ty = cardRect.top + cardRect.height / 2 - vh / 2;
+
+    // Show index behind (faded in)
+    indexSlide.classList.add('zoom-reveal');
+    indexSlide.style.opacity = '0';
+    indexSlide.offsetWidth;
+    indexSlide.style.opacity = '1';
+
+    // Shrink current slide to card position
+    outgoing.classList.remove('active');
+    outgoing.classList.add('zoom-exit');
+    outgoing.offsetWidth;
+    outgoing.style.transform = 'translate(' + tx + 'px, ' + ty + 'px) scale(' + scale.toFixed(4) + ')';
+    outgoing.style.opacity = '0.4';
+
+    setTimeout(function() {
+      outgoing.classList.remove('zoom-exit');
+      outgoing.style.transform = '';
+      outgoing.style.opacity = '';
+
+      indexSlide.classList.remove('zoom-reveal');
+      indexSlide.classList.add('active');
+
+      currentIndex = 1;
+      PRES.currentIndex = 1;
+      updateUI();
+
+      if (PRES.update3DVisibility) {
+        PRES.update3DVisibility(1);
+      }
+
+      transitioning = false;
+    }, 650);
   }
 
   function next() {
@@ -83,6 +192,9 @@
     var progress = ((currentIndex + 1) / totalSlides) * 100;
     progressBar.style.width = progress + '%';
 
+    // Notify design editor of slide change
+    document.dispatchEvent(new CustomEvent('slidechange', { detail: { index: currentIndex } }));
+
     // Lazy-load/unload splat viewer iframe for performance
     var splatIframe = document.getElementById('splatViewer');
     if (splatIframe) {
@@ -90,13 +202,13 @@
       var splatIndex = slides.indexOf(splatSlide);
       if (currentIndex === splatIndex) {
         // Load it
-        if (!splatIframe.src && splatIframe.dataset.src) {
+        if (splatIframe.dataset.src && splatIframe.getAttribute('src') !== splatIframe.dataset.src) {
           splatIframe.src = splatIframe.dataset.src;
         }
         splatIframe.style.pointerEvents = 'auto';
       } else {
         // Unload it to free GPU
-        if (splatIframe.src) {
+        if (splatIframe.getAttribute('src')) {
           splatIframe.removeAttribute('src');
         }
         splatIframe.style.pointerEvents = 'none';
@@ -173,6 +285,8 @@
   PRES.currentIndex = currentIndex;
   PRES.totalSlides = totalSlides;
   PRES.goToSlide = goToSlide;
+  PRES.zoomToSlide = zoomToSlide;
+  PRES.zoomToIndex = zoomToIndex;
   PRES.next = next;
   PRES.prev = prev;
   PRES.init = init;

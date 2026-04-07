@@ -1,30 +1,45 @@
 /* ============================================================
    tokens.css — CSS Custom Properties (Design Tokens)
-   Colors, typography, spacing, animation, layout variables.
+   Aesthetic: Dieter Rams / Industrial Design
+   "Weniger, aber besser" — Less, but better.
    ============================================================ */
 :root {
-  /* Colors — Dark Theme (default) */
-  --color-bg: #0a0a0a;
-  --color-bg-subtle: #141414;
-  --color-surface: #1a1a1a;
-  --color-text: #f0f0f0;
-  --color-text-muted: #888888;
-  --color-text-dim: #555555;
-  --color-accent: #d4a053;
-  --color-accent-dim: rgba(212, 160, 83, 0.3);
-  --color-border: #2a2a2a;
+  /* Colors — Industrial Dark (Rams-inspired) */
+  --color-bg: #0f0d0b;
+  --color-bg-subtle: #181410;
+  --color-surface: #1e1a16;
+  --color-text: #f0ede8;
+  --color-text-muted: #9a958d;
+  --color-text-dim: #524e48;
+  --color-accent: #e8e2d9;
+  --color-accent-dim: rgba(232, 226, 217, 0.15);
+  --color-signal: #c43e1c;
+  --color-signal-dim: rgba(196, 62, 28, 0.2);
+  --color-text-on-light: #2a1a0e;  /* High-contrast dark text for light/cream backgrounds */
+  --color-border: #222222;
+
+  /* Light slide backgrounds — warm cream, never pure white */
+  --color-bg-light: #eeeee4;
+  --color-bg-light-alt: #eeeee4;
+
+  /* Dark slide backgrounds — warm near-black, never pure black */
+  --color-bg-dark: #0f0d0b;
+  --color-bg-dark-subtle: #181410;
 
   /* Typography */
-  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Young Serif', Georgia, serif;
+  --font-body:    'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-family:  'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
-  --font-size-base: 1rem;
-  --font-size-lg: 1.25rem;
-  --font-size-xl: 1.5rem;
-  --font-size-2xl: 2rem;
-  --font-size-3xl: 2.75rem;
-  --font-size-4xl: 3.5rem;
-  --font-size-hero: 4.5rem;
+  --font-size-base: 1.05rem;
+  --font-size-lg: 1.35rem;
+  --font-size-xl: 1.65rem;
+  --font-size-2xl: 2.25rem;
+  --font-size-3xl: 3.25rem;
+  --font-size-4xl: 4.25rem;
+  --font-size-hero: 5.5rem;
 
   /* Spacing */
   --space-xs: 0.25rem;
@@ -37,15 +52,26 @@
   --space-4xl: 6rem;
 
   /* Animation */
-  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
-  --duration-fast: 300ms;
-  --duration-normal: 600ms;
-  --duration-slow: 1000ms;
-  --duration-gentle: 1400ms;
+  --ease-out: cubic-bezier(0.25, 0, 0, 1);
+  --ease-in-out: cubic-bezier(0.42, 0, 0.58, 1);
+  --ease-mechanical: cubic-bezier(0.4, 0, 0, 1);
+  --duration-fast: 250ms;
+  --duration-normal: 500ms;
+  --duration-slow: 800ms;
+  --duration-gentle: 1200ms;
 
   /* Layout */
   --header-height: 3.5rem;
   --slide-padding: var(--space-4xl);
-  --progress-height: 3px;
+  --progress-height: 2px;
+
+  /* Index Cards */
+  --card-radius: 4px;
+  --card-border: 1px solid rgba(255, 255, 255, 0.06);
+  --card-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  --card-shadow-hover: 0 12px 40px rgba(0, 0, 0, 0.5);
+  --card-tilt-max: 8deg;
+  --card-perspective: 1000px;
+  --dream-enter-duration: 600ms;
+  --dream-enter-ease: cubic-bezier(0.25, 0, 0, 1);
 }

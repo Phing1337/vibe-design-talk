@@ -24,6 +24,7 @@
     var d = desc.toLowerCase();
     if (d.includes('thunder') || d.includes('storm')) return 'storm';
     if (d.includes('rain') || d.includes('drizzle') || d.includes('shower')) return 'rain';
+    if (d.includes('partly') || d.includes('few clouds') || d.includes('scattered')) return 'partlyCloudy';
     if (d.includes('cloud') || d.includes('overcast') || d.includes('mist') || d.includes('fog')) return 'cloudy';
     return 'sunny';
   }
@@ -122,6 +123,20 @@
         lightning.className = 'lightning';
         lightning.style.animation = 'lightning-flash ' + (Math.random() * 5 + 5) + 's infinite ' + Math.random() * 3 + 's';
         container.appendChild(lightning);
+      }
+    } else if (type === 'partlyCloudy') {
+      var ray2 = document.createElement('div');
+      ray2.className = 'sun-ray';
+      container.appendChild(ray2);
+      for (var k = 0; k < 3; k++) {
+        var cloud2 = document.createElement('div');
+        cloud2.className = 'cloud';
+        cloud2.style.width = (Math.random() * 300 + 150) + 'px';
+        cloud2.style.height = (Math.random() * 80 + 40) + 'px';
+        cloud2.style.top = (Math.random() * 50 + 10) + '%';
+        cloud2.style.animationDuration = (Math.random() * 50 + 50) + 's';
+        cloud2.style.animationDelay = -(Math.random() * 50) + 's';
+        container.appendChild(cloud2);
       }
     } else if (type === 'sunny') {
       var ray = document.createElement('div');
@@ -415,6 +430,7 @@
       } else if (mode !== 'live') {
         var mockData = {
           sunny: { temp: 72, desc: 'Clear Sky', humidity: 35, wind: 5, visibility: 10, pressure: 1020, feelsLike: 70, uvIndex: 7, type: 'sunny' },
+          partlyCloudy: { temp: 62, desc: 'Partly Cloudy', humidity: 52, wind: 9, visibility: 9, pressure: 1017, feelsLike: 59, uvIndex: 4, type: 'partlyCloudy' },
           cloudy: { temp: 55, desc: 'Overcast', humidity: 68, wind: 12, visibility: 7, pressure: 1015, feelsLike: 52, uvIndex: 2, type: 'cloudy' },
           rain: { temp: 47, desc: 'Light Rain', humidity: 88, wind: 15, visibility: 4, pressure: 1008, feelsLike: 42, uvIndex: 1, type: 'rain' },
           storm: { temp: 44, desc: 'Thunderstorm', humidity: 95, wind: 28, visibility: 2, pressure: 998, feelsLike: 38, uvIndex: 0, type: 'storm' },

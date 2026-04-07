@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -6,18 +6,19 @@
   <title>Design Is Not Decoration — Vibe Design Talk</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <!-- CSS -->
-  <link rel="stylesheet" href="css/tokens.css">
-  <link rel="stylesheet" href="css/base.css">
-  <link rel="stylesheet" href="css/layout.css">
-  <link rel="stylesheet" href="css/transitions.css">
-  <link rel="stylesheet" href="css/slides.css">
-  <link rel="stylesheet" href="css/weather.css">
-  <link rel="stylesheet" href="css/video.css">
-  <link rel="stylesheet" href="css/game.css">
-  <link rel="stylesheet" href="css/three.css">
+  <link rel="stylesheet" href="css/tokens.css?v=13">
+  <link rel="stylesheet" href="css/base.css?v=13">
+  <link rel="stylesheet" href="css/layout.css?v=13">
+  <link rel="stylesheet" href="css/transitions.css?v=13">
+  <link rel="stylesheet" href="css/slides.css?v=13">
+  <link rel="stylesheet" href="css/weather.css?v=14">
+  <link rel="stylesheet" href="css/video.css?v=13">
+  <link rel="stylesheet" href="css/game.css?v=13">
+  <link rel="stylesheet" href="css/three.css?v=13">
+  <link rel="stylesheet" href="css/interactive-doc.css?v=16">
 
 
   <!-- Three.js CDN -->
@@ -30,64 +31,62 @@
 
 <body>
 
-  <!-- Three.js 3D Canvas — sits behind all slide content -->
-  <canvas id="three-canvas"></canvas>
-  <div class="crosshair" id="crosshair"></div>
-
-  <!-- Info point UI -->
-  <div id="infoPrompt"></div>
-  <div id="infoPanel">
-    <div id="infoPanelTitle"></div>
-    <div id="infoPanelBody"></div>
-    <div id="infoPanelHint">Press <kbd style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:3px;padding:1px 6px;font-size:11px;">E</kbd> to close</div>
-  </div>
-
-  <!-- Zoom transition overlay for index -->
-  <div class="index-zoom-overlay" id="indexZoomOverlay"></div>
-
-  <!-- ============================================================
-       GLOBAL HEADER
-       ============================================================ -->
-  <header class="header">
-    <div class="header-title">Vibe Design &amp; The Dynamic Medium</div>
-    <div class="header-indicator">
-      <span class="slide-number" id="slideNumber" style="cursor: pointer; pointer-events: auto;" title="Back to index">1 / 17</span>
-      <span class="next-topic" id="nextTopic"></span>
-    </div>
-  </header>
-
-  <!-- ============================================================
-       PROGRESS BAR
-       ============================================================ -->
-  <div class="progress-bar" id="progressBar"></div>
-
   <!-- ============================================================
        SLIDES
        ============================================================ -->
   <div class="slides-container" id="slidesContainer">
+
+    <!-- Three.js 3D Canvas — sits behind all slide content -->
+    <canvas id="three-canvas"></canvas>
+    <div class="crosshair" id="crosshair"></div>
+
+    <!-- Info point UI -->
+    <div id="infoPrompt"></div>
+    <div id="infoPanel">
+      <div id="infoPanelTitle"></div>
+      <div id="infoPanelBody"></div>
+      <div id="infoPanelHint">Press <kbd style="background:var(--color-surface);border:1px solid var(--color-border);border-radius:3px;padding:1px 6px;font-size:11px;">E</kbd> to close</div>
+    </div>
+
+    <!-- Zoom transition overlay for index -->
+    <div class="index-zoom-overlay" id="indexZoomOverlay"></div>
+
+    <!-- GLOBAL HEADER -->
+    <header class="header">
+      <div class="header-title">Vibe Design &amp; The Dynamic Medium</div>
+      <div class="header-indicator">
+        <span class="slide-number" id="slideNumber" style="cursor: pointer; pointer-events: auto;" title="Back to index">1 / 21</span>
+        <span class="next-topic" id="nextTopic"></span>
+      </div>
+    </header>
+
+    <!-- PROGRESS BAR -->
+    <div class="progress-bar" id="progressBar"></div>
 
     <!-- ========================================================
          TITLE SLIDE
          ======================================================== -->
 
     <!-- Title -->
-    <section class="slide slide-title-shader" data-beat="0" data-title="Title" data-transition="rise">
+    <section class="slide slide-title-shader" data-beat="0" data-title="Title" data-transition="hard-cut">
       <canvas id="titleShader" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0;"></canvas>
-      <div class="slide-center" style="position: relative; z-index: 1;">
-        <p class="label fade-in fade-in-1" style="margin-bottom: var(--space-lg);">Fix Hack Learn 2026</p>
-        <h1 class="heading-hero fade-in fade-in-2" style="line-height: 1.1;">
-          Vibe Design<br><span class="accent">&amp; The Dynamic Medium</span>
+      <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; padding: var(--space-4xl); z-index: 1; text-align: left;">
+        <p class="label fade-in fade-in-1" style="margin-bottom: var(--space-lg); color: var(--color-signal); font-size: var(--font-size-sm); letter-spacing: 0.15em;">Fix Hack Learn 2026</p>
+        <h1 class="fade-in fade-in-2" style="font-family: var(--font-display); font-size: 6rem; font-weight: 400; line-height: 0.95; letter-spacing: -0.02em; color: var(--color-text);">
+          Vibe Design<br><span style="color: var(--color-signal);">&amp; The Dynamic<br>Medium</span>
         </h1>
-        <p class="body fade-in fade-in-3" style="margin-top: var(--space-2xl); color: var(--color-text-muted);">
-          Created and illustrated by Nick McVey · Xbox
+        <p class="fade-in fade-in-3" style="margin-top: var(--space-2xl); font-size: var(--font-size-lg); color: var(--color-text-dim); font-family: var(--font-body); font-style: italic;">
+          Nick McVey · Xbox Design
         </p>
       </div>
     </section>
 
-    <!-- Index / Navigation — Visual Slide Grid -->
+    <!-- Index / Navigation — Holographic Card Grid -->
     <section class="slide slide-index" data-beat="0" data-title="Index" data-transition="fade">
       <div style="width: 100%; height: 100%; display: flex; flex-direction: column; padding: calc(var(--header-height) + var(--space-lg)) var(--space-2xl) var(--space-xl);">
-        <p class="label fade-in fade-in-1" style="margin-bottom: var(--space-lg);">Click any slide to jump to it</p>
+        <div class="fade-in fade-in-1" style="margin-bottom: var(--space-lg);">
+          <p class="label" style="margin-bottom: var(--space-xs);">Agenda</p>
+        </div>
         <div class="index-grid fade-in fade-in-2" id="indexGrid"></div>
       </div>
     </section>
@@ -96,67 +95,60 @@
          BEAT 1 — THE HOOK
          ======================================================== -->
 
-    <!-- Slide: Opening -->
-    <section class="slide" data-id="evolution" data-beat="1" data-title="The Hook" data-transition="rise" style="background: #fff !important; padding: 0 !important;">
+    <!-- Slide 3: What to Expect (IS / ISN'T) -->
+    <section class="slide" data-beat="1" data-title="What to Expect" data-transition="fade" style="background: #000000 !important; padding: 0 !important;">
+      <!-- Background image — full slide, faded to left -->
+      <img src="assets/2024-talk/extracted/image-12-2.png" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: right center; z-index: 0; mask-image: linear-gradient(to right, rgba(0,0,0,1) 35%, rgba(0,0,0,0.4) 70%, rgba(0,0,0,0.1) 100%); -webkit-mask-image: linear-gradient(to right, rgba(0,0,0,1) 35%, rgba(0,0,0,0.4) 70%, rgba(0,0,0,0.1) 100%);" />
+      <!-- Content overlay — full slide, left-anchored, fluid scaling -->
+      <div style="position: absolute; inset: 0; z-index: 1; display: flex; flex-direction: column; justify-content: center; padding: 5% 6%;">
+        <h2 class="fade-in fade-in-1" style="font-size: clamp(1.8rem, 4vw, 3.2rem); font-family: var(--font-display); font-weight: 400; letter-spacing: -0.03em; margin-bottom: clamp(1rem, 2.5vw, 2.5rem); color: var(--color-text); line-height: 1.0;">
+          What this <span style="color: var(--color-signal);">is</span> and <span style="color: var(--color-text-dim);">isn't</span>
+        </h2>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1rem, 3vw, 3rem); max-width: 75%;">
+          <div class="fade-in fade-in-2">
+            <p style="font-size: clamp(0.6rem, 0.9vw, 0.8rem); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-signal); margin-bottom: clamp(0.5rem, 1.2vw, 1.2rem);">✦ What This IS</p>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: clamp(0.4rem, 0.8vw, 0.8rem);">
+              <li style="font-size: clamp(0.85rem, 1.4vw, 1.3rem); color: var(--color-text); font-weight: 400; line-height: 1.3; padding-bottom: clamp(0.4rem, 0.8vw, 0.8rem); border-bottom: 1px solid var(--color-border);">Tools &amp; techniques for the dynamic medium</li>
+              <li style="font-size: clamp(0.85rem, 1.4vw, 1.3rem); color: var(--color-text); font-weight: 400; line-height: 1.3; padding-bottom: clamp(0.4rem, 0.8vw, 0.8rem); border-bottom: 1px solid var(--color-border);">A new creative way to communicate</li>
+              <li style="font-size: clamp(0.85rem, 1.4vw, 1.3rem); color: var(--color-text); font-weight: 400; line-height: 1.3;">Vibe design — nothing is ever fixed</li>
+            </ul>
+          </div>
+          <div class="fade-in fade-in-3">
+            <p style="font-size: clamp(0.6rem, 0.9vw, 0.8rem); font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-dim); margin-bottom: clamp(0.5rem, 1.2vw, 1.2rem);">✕ What This ISN'T</p>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: clamp(0.4rem, 0.8vw, 0.8rem);">
+              <li style="font-size: clamp(0.85rem, 1.4vw, 1.3rem); color: var(--color-text-muted); font-weight: 300; line-height: 1.3; padding-bottom: clamp(0.4rem, 0.8vw, 0.8rem); border-bottom: 1px solid var(--color-border);">An XDS design tutorial</li>
+              <li style="font-size: clamp(0.85rem, 1.4vw, 1.3rem); color: var(--color-text-muted); font-weight: 300; line-height: 1.3; padding-bottom: clamp(0.4rem, 0.8vw, 0.8rem); border-bottom: 1px solid var(--color-border);">A guide to shipping production features</li>
+              <li style="font-size: clamp(0.85rem, 1.4vw, 1.3rem); color: var(--color-text-muted); font-weight: 300; line-height: 1.3;">A shortcut that skips craft</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 4: Opening — Evolution of Tools -->
+    <section class="slide" data-id="evolution" data-beat="1" data-title="Evolution of Tools" data-transition="slide-left" style="background: var(--color-bg-light) !important; padding: 0 !important;">
       <img src="assets/2024-talk/extracted/image-3-1.png" alt="The evolution of communication tools" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: left bottom; z-index: 0;" />
       <div style="position: absolute; top: 0; right: var(--space-3xl); width: 38%; height: 100%; display: flex; flex-direction: column; justify-content: center; padding-bottom: 15%; z-index: 1;">
-        <p class="label fade-in fade-in-1" style="color: #888;">The evolution of tools</p>
-        <h1 class="heading-2 fade-in fade-in-2" style="margin-top: var(--space-md); color: #1a1a1a; line-height: 1.3;">
-          We haven't learned how to push our tools <span style="color: var(--color-accent);">yet.</span>
+        <p class="fade-in fade-in-1" style="font-size: var(--font-size-sm); font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #c43e1c;">The pattern</p>
+        <h1 class="fade-in fade-in-2" style="margin-top: var(--space-md); font-size: 2.8rem; font-family: var(--font-display); font-weight: 400; letter-spacing: -0.03em; color: #0a0a0a; line-height: 1.1;">
+          Every leap in tools changed how we <span style="color: #c43e1c;">create.</span>
         </h1>
-        <p class="body fade-in fade-in-3" style="margin-top: var(--space-lg); color: #555; line-height: 1.7;">
-          From cave paintings to printing presses to computers — every leap in tools changed how we communicate. We're at that cusp again. This presentation will show you how.
+        <p class="fade-in fade-in-3" style="margin-top: var(--space-lg); font-size: var(--font-size-lg); color: #555; line-height: 1.6; font-weight: 300;">
+          Cave paintings. Written language. The printing press. Computers. Each one didn't just speed things up — it unlocked entirely new ways to think and communicate. We're at that moment again.
         </p>
       </div>
     </section>
 
-    <!-- Slide 2: The Promise -->
-    <section class="slide" data-beat="1" data-title="The Hook" data-transition="fade" style="background: #f5f5f5 !important; padding: 0 !important;">
-      <img src="assets/2024-talk/extracted/image-11-1.png" alt="" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: bottom right; z-index: 0;" />
-      <div style="position: absolute; top: 0; left: 0; width: 42%; height: 65%; display: flex; flex-direction: column; justify-content: center; padding: var(--space-3xl) var(--space-3xl) 0; z-index: 1;">
-        <p class="label fade-in fade-in-1" style="color: #666;">This talk</p>
-        <h1 class="heading-2 fade-in fade-in-2" style="margin-top: var(--space-md); color: #1a1a1a; line-height: 1.3;">
-          I can't teach you taste. But I can teach you the <span style="color: var(--color-accent);">language.</span>
+    <!-- Slide 5: New tools, new art -->
+    <section class="slide" data-beat="1" data-title="New Possibilities" data-transition="slide-left" data-3d="float" style="background: var(--color-bg-light-alt) !important; padding: 0 !important;">
+      <img src="assets/2024-talk/extracted/image-9-1.png" alt="Code carved in stone with a hammer and chisel" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: left center; z-index: 0;" />
+      <div style="position: absolute; top: 0; right: 0; width: 40%; height: 100%; display: flex; flex-direction: column; justify-content: center; padding: var(--space-3xl); z-index: 1;">
+        <h1 class="heading-2 fade-in fade-in-1" style="color: #1a1a1a; line-height: 1.3;">
+          New tools don't just make old things faster. They make <span style="color: var(--color-signal);">new things possible.</span>
         </h1>
-        <p class="body fade-in fade-in-3" style="margin-top: var(--space-lg); color: #555; line-height: 1.7;">
-          Style is personal. But the skills designers use to communicate visually? Those are learnable. And when you know the language, the tools become powerful.
+        <p class="body-large fade-in fade-in-2" style="margin-top: var(--space-lg); color: #444;">
+          The computer isn't just a tool — it's a medium. And AI is the bridge between your ideas and the screen.
         </p>
-      </div>
-    </section>
-
-    <!-- What This IS / What This ISN'T — set expectations early -->
-    <section class="slide" data-beat="1" data-title="Setting Expectations" data-transition="fade" data-theme="purple" style="background: #000 !important; padding: 0 !important;">
-      <img src="assets/2024-talk/extracted/image-12-2.png" alt="" style="position: absolute; bottom: -20px; right: -20px; max-width: 90%; max-height: 95%; object-fit: contain; object-position: bottom right; z-index: 0; mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 85%, transparent 100%), linear-gradient(to right, transparent 0%, black 8%, black 85%, transparent 100%); mask-composite: intersect; -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 8%, black 85%, transparent 100%), linear-gradient(to right, transparent 0%, black 8%, black 85%, transparent 100%); -webkit-mask-composite: destination-in;" />
-      <div style="position: absolute; top: 0; left: 0; width: 50%; height: 100%; display: flex; flex-direction: column; justify-content: center; padding: var(--space-3xl); z-index: 1; text-align: left;">
-        <h2 class="heading-2 fade-in fade-in-1" style="margin-bottom: var(--space-2xl);">
-          What this <span class="accent">is</span> and <span class="dim">isn't</span>
-        </h2>
-        <table class="comparison-table fade-in fade-in-2" style="max-width: 500px;">
-          <thead>
-            <tr>
-              <th>✦ What This IS</th>
-              <th style="color: var(--color-text-dim);">✕ What This ISN'T</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Visual communication as a skill</td>
-              <td>An XDS tutorial</td>
-            </tr>
-            <tr>
-              <td>Illustrating ideas &amp; prototyping</td>
-              <td>Vibe-coding production features</td>
-            </tr>
-            <tr>
-              <td>Learning a design vocabulary</td>
-              <td>A way to replace designers</td>
-            </tr>
-            <tr>
-              <td>Ideas people can react to</td>
-              <td>Specific to one design system</td>
-            </tr>
-          </tbody>
-        </table>
       </div>
     </section>
 
@@ -164,32 +156,35 @@
          BEAT 2 — THE REFRAME
          ======================================================== -->
 
-    <!-- Slide 3: New tools, new art -->
-    <section class="slide" data-beat="2" data-title="The Reframe" data-transition="slide-left" data-3d="float" style="background: #f5f5f5 !important; padding: 0 !important;">
-      <img src="assets/2024-talk/extracted/image-9-1.png" alt="Code carved in stone with a hammer and chisel" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: left center; z-index: 0;" />
-      <div style="position: absolute; top: 0; right: 0; width: 40%; height: 100%; display: flex; flex-direction: column; justify-content: center; padding: var(--space-3xl); z-index: 1;">
-        <h1 class="heading-2 fade-in fade-in-1" style="color: #1a1a1a; line-height: 1.3;">
-          The ways we communicate have <span style="color: var(--color-accent);">expanded.</span>
+    <!-- Slide 6: The Problem — interactive generic UI flood -->
+    <section class="slide" data-beat="2" data-title="The Problem" data-transition="hard-cut" style="background: var(--color-bg-light-alt) !important; padding: 0 !important;">
+      <div id="genericFlood" style="position: absolute; inset: 0; z-index: 3; overflow: hidden; cursor: crosshair;"></div>
+      <div id="genericFloodText" style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-end; z-index: 4; text-align: left; padding: var(--space-4xl); transition: opacity 0.4s ease; pointer-events: none; user-select: none;">
+        <p class="fade-in fade-in-1" style="font-size: var(--font-size-sm); font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: #c43e1c;">The problem</p>
+        <h1 class="fade-in fade-in-2" style="margin-top: var(--space-md); font-size: 3.5rem; font-family: var(--font-display); font-weight: 400; letter-spacing: -0.03em; color: #0a0a0a; line-height: 1.05; max-width: 700px;">
+          AI can build anything.<br>So why does everything look <span style="color: #c43e1c;">the same?</span>
         </h1>
-        <p class="body-large fade-in fade-in-2" style="margin-top: var(--space-lg); color: #444;">
-          New tools don't just make old things faster. They make new things possible.
+        <p class="fade-in fade-in-3" style="margin-top: var(--space-lg); font-size: var(--font-size-xl); color: #555; max-width: 550px; font-weight: 300;">
+          "Make it look good" gets you generic output every time.
         </p>
       </div>
     </section>
 
     <!-- Slide 4: The Dynamic Medium -->
-    <section class="slide slide-light-bg" data-beat="2" data-title="The Dynamic Medium" data-transition="fade-up">
+    <section class="slide" data-beat="2" data-title="The Dynamic Medium" data-transition="fade-up" style="background: var(--color-bg-light) !important;">
       <div class="slide-split">
         <div class="content">
-          <p class="label fade-in fade-in-1">Bret Victor</p>
-          <h2 class="heading-2 fade-in fade-in-2">The Dynamic Medium</h2>
-          <blockquote class="quote fade-in fade-in-3" style="margin-top: var(--space-lg);">
-            "A dynamic medium doesn't just present ideas, it responds to them. It adapts, evolves, and shapes itself around how we think, feel, and create."
+          <p class="label fade-in fade-in-1" style="color: #888;">Meet Bret Victor</p>
+          <h2 class="heading-2 fade-in fade-in-2" style="color: #1a1a1a;">The Dynamic Medium</h2>
+          <blockquote class="quote fade-in fade-in-3" style="margin-top: var(--space-lg); color: #333;">
+            "A dynamic medium doesn't just present ideas — it responds to them."
           </blockquote>
-          <p class="quote-attribution fade-in fade-in-4">— Bret Victor</p>
+          <p class="body fade-in fade-in-4" style="margin-top: var(--space-md); color: #555;">
+            In 2012, Bret Victor gave a talk that changed how people think about computers. His idea: the computer isn't just a tool — it's a medium, like film or music. And when you treat it that way, everything changes.
+          </p>
         </div>
         <div class="visual fade-in fade-in-3">
-          <img src="assets/2024-talk/extracted/image-6-1.png" alt="What is a dynamic medium?" />
+          <img src="assets/2024-talk/extracted/image-6-1.png" alt="What is a dynamic medium?" style="border-radius: 0; box-shadow: none;" />
         </div>
       </div>
     </section>
@@ -233,26 +228,18 @@
       <div class="weather-split">
         <!-- LEFT — Static context -->
         <div class="weather-left">
-          <p class="label fade-in fade-in-1">Real-time data</p>
-          <h2 class="heading-2 fade-in fade-in-2">Presentations can<br>react to the <span class="accent">real world</span></h2>
-          <div class="body fade-in fade-in-3" style="margin-top: var(--space-lg);">
-            <p style="margin-bottom: var(--space-md);">
-              The weather visualization on the right is pulling <strong style="color: var(--color-text);">live data from Seattle right now</strong>. The background, stats, and charts all update in real time.
-            </p>
-            <p style="margin-bottom: var(--space-md);">
-              This isn't about putting weather in your presentations. It's about what becomes possible when your slides can talk to APIs, databases, and live systems.
-            </p>
-            <p style="color: var(--color-text-dim);">
-              Imagine: a sprint review where the burndown chart is live. A sales pitch where the numbers update as you present. A design review where the prototype is running, not screenshotted.
-            </p>
-          </div>
-          <p class="fade-in fade-in-4" style="margin-top: var(--space-xl); font-size: var(--font-size-sm); color: var(--color-text-dim);">↓ Scroll the right panel to explore more data</p>
+          <p class="label fade-in fade-in-1">What's possible</p>
+          <h2 class="heading-2 fade-in fade-in-2">Your slides can talk to the <span class="accent">real world</span></h2>
+          <p class="body fade-in fade-in-3" style="margin-top: var(--space-lg);">
+            This weather data is live from Seattle right now. When you know how to ask, AI builds things that feel alive.
+          </p>
 
           <!-- Weather picker -->
-          <div class="weather-picker fade-in fade-in-5">
+          <div class="weather-picker fade-in fade-in-4">
             <span class="weather-picker-label">Preview:</span>
             <button class="weather-pick" data-weather="sunny" title="Sunny">☀️</button>
-            <button class="weather-pick" data-weather="cloudy" title="Cloudy">☁️</button>
+            <button class="weather-pick" data-weather="partlyCloudy" title="Partly Cloudy">⛅</button>
+            <button class="weather-pick" data-weather="cloudy" title="Overcast">☁️</button>
             <button class="weather-pick" data-weather="rain" title="Rain">🌧️</button>
             <button class="weather-pick" data-weather="storm" title="Storm">⛈️</button>
             <button class="weather-pick active" data-weather="live" title="Live data">📡</button>
@@ -379,77 +366,7 @@
     </section>
 
     <!-- Slide 7: Most people just need a dinghy -->
-    <section class="slide slide-boat" data-beat="2" data-title="Right-Sized Tools" data-transition="fade-up">
-      <canvas id="boatSunrise" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0;"></canvas>
-      <div class="boat-content fade-in fade-in-1">
-        <p class="label">The right tool for the job</p>
-        <h2 class="heading-2 fade-in fade-in-2" style="margin-top: var(--space-md);">
-          Most people need a <span class="accent">dinghy</span>,<br>not an aircraft carrier.
-        </h2>
-        <p class="body fade-in fade-in-3" style="margin-top: var(--space-lg); max-width: 420px;">
-          Today's software is built to fit every use case. It's complex because it has to be everything for everyone. But what if you could build exactly what you need — nothing more?
-        </p>
-        <p class="body fade-in fade-in-4" style="margin-top: var(--space-md); max-width: 420px; color: var(--color-text-dim);">
-          Vibe design makes purpose-built tools possible. Personal, precise, and yours.
-        </p>
-      </div>
-      <div class="boat-image fade-in fade-in-2">
-        <img id="boatImg" src="assets/2024-talk/extracted/image-13-1.png" alt="A tiny tugboat next to a massive aircraft carrier" />
-      </div>
-    </section>
-
-    <!-- ========================================================
-         BEAT 3 — THE VOCABULARY
-         ======================================================== -->
-
-    <!-- Slide 9: You need to speak the language -->
-    <section class="slide slide-space" data-id="vocabulary" data-beat="3" data-title="The Vocabulary" data-transition="zoom" data-3d="space" style="background: #000 !important;">
-      <div class="space-bg"><div class="stars" id="starsContainer"></div></div>
-      <div class="slide-center" style="text-shadow: 0 0 20px rgba(0,0,0,0.8);">
-        <p class="label fade-in fade-in-1">The designer's toolkit</p>
-        <h1 class="heading-1 fade-in fade-in-2" style="margin-top: var(--space-md);">
-          Good design<br><span class="accent">communicates clearly.</span>
-        </h1>
-        <p class="body-large fade-in fade-in-3" style="margin-top: var(--space-xl); max-width: 650px; margin-left: auto; margin-right: auto;">
-          These are the building blocks I use every day. Not style — vocabulary. Learn the words, and you can talk to the tools the way a designer does.
-        </p>
-      </div>
-    </section>
-
-    <!-- STORYTELLING TOPIC 1: Design Primitives — white bg, planet shadows -->
-    <section class="slide slide-primitives" data-beat="3" data-title="Design Primitives" data-transition="fade" data-3d="space" style="background: transparent !important;">
-      <div class="slide-center" style="position: relative; z-index: 1;">
-        <p class="label fade-in fade-in-1" style="color: #888;">Storytelling with design</p>
-        <h1 class="heading-1 fade-in fade-in-2" style="margin-top: var(--space-md); color: #1a1a1a;">
-          Design <span style="color: var(--color-accent);">Primitives</span>
-        </h1>
-        <p class="body-large fade-in fade-in-3" style="margin-top: var(--space-xl); max-width: 700px; margin-left: auto; margin-right: auto; color: #444;">
-          When something feels off but you can't explain why — these are the words for that. Composition. White space. Balance. Alignment. Proximity.
-        </p>
-        <p class="body fade-in fade-in-4" style="margin-top: var(--space-md); max-width: 600px; margin-left: auto; margin-right: auto; color: #888;">
-          The 3D objects cast real shadows on this surface. Their placement, spacing, and weight — that's composition in action.
-        </p>
-      </div>
-    </section>
-
-    <!-- STORYTELLING TOPIC 2: Animation, Motion & Simulation -->
-    <section class="slide slide-primitives" data-beat="3" data-title="Animation" data-transition="fade" data-3d="space-fall" style="background: transparent !important;">
-      <div class="slide-center" style="position: relative; z-index: 1;">
-        <p class="label fade-in fade-in-1" style="color: #888;">Storytelling with motion</p>
-        <h1 class="heading-1 fade-in fade-in-2" style="margin-top: var(--space-md); color: #1a1a1a;">
-          Animation, Motion<br>&amp; <span style="color: var(--color-accent);">Simulation</span>
-        </h1>
-        <p class="body-large fade-in fade-in-3" style="margin-top: var(--space-xl); max-width: 700px; margin-left: auto; margin-right: auto; color: #444;">
-          That moment before the planets dropped? That's <strong>anticipation</strong>. The bounce at the bottom? That's <strong>easing</strong>. The way they settled? That's <strong>weight</strong>.
-        </p>
-        <p class="body fade-in fade-in-4" style="margin-top: var(--space-md); max-width: 600px; margin-left: auto; margin-right: auto; color: #888;">
-          Motion tells a story. Timing, acceleration, and rhythm guide attention and create emotion. These aren't just effects — they're communication tools.
-        </p>
-      </div>
-    </section>
-
-    <!-- STORYTELLING TOPIC 3: Visual Storytelling (the Gaussian splat scene) -->
-    <section class="slide" data-beat="3" data-title="Visual Storytelling" data-transition="slide-left" style="background: #0a0a0a !important;">
+    <section class="slide" data-beat="3" data-title="Visual Storytelling" data-transition="slide-left" style="background: var(--color-bg-dark) !important;">
       <!-- Loading indicator -->
       <div id="splatLoader" style="position: absolute; inset: 0; z-index: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: #666; font-size: 13px;">
         <div style="width: 40px; height: 40px; border: 2px solid #222; border-top-color: #d4a053; border-radius: 50%; animation: spin 1s linear infinite;"></div>
@@ -474,68 +391,1512 @@
     </section>
 
     <!-- ========================================================
+         DESIGN EDUCATION — Foundations every builder should know
+         ======================================================== -->
+
+    <!-- Rule of Thirds / Composition Rules — interactive dial -->
+    <section class="slide slide-idoc" data-beat="2" data-title="Interactive Documents" data-transition="fade" style="background: var(--color-bg-dark) !important;">
+      <!-- Left: description -->
+      <div class="idoc-left fade-in fade-in-1">
+        <p class="label">The Living Document</p>
+        <h2 class="heading-2 fade-in fade-in-2" style="margin-top: var(--space-md); color: var(--color-text);">
+          Documents that <span class="accent">respond.</span>
+        </h2>
+        <p class="body fade-in fade-in-3" style="margin-top: var(--space-lg); max-width: 320px; color: rgba(255,255,255,0.65);">
+          Hover a word for inline context. Scroll to the end. Flip it over to see how it performed. Intelligent, responsive, and built to support the reader.
+        </p>
+        <p class="body fade-in fade-in-4" style="margin-top: var(--space-md); max-width: 320px; color: rgba(255,255,255,0.38);">
+          A document. But also a small interface.
+        </p>
+      </div>
+
+      <!-- Right: paper card demo -->
+      <div class="idoc-right">
+
+        <!-- Animated palm leaf shadows — multiply blend, z-index above paper -->
+        <div class="idoc-palm-shadows" aria-hidden="true">
+          <svg viewBox="0 0 1000 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="pblur1" x="-35%" y="-35%" width="170%" height="170%">
+                <feGaussianBlur stdDeviation="26"/>
+              </filter>
+              <filter id="pblur2" x="-35%" y="-35%" width="170%" height="170%">
+                <feGaussianBlur stdDeviation="22"/>
+              </filter>
+              <filter id="pblur3" x="-45%" y="-45%" width="190%" height="190%">
+                <feGaussianBlur stdDeviation="34"/>
+              </filter>
+            </defs>
+
+            <!-- LEFT cluster — top-left origin, fronds drooping right and down -->
+            <g class="palm-sway-l" filter="url(#pblur1)">
+              <path d="M-80,-60 C-10,110 120,280  60,480" stroke="#0d0500" stroke-width="80" fill="none" stroke-linecap="round"/>
+              <path d="M-80,-60 C 70, 60 200,190 230,360" stroke="#0d0500" stroke-width="74" fill="none" stroke-linecap="round"/>
+              <path d="M-80,-60 C 20, 30 130,100 290,175" stroke="#0d0500" stroke-width="68" fill="none" stroke-linecap="round"/>
+              <path d="M-80,-60 C-160, 70 -130,220 -70,400" stroke="#0d0500" stroke-width="72" fill="none" stroke-linecap="round"/>
+              <path d="M-80,-60 C -50,  0  30, 50 160,110" stroke="#0d0500" stroke-width="63" fill="none" stroke-linecap="round"/>
+              <path d="M-80,-60 C  10, 80  80,200 140,350" stroke="#0d0500" stroke-width="65" fill="none" stroke-linecap="round"/>
+            </g>
+
+            <!-- RIGHT cluster — top-right origin, fronds drooping left and down -->
+            <g class="palm-sway-r" filter="url(#pblur2)">
+              <path d="M1080,-80 C 990, 90  840,230  910,430" stroke="#0d0500" stroke-width="77" fill="none" stroke-linecap="round"/>
+              <path d="M1080,-80 C 940, 55  800,170  760,330" stroke="#0d0500" stroke-width="72" fill="none" stroke-linecap="round"/>
+              <path d="M1080,-80 C1000, 20  890, 90  730,180" stroke="#0d0500" stroke-width="67" fill="none" stroke-linecap="round"/>
+              <path d="M1080,-80 C1160, 65 1200,210 1130,400" stroke="#0d0500" stroke-width="70" fill="none" stroke-linecap="round"/>
+              <path d="M1080,-80 C1010, 10  910, 55  780,120" stroke="#0d0500" stroke-width="60" fill="none" stroke-linecap="round"/>
+              <path d="M1080,-80 C1020, 90  950,220  880,380" stroke="#0d0500" stroke-width="63" fill="none" stroke-linecap="round"/>
+            </g>
+
+            <!-- CENTER top — wider, softer, most heavily blurred for depth -->
+            <g class="palm-sway-c" filter="url(#pblur3)" opacity="0.6">
+              <path d="M 520,-220 C 400, 40  300,260  360,510" stroke="#080300" stroke-width="98" fill="none" stroke-linecap="round"/>
+              <path d="M 520,-220 C 640, 20  740,220  700,450" stroke="#080300" stroke-width="92" fill="none" stroke-linecap="round"/>
+              <path d="M 520,-220 C 470,-50  360, 50  200,115" stroke="#080300" stroke-width="80" fill="none" stroke-linecap="round"/>
+              <path d="M 520,-220 C 560,-40  650, 80  820,155" stroke="#080300" stroke-width="76" fill="none" stroke-linecap="round"/>
+            </g>
+          </svg>
+        </div>
+
+        <div class="paper-scene">
+          <div class="paper-wrapper" id="paperWrapper">
+
+            <!-- FRONT: the article -->
+            <div class="paper-face paper-front">
+              <div class="paper-header">
+                <h3 class="paper-title">The Invisible Grammar<br>of Visual Design</h3>
+                <p class="paper-byline">by the design team</p>
+              </div>
+              <div class="paper-front-inner">
+                <div class="paper-scroll" id="paperScroll">
+                  <span class="paper-section-label">The Breath</span>
+                  <p class="paper-text">When a designer talks about <span class="doc-word" data-tip="whitespace">whitespace</span>, they're not describing empty space. They're describing breathing room — the silence between notes that makes music meaningful. Apple's product pages famously use whitespace to force your eye to rest, then look, then linger.</p>
+                  <p class="paper-text">Negative space doesn't just separate — it defines. The white around a headline is as responsible for that headline's power as the type itself. Remove the breathing room and the words become wallpaper. Protect it, and the word becomes an event.</p>
+
+                  <span class="paper-section-label">The Weight</span>
+                  <p class="paper-text">Every element on a screen has visual mass. <span class="doc-word" data-tip="typography">Typography</span> is the densest of all — it carries meaning twice: once in what it says, once in how it looks. A headline set in a heavy serif commands attention before you've read a word. A body set in a light serif whispers.</p>
+                  <p class="paper-text">Visual <span class="doc-word" data-tip="hierarchy">hierarchy</span> is the invisible instruction set that tells your eye what to look at first, second, and third. Without it, every element screams at equal volume — and when everything demands attention, nothing gets it.</p>
+
+                  <span class="paper-section-label">The Beat</span>
+                  <p class="paper-text">There's a <span class="doc-word" data-tip="rhythm">rhythm</span> to good design, as steady as a heartbeat. It comes from repeating spacing values, mirrored proportions, and the cadence of consistent sizing. When rhythm breaks — a card that's 2px taller, a gap that doesn't match the grid — something feels wrong even if a viewer can't say why.</p>
+                  <p class="paper-text"><span class="doc-word" data-tip="contrast">Contrast</span> is the mechanism that makes rhythm visible. Not just light vs. dark — but large vs. small, quiet vs. loud. Without contrast, there is no hierarchy. Without hierarchy, there is no story.</p>
+
+                  <span class="paper-section-label">The Space</span>
+                  <p class="paper-text">Every layout rests on a grid — an invisible scaffold of columns, rows, and gutters that most viewers will never consciously notice. The grid doesn't constrain. It liberates. When you know where the walls are, you can decide which ones to push through.</p>
+                  <p class="paper-text" style="font-style: italic; color: #4a3420; text-shadow: 0 0.4px 0 rgba(255,245,225,0.18);">The final act of any composition is restraint. It's the decision not to add the element that seemed necessary — the whitespace you protect, the color you leave out. Good design isn't about what's present. It's about what you had the discipline to leave behind.</p>
+
+                  <button class="paper-flip-btn" id="paperFlipBtn">↺ View Analytics</button>
+                </div>
+              </div><!-- /.paper-front-inner -->
+            </div><!-- /.paper-front -->
+
+            <!-- BACK: analytics dashboard -->
+            <div class="paper-face paper-back">
+              <div class="analytics-header">
+                <span class="analytics-title">Document Analytics</span>
+                <span class="analytics-badge">Live Demo</span>
+              </div>
+
+              <!-- Bubble cluster: word hover activity -->
+              <div class="av-section">
+                <span class="av-label">Word Hover Activity</span>
+                <svg class="bubble-chart" viewBox="0 0 480 148" width="100%" height="auto" style="display:block;">
+                  <!-- connection network -->
+                  <g stroke="rgba(139,115,85,0.09)" stroke-width="1" fill="none">
+                    <line x1="75" y1="82" x2="195" y2="55"/>
+                    <line x1="75" y1="82" x2="305" y2="88"/>
+                    <line x1="75" y1="82" x2="388" y2="116"/>
+                    <line x1="75" y1="82" x2="436" y2="58"/>
+                    <line x1="195" y1="55" x2="305" y2="88"/>
+                    <line x1="195" y1="55" x2="388" y2="116"/>
+                    <line x1="195" y1="55" x2="436" y2="58"/>
+                    <line x1="305" y1="88" x2="388" y2="116"/>
+                    <line x1="305" y1="88" x2="436" y2="58"/>
+                    <line x1="388" y1="116" x2="436" y2="58"/>
+                  </g>
+                  <!-- whitespace -->
+                  <circle cx="75" cy="82" r="58" fill="rgba(139,115,85,0.13)" stroke="rgba(120,90,55,0.28)" stroke-width="1.5"/>
+                  <text x="75" y="79" text-anchor="middle" fill="#5c3d1e" font-size="8" font-family="Inter,sans-serif" font-weight="700">whitespace</text>
+                  <text x="75" y="92" text-anchor="middle" fill="#8b7355" font-size="14" font-family="Georgia,serif" font-weight="700">147</text>
+                  <!-- typography -->
+                  <circle cx="195" cy="55" r="46" fill="rgba(160,125,75,0.13)" stroke="rgba(140,105,60,0.28)" stroke-width="1.5"/>
+                  <text x="195" y="52" text-anchor="middle" fill="#5c3d1e" font-size="7.5" font-family="Inter,sans-serif" font-weight="700">typography</text>
+                  <text x="195" y="64" text-anchor="middle" fill="#8b7355" font-size="12" font-family="Georgia,serif" font-weight="700">112</text>
+                  <!-- hierarchy -->
+                  <circle cx="305" cy="88" r="38" fill="rgba(185,145,90,0.13)" stroke="rgba(160,120,70,0.28)" stroke-width="1.5"/>
+                  <text x="305" y="85" text-anchor="middle" fill="#5c3d1e" font-size="7" font-family="Inter,sans-serif" font-weight="700">hierarchy</text>
+                  <text x="305" y="96" text-anchor="middle" fill="#8b7355" font-size="11" font-family="Georgia,serif" font-weight="700">89</text>
+                  <!-- rhythm -->
+                  <circle cx="388" cy="116" r="28" fill="rgba(205,165,100,0.12)" stroke="rgba(180,140,80,0.26)" stroke-width="1.5"/>
+                  <text x="388" y="113" text-anchor="middle" fill="#5c3d1e" font-size="6.5" font-family="Inter,sans-serif" font-weight="700">rhythm</text>
+                  <text x="388" y="123" text-anchor="middle" fill="#8b7355" font-size="10" font-family="Georgia,serif" font-weight="700">67</text>
+                  <!-- contrast -->
+                  <circle cx="436" cy="58" r="21" fill="rgba(220,180,110,0.11)" stroke="rgba(195,155,85,0.24)" stroke-width="1.5"/>
+                  <text x="436" y="55" text-anchor="middle" fill="#5c3d1e" font-size="6" font-family="Inter,sans-serif" font-weight="700">contrast</text>
+                  <text x="436" y="64" text-anchor="middle" fill="#8b7355" font-size="9" font-family="Georgia,serif" font-weight="700">54</text>
+                </svg>
+              </div>
+
+              <!-- Reading journey area chart -->
+              <div class="av-section">
+                <span class="av-label">Reading Journey</span>
+                <svg viewBox="0 0 480 72" width="100%" height="auto" style="display:block;">
+                  <defs>
+                    <linearGradient id="journeyGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="rgba(139,115,85,0.42)"/>
+                      <stop offset="100%" stop-color="rgba(139,115,85,0.03)"/>
+                    </linearGradient>
+                  </defs>
+                  <!-- Section dividers -->
+                  <line x1="120" y1="0" x2="120" y2="62" stroke="rgba(139,115,85,0.13)" stroke-width="0.8" stroke-dasharray="3,3"/>
+                  <line x1="240" y1="0" x2="240" y2="62" stroke="rgba(139,115,85,0.13)" stroke-width="0.8" stroke-dasharray="3,3"/>
+                  <line x1="360" y1="0" x2="360" y2="62" stroke="rgba(139,115,85,0.13)" stroke-width="0.8" stroke-dasharray="3,3"/>
+                  <!-- Filled area -->
+                  <path d="M0,50 C20,42 50,24 120,22 C160,21 175,40 240,37 C280,35 300,14 360,18 C400,21 440,46 480,52 L480,64 L0,64 Z" fill="url(#journeyGrad)"/>
+                  <!-- Curve line -->
+                  <path d="M0,50 C20,42 50,24 120,22 C160,21 175,40 240,37 C280,35 300,14 360,18 C400,21 440,46 480,52" fill="none" stroke="rgba(139,115,85,0.65)" stroke-width="1.8" stroke-linecap="round"/>
+                  <!-- Peak dots -->
+                  <circle cx="120" cy="22" r="3" fill="rgba(139,115,85,0.7)"/>
+                  <circle cx="360" cy="18" r="3.5" fill="rgba(180,130,65,0.85)"/>
+                  <!-- Section labels -->
+                  <text x="60"  y="71" text-anchor="middle" fill="rgba(139,115,85,0.65)" font-size="7" font-family="Inter,sans-serif">Breath</text>
+                  <text x="180" y="71" text-anchor="middle" fill="rgba(139,115,85,0.65)" font-size="7" font-family="Inter,sans-serif">Weight</text>
+                  <text x="300" y="71" text-anchor="middle" fill="rgba(180,130,65,0.8)" font-size="7" font-family="Inter,sans-serif" font-weight="700">★ Beat</text>
+                  <text x="420" y="71" text-anchor="middle" fill="rgba(139,115,85,0.65)" font-size="7" font-family="Inter,sans-serif">Space</text>
+                </svg>
+              </div>
+
+              <!-- Two-column: section bars + cohort dots -->
+              <div class="av-row">
+                <div class="av-card av-card-wide">
+                  <span class="av-label">Section Engagement</span>
+                  <div class="eng-bar-wrap" style="margin-top:4px;">
+                    <div class="eng-bar-row">
+                      <span class="eng-bar-name">The Breath</span>
+                      <div class="eng-bar-track"><div class="eng-bar-fill" data-pct="0.88"></div></div>
+                      <span class="eng-bar-pct">88%</span>
+                    </div>
+                    <div class="eng-bar-row">
+                      <span class="eng-bar-name">The Weight</span>
+                      <div class="eng-bar-track"><div class="eng-bar-fill" data-pct="0.62"></div></div>
+                      <span class="eng-bar-pct">62%</span>
+                    </div>
+                    <div class="eng-bar-row">
+                      <span class="eng-bar-name">The Beat</span>
+                      <span class="eng-hot-badge">★</span>
+                      <div class="eng-bar-track"><div class="eng-bar-fill hot" data-pct="0.94"></div></div>
+                      <span class="eng-bar-pct">94%</span>
+                    </div>
+                    <div class="eng-bar-row">
+                      <span class="eng-bar-name">The Space</span>
+                      <div class="eng-bar-track"><div class="eng-bar-fill" data-pct="0.45"></div></div>
+                      <span class="eng-bar-pct">45%</span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Reader cohort dot grid -->
+                <div class="av-card av-card-cohort">
+                  <span class="av-label">Readers</span>
+                  <svg viewBox="0 0 72 80" width="72" height="80" style="margin-top:4px;">
+                    <circle cx="12" cy="12" r="7" fill="#3d2710" opacity="0.9"/>
+                    <circle cx="28" cy="12" r="7" fill="#3d2710" opacity="0.9"/>
+                    <circle cx="44" cy="12" r="7" fill="#5c3d1e" opacity="0.85"/>
+                    <circle cx="60" cy="12" r="7" fill="#5c3d1e" opacity="0.8"/>
+                    <circle cx="12" cy="30" r="7" fill="#5c3d1e" opacity="0.75"/>
+                    <circle cx="28" cy="30" r="7" fill="#8b7355" opacity="0.65"/>
+                    <circle cx="44" cy="30" r="7" fill="#8b7355" opacity="0.6"/>
+                    <circle cx="60" cy="30" r="7" fill="#8b7355" opacity="0.5"/>
+                    <circle cx="12" cy="48" r="7" fill="#b89a75" opacity="0.4"/>
+                    <circle cx="28" cy="48" r="7" fill="#b89a75" opacity="0.3"/>
+                    <circle cx="44" cy="48" r="7" fill="#d4bc9e" opacity="0.25"/>
+                    <circle cx="60" cy="48" r="7" fill="#d4bc9e" opacity="0.18"/>
+                    <text x="36" y="68" text-anchor="middle" fill="rgba(139,115,85,0.7)" font-size="6.5" font-family="Inter,sans-serif">12 readers</text>
+                    <text x="36" y="77" text-anchor="middle" fill="rgba(139,115,85,0.5)" font-size="5.5" font-family="Inter,sans-serif">↓ completion</text>
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Stats strip -->
+              <div class="av-stats-strip">
+                <div class="av-stat">
+                  <div class="av-stat-num">2m 47s</div>
+                  <div class="av-stat-lbl">avg read</div>
+                </div>
+                <div class="av-stat">
+                  <svg width="40" height="40" viewBox="0 0 58 58" style="display:block;margin:0 auto;">
+                    <circle cx="29" cy="29" r="22" fill="none" stroke="rgba(139,115,85,0.14)" stroke-width="6"/>
+                    <circle cx="29" cy="29" r="22" fill="none" stroke="#8b7355" stroke-width="6"
+                      stroke-dasharray="138.23" stroke-dashoffset="138.23"
+                      stroke-linecap="round" transform="rotate(-90 29 29)" id="donutArc"/>
+                  </svg>
+                  <div class="av-stat-lbl">73% read</div>
+                </div>
+                <div class="av-stat">
+                  <div class="av-stat-num">68%</div>
+                  <div class="av-stat-lbl">finished</div>
+                </div>
+                <div class="av-stat">
+                  <div class="av-stat-num">12</div>
+                  <div class="av-stat-lbl">today</div>
+                </div>
+              </div>
+
+              <div class="analytics-footer">
+                <span class="analytics-disclaimer">this data would be real in a live document</span>
+                <button class="paper-back-btn" id="paperBackBtn">↺ Back</button>
+              </div>
+            </div>
+
+          </div><!-- /paper-wrapper -->
+        </div><!-- /paper-scene -->
+      </div><!-- /idoc-right -->
+    </section>
+
+    <!-- ========================================================
+         BEAT 3 — THE VOCABULARY
+         ======================================================== -->
+
+    <!-- Slide 9: You need to speak the language -->
+    <section class="slide slide-space" data-id="vocabulary" data-beat="3" data-title="Design Principles" data-transition="zoom" data-3d="space" style="background: var(--color-bg-dark) !important;">
+      <div class="space-bg"><div class="stars" id="starsContainer"></div></div>
+      <div class="slide-center" style="text-shadow: 0 0 20px rgba(0,0,0,0.8);">
+        <p class="label fade-in fade-in-1">So how do they do it?</p>
+        <h1 class="heading-1 fade-in fade-in-2" style="margin-top: var(--space-md);">
+          Designers see things<br>you <span class="accent">already know.</span>
+        </h1>
+        <p class="body-large fade-in fade-in-3" style="margin-top: var(--space-xl); max-width: 650px; margin-left: auto; margin-right: auto;">
+          The difference between generic and polished isn't talent — it's noticing. Designers have names for the things that make something feel right. Once you learn a few, you'll start seeing them everywhere.
+        </p>
+      </div>
+    </section>
+
+    <!-- STORYTELLING TOPIC 1: Layout & Composition — click to compose demo -->
+    <section class="slide slide-primitives" data-beat="3" data-title="Design Primitives" data-transition="fade" data-3d="space" data-interactive="layout-compose" style="background: transparent !important; cursor: pointer;" onclick="(function(sec){if(sec._composed)return;sec._composed=true;var t=document.getElementById('layoutComposeText');t.style.left='5%';t.style.transform='translateY(-50%)';t.style.textAlign='left';document.getElementById('layoutComposeHint').style.opacity='0';document.getElementById('layoutComposeLabel').style.opacity='1';if(window.PRES)PRES.layoutComposeActive=true;})(this)">
+      <!-- Text container — starts centered, snaps left on click -->
+      <div id="layoutComposeText" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2; width: 560px; max-width: 90%; padding: var(--space-2xl); text-align: center; transition: left 0.85s cubic-bezier(0.4,0,0,1), transform 0.85s cubic-bezier(0.4,0,0,1); pointer-events: none; user-select: none;">
+        <p class="label fade-in fade-in-1" style="color: var(--color-signal);">Words that work</p>
+        <h1 class="heading-1 fade-in fade-in-2" style="margin-top: var(--space-md); color: var(--color-text-on-light);">
+          Design <span style="color: var(--color-signal);">Vocabulary</span>
+        </h1>
+        <p class="body-large fade-in fade-in-3" style="margin-top: var(--space-xl); color: var(--color-text-on-light);">
+          When something feels off but you can't explain why — these are the words for that: <strong>hierarchy</strong>, <strong>white space</strong>, <strong>alignment</strong>, <strong>proximity</strong>, <strong>contrast</strong>.
+        </p>
+        <p class="body fade-in fade-in-4" style="margin-top: var(--space-md); color: var(--color-text-on-light);">
+          Use them in your prompts. AI knows exactly what they mean.
+        </p>
+      </div>
+      <!-- Hint: click to compose -->
+      <div id="layoutComposeHint" style="position: absolute; bottom: var(--space-2xl); left: 50%; transform: translateX(-50%); z-index: 3; color: var(--color-text-on-light); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; pointer-events: none; transition: opacity 0.6s;">
+        click to compose
+      </div>
+      <!-- Label: appears after snap -->
+      <div id="layoutComposeLabel" style="position: absolute; bottom: var(--space-2xl); right: var(--space-2xl); z-index: 3; color: var(--color-text-on-light); font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0; transition: opacity 0.6s 0.5s; pointer-events: none;">
+        left-anchored text · planets right · rule of thirds
+      </div>
+    </section>
+
+    <!-- STORYTELLING TOPIC 2: Animation, Motion & Simulation -->
+    <section class="slide slide-primitives" data-beat="3" data-title="The Arc" data-transition="fade" data-3d="space-fall" style="background: transparent !important;">
+      <div class="slide-center" style="position: relative; z-index: 1;">
+        <p class="label fade-in fade-in-1" style="color: var(--color-signal);">Simulation &amp; transitions</p>
+        <h1 class="heading-1 fade-in fade-in-2" style="margin-top: var(--space-md); color: var(--color-text-on-light);">
+          Design the <span style="color: var(--color-signal);">Arc</span>
+        </h1>
+        <p class="body-large fade-in fade-in-3" style="margin-top: var(--space-xl); max-width: 700px; margin-left: auto; margin-right: auto; color: var(--color-text-on-light);">
+          Every screen lives between two states. The transition from one to the next isn't animation — it's <strong>simulation</strong>. It communicates continuity, confirms intent, and moves the story forward.
+        </p>
+        <p class="body fade-in fade-in-4" style="margin-top: var(--space-md); max-width: 600px; margin-left: auto; margin-right: auto; color: var(--color-text-on-light);">
+          When you describe what something <em>came from</em> and where it's <em>going</em>, you give AI the arc. Not just an endpoint.
+        </p>
+      </div>
+    </section>
+
+    <!-- STORYTELLING TOPIC 3: Visual Storytelling (the Gaussian splat scene) -->
+    <section class="slide" data-beat="3" data-title="Rule of Thirds" data-transition="fade" style="background: var(--color-bg-light) !important; padding: 0 !important;">
+      <div style="position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0;">
+
+        <!-- Left: text + dial -->
+        <div style="display: flex; flex-direction: column; justify-content: center; padding: calc(var(--header-height) + 40px) 7% 40px 7%;">
+          <p class="label fade-in fade-in-1" style="color: var(--color-signal);">Composition</p>
+          <h2 id="cr-name" class="heading-2 fade-in fade-in-2" style="color: var(--color-text-on-light); margin-top: var(--space-sm); transition: opacity 0.25s;">Rule of Thirds</h2>
+          <p id="cr-desc" class="body fade-in fade-in-3" style="margin-top: var(--space-lg); color: var(--color-text-on-light); transition: opacity 0.25s; min-height: 5em;">Divide any frame into a 3×3 grid. Place key elements along the lines or at the intersections — not dead center.</p>
+          <p id="cr-sub" class="body fade-in fade-in-4" style="margin-top: var(--space-md); color: var(--color-text-on-light); font-family: var(--font-display); font-size: 1rem; transition: opacity 0.25s;">Your eye is naturally drawn to these 4 intersection points.</p>
+
+          <!-- Dial -->
+          <div style="margin-top: var(--space-xl); display: flex; align-items: center; gap: 20px;">
+            <button id="cr-prev" style="background:none;border:1px solid rgba(42,26,14,0.25);border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:14px;color:var(--color-text-on-light);display:flex;align-items:center;justify-content:center;transition:border-color 0.2s,color 0.2s;flex-shrink:0;" onmouseenter="this.style.borderColor='rgba(42,26,14,0.6)';this.style.color='#2a1a0e'" onmouseleave="this.style.borderColor='rgba(42,26,14,0.25)';this.style.color='var(--color-text-on-light)'">&#9664;</button>
+
+            <!-- Rotary knob -->
+            <div style="position:relative;width:80px;height:80px;flex-shrink:0;">
+              <!-- Fixed indicator dot at top -->
+              <div style="position:absolute;top:-5px;left:50%;transform:translateX(-50%);width:6px;height:6px;background:#d4a053;border-radius:50%;z-index:2;"></div>
+              <svg id="cr-dial" viewBox="-50 -50 100 100" style="width:80px;height:80px;overflow:visible;transition:transform 0.55s cubic-bezier(0.4,0,0,1);">
+                <circle r="46" fill="none" stroke="#e8e8e8" stroke-width="1.5"/>
+                <circle r="28" fill="#1a1a1a"/>
+                <!-- Tick marks + short labels — generated by JS -->
+                <g id="cr-ticks"></g>
+                <!-- Marker line (points up = current rule) -->
+                <line x1="0" y1="-28" x2="0" y2="-20" stroke="#d4a053" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+
+            <button id="cr-next" style="background:none;border:1px solid rgba(42,26,14,0.25);border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:14px;color:var(--color-text-on-light);display:flex;align-items:center;justify-content:center;transition:border-color 0.2s,color 0.2s;flex-shrink:0;" onmouseenter="this.style.borderColor='rgba(42,26,14,0.6)';this.style.color='#2a1a0e'" onmouseleave="this.style.borderColor='rgba(42,26,14,0.25)';this.style.color='var(--color-text-on-light)'">&#9654;</button>
+
+            <div id="cr-badge" style="font-size:1.4rem;font-weight:800;color:#d4a053;letter-spacing:-0.02em;min-width:2em;transition:opacity 0.25s;"></div>
+          </div>
+        </div>
+
+        <!-- Right: SVG visualization -->
+        <div style="display:flex;align-items:center;justify-content:center;background: var(--color-bg-light);overflow:hidden;">
+          <svg id="cr-viz" viewBox="0 0 320 200" style="width:85%;border-radius:6px;transition:opacity 0.3s ease;" preserveAspectRatio="xMidYMid meet"></svg>
+        </div>
+      </div>
+
+      <script>
+      (function() {
+        var W = 320, H = 200;
+        var cur = 0;
+
+        var RULES = [
+          {
+            name: 'Rule of Thirds',
+            badge: '1/3',
+            desc: 'Divide any frame into a 3×3 grid. Place key elements along the lines or at the intersections — not dead center.',
+            sub: 'Your eye is naturally drawn to these 4 intersection points.',
+            color: '#d4a053',
+            draw: function() {
+              var c = this.color;
+              return bg() + grid(W/3, 2*W/3, H/3, 2*H/3, c) + dots([W/3,2*W/3], [H/3,2*H/3], c);
+            }
+          },
+          {
+            name: 'Phi Grid',
+            badge: 'φ',
+            desc: 'Use the golden ratio (φ ≈ 1.618) to divide the frame at ~38.2% and ~61.8%. Elements placed here feel organically balanced.',
+            sub: 'The same proportions appear in Renaissance art, architecture, and nature.',
+            color: '#c4956a',
+            draw: function() {
+              var c = this.color, p = 0.382;
+              return bg() + grid(W*p, W*(1-p), H*p, H*(1-p), c) + dots([W*p, W*(1-p)], [H*p, H*(1-p)], c) + label('φ ≈ 1.618', c);
+            }
+          },
+          {
+            name: 'Rule of Fifths',
+            badge: '1/5',
+            desc: 'Divide the frame into 5 equal columns and rows. More intersections give you greater precision for placing multiple elements.',
+            sub: 'Used in fine art and cinematic composition for complex scenes.',
+            color: '#5b8aaf',
+            draw: function() {
+              var c = this.color;
+              var xs = [W/5, 2*W/5, 3*W/5, 4*W/5];
+              var ys = [H/5, 2*H/5, 3*H/5, 4*H/5];
+              var g = ''; xs.forEach(function(x) { g += line(x,0,x,H,c,0.5); });
+              ys.forEach(function(y) { g += line(0,y,W,y,c,0.5); });
+              var pts = []; xs.forEach(function(x) { ys.forEach(function(y) { pts.push({x:x,y:y}); }); });
+              return bg() + g + pts.map(function(p) { return dot(p.x,p.y,c,3); }).join('');
+            }
+          },
+          {
+            name: 'Diagonal Method',
+            badge: '↗',
+            desc: 'Draw diagonals from corner to corner. Important elements should fall along or intersect these lines to feel dynamic and intentional.',
+            sub: 'Common in portrait photography and dynamic UI layouts.',
+            color: '#9b59b6',
+            draw: function() {
+              var c = this.color;
+              return bg()
+                + line(0,0,W,H,c,0.8)
+                + line(W,0,0,H,c,0.8)
+                + line(0,0,W/2,H,c,0.4)
+                + line(W,0,W/2,H,c,0.4)
+                + line(0,H,W/2,0,c,0.4)
+                + line(W,H,W/2,0,c,0.4)
+                + dot(W/2,H/2,c,6);
+            }
+          },
+          {
+            name: 'Golden Spiral',
+            badge: '∿',
+            desc: 'The Fibonacci spiral guides the eye through the composition. Start with the largest rectangle and spiral inward toward the focal point.',
+            sub: 'Found in nautilus shells, galaxies, and the best-composed photographs.',
+            color: '#2dd4bf',
+            draw: function() {
+              var c = this.color;
+              var p = 0.618;
+              // Rectangles: full, then shrinking golden sections
+              var rects = [
+                {x:0,y:0,w:W,h:H},
+                {x:W*p,y:0,w:W*(1-p),h:H},
+                {x:W*p,y:H*(1-p),w:W*(1-p),h:H*p},
+                {x:W*p,y:H*(1-p),w:W*(1-p)*p,h:H*p},
+              ];
+              var rs = rects.map(function(r) {
+                return '<rect x="'+r.x+'" y="'+r.y+'" width="'+r.w+'" height="'+r.h+'" fill="none" stroke="'+c+'" stroke-width="0.7" opacity="0.5"/>';
+              }).join('');
+              // Approximate spiral arcs
+              var arcs = '<path d="M'+(W*p)+','+0+' Q'+0+','+0+' '+0+','+(H/2)+'" fill="none" stroke="'+c+'" stroke-width="1.8" opacity="0.9" stroke-linecap="round"/>'
+                + '<path d="M'+0+','+(H/2)+' Q'+0+','+H+' '+(W*p/2)+','+H+'" fill="none" stroke="'+c+'" stroke-width="1.8" opacity="0.9" stroke-linecap="round"/>'
+                + '<path d="M'+(W*p/2)+','+H+' Q'+(W*p)+','+H+' '+(W*p)+','+(H*(1-p)+(H*p)*0.5)+'" fill="none" stroke="'+c+'" stroke-width="1.8" opacity="0.9" stroke-linecap="round"/>';
+              return bg() + rs + arcs + dot(W*p, H*(1-p), c, 5);
+            }
+          },
+          {
+            name: 'Center Composition',
+            badge: '⊕',
+            desc: 'Place the subject dead center. Works best for symmetrical subjects, formal portraits, or when you want to convey power and stillness.',
+            sub: 'Wes Anderson, Kubrick, and many logo designers rely on this.',
+            color: '#e85d3a',
+            draw: function() {
+              var c = this.color;
+              return bg()
+                + line(W/2,0,W/2,H,c,0.6)
+                + line(0,H/2,W,H/2,c,0.6)
+                + '<circle cx="'+(W/2)+'" cy="'+(H/2)+'" r="55" fill="none" stroke="'+c+'" stroke-width="0.8" opacity="0.4"/>'
+                + '<circle cx="'+(W/2)+'" cy="'+(H/2)+'" r="28" fill="none" stroke="'+c+'" stroke-width="0.8" opacity="0.5"/>'
+                + '<rect x="'+(W/2-80)+'" y="'+(H/2-50)+'" width="160" height="100" fill="none" stroke="'+c+'" stroke-width="0.7" opacity="0.35"/>'
+                + dot(W/2, H/2, c, 7);
+            }
+          }
+        ];
+
+        // SVG helpers
+        function bg() {
+          return '<rect width="'+W+'" height="'+H+'" fill="#1a1a1a" rx="4"/>';
+        }
+        function line(x1,y1,x2,y2,color,op) {
+          return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+color+'" stroke-width="1" opacity="'+(op||0.6)+'" stroke-dasharray="4 3"/>';
+        }
+        function dot(x,y,color,r) {
+          return '<circle cx="'+x+'" cy="'+y+'" r="'+(r||5)+'" fill="'+color+'"/>';
+        }
+        function grid(x1,x2,y1,y2,color) {
+          return line(x1,0,x1,H,color) + line(x2,0,x2,H,color) + line(0,y1,W,y1,color) + line(0,y2,W,y2,color);
+        }
+        function dots(xs,ys,color) {
+          var s=''; xs.forEach(function(x){ys.forEach(function(y){s+=dot(x,y,color);});}); return s;
+        }
+        function label(text, color) {
+          return '<text x="'+(W-10)+'" y="'+(H-10)+'" text-anchor="end" fill="'+color+'" font-size="11" font-family="monospace" opacity="0.7">'+text+'</text>';
+        }
+
+        // Build dial ticks
+        var N = RULES.length;
+        var ticks = document.getElementById('cr-ticks');
+        if (ticks) {
+          var html = '';
+          for (var i = 0; i < N; i++) {
+            var angle = (i / N) * 2 * Math.PI;
+            var tx = Math.sin(angle) * 38;
+            var ty = -Math.cos(angle) * 38;
+            var lx = Math.sin(angle) * 52;
+            var ly = -Math.cos(angle) * 52;
+            var deg = (i / N) * 360;
+            html += '<line x1="'+tx+'" y1="'+ty+'" x2="'+(Math.sin(angle)*44)+'" y2="'+(-Math.cos(angle)*44)+'" stroke="#3d2010" stroke-width="1.5" stroke-linecap="round"/>';
+            html += '<text x="'+lx+'" y="'+ly+'" text-anchor="middle" dominant-baseline="middle" font-size="7" fill="#3d2010" transform="rotate('+deg+','+lx+','+ly+')">'+RULES[i].badge+'</text>';
+          }
+          ticks.innerHTML = html;
+        }
+
+        function update(animate) {
+          var rule = RULES[cur];
+          // Fade text
+          ['cr-name','cr-desc','cr-sub','cr-badge'].forEach(function(id) {
+            var el = document.getElementById(id); if (el) el.style.opacity = '0';
+          });
+          setTimeout(function() {
+            var n = document.getElementById('cr-name'), d = document.getElementById('cr-desc'),
+                s = document.getElementById('cr-sub'), b = document.getElementById('cr-badge');
+            if (n) n.textContent = rule.name;
+            if (d) d.textContent = rule.desc;
+            if (s) s.textContent = rule.sub;
+            if (b) { b.textContent = rule.badge; b.style.color = rule.color; }
+            ['cr-name','cr-desc','cr-sub','cr-badge'].forEach(function(id) {
+              var el = document.getElementById(id); if (el) el.style.opacity = '1';
+            });
+          }, animate ? 200 : 0);
+
+          // Rotate dial
+          var dial = document.getElementById('cr-dial');
+          if (dial) dial.style.transform = 'rotate(' + (-(cur / N) * 360) + 'deg)';
+
+          // Update viz
+          var viz = document.getElementById('cr-viz');
+          if (viz) {
+            viz.style.opacity = '0';
+            setTimeout(function() {
+              viz.innerHTML = rule.draw();
+              viz.style.opacity = '1';
+            }, animate ? 250 : 0);
+          }
+        }
+
+        // Prev/Next buttons
+        var prev = document.getElementById('cr-prev'), next = document.getElementById('cr-next');
+        if (prev) prev.addEventListener('click', function() { cur = (cur - 1 + N) % N; update(true); });
+        if (next) next.addEventListener('click', function() { cur = (cur + 1) % N; update(true); });
+
+        // Init
+        update(false);
+      })();
+      </script>
+    </section>
+
+    <!-- Gestalt Theory -->
+    <section class="slide" data-beat="3" data-title="Gestalt Theory" data-transition="fade" style="background: var(--color-bg-dark) !important; padding: 0 !important;">
+      <div style="position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;gap:0;">
+
+        <!-- Left: heading column -->
+        <div class="fade-in fade-in-1" style="display:flex;flex-direction:column;justify-content:center;padding:calc(var(--header-height) + 40px) 7% 40px 7%;">
+          <p class="label" style="color:var(--color-accent);">Perception</p>
+          <h2 class="heading-2" style="margin-top:var(--space-sm);">Gestalt Principles</h2>
+          <p class="body" style="margin-top:var(--space-lg);color:var(--color-text-muted);line-height:1.7;">
+            Your brain automatically organizes visual information — it groups, separates, and prioritizes before you're even aware of it.
+          </p>
+          <p class="body" style="margin-top:var(--space-md);color: var(--color-text-muted);font-size:0.9rem;line-height:1.6;">
+            These 9 principles explain exactly how. Use them when you describe layouts to AI and your output will stop looking generic.
+          </p>
+        </div>
+
+        <!-- Right: scrolling list -->
+        <div class="fade-in fade-in-2" style="position:relative;overflow:hidden;">
+          <!-- Fade masks top & bottom -->
+          <div style="position:absolute;top:0;left:0;right:0;height:60px;background:linear-gradient(to bottom,var(--color-bg-dark),transparent);z-index:2;pointer-events:none;"></div>
+          <div style="position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(to top,var(--color-bg-dark),transparent);z-index:2;pointer-events:none;"></div>
+          <!-- Clipping window -->
+          <div style="overflow:hidden;height:100%;">
+            <div id="gestaltTrack" style="transition:transform 0.55s cubic-bezier(0.4,0,0.2,1);">
+
+              <!-- 01 Similarity -->
+              <div class="g-item" style="display:flex;gap:28px;align-items:center;padding:22px 0;border-bottom:1px solid #161616;">
+                <svg viewBox="0 0 72 72" width="88" height="88" style="flex-shrink:0;">
+                  <rect x="6" y="6" width="16" height="16" rx="3" fill="#666"/>
+                  <rect x="28" y="6" width="16" height="16" rx="3" fill="#666"/>
+                  <rect x="50" y="6" width="16" height="16" rx="3" fill="#666"/>
+                  <circle cx="14" cy="36" r="8" fill="#d4a053"/>
+                  <circle cx="36" cy="36" r="8" fill="#d4a053"/>
+                  <circle cx="58" cy="36" r="8" fill="#d4a053"/>
+                  <rect x="6" y="50" width="16" height="16" rx="3" fill="#666"/>
+                  <rect x="28" y="50" width="16" height="16" rx="3" fill="#666"/>
+                  <rect x="50" y="50" width="16" height="16" rx="3" fill="#666"/>
+                </svg>
+                <div><div style="font-size:0.72rem;color: var(--color-text-muted);letter-spacing:0.12em;text-transform:uppercase;">01</div><div style="font-size:1.25rem;font-weight:700;color:#eee;margin-top:3px;">Similarity</div><div style="font-size:1rem;color: var(--color-text-muted);margin-top:4px;line-height:1.5;">Elements that look alike feel related</div></div>
+              </div>
+
+              <!-- 02 Continuity -->
+              <div class="g-item" style="display:flex;gap:28px;align-items:center;padding:22px 0;border-bottom:1px solid #161616;">
+                <svg viewBox="0 0 72 72" width="88" height="88" style="flex-shrink:0;">
+                  <path d="M6,62 Q18,20 36,18 Q54,16 66,32" fill="none" stroke="#5b8aaf" stroke-width="2.5" stroke-linecap="round"/>
+                  <circle cx="6"  cy="62" r="5" fill="#5b8aaf"/>
+                  <circle cx="18" cy="36" r="5" fill="#5b8aaf"/>
+                  <circle cx="36" cy="18" r="5" fill="#5b8aaf"/>
+                  <circle cx="54" cy="22" r="5" fill="#5b8aaf"/>
+                  <circle cx="66" cy="32" r="5" fill="#5b8aaf"/>
+                  <circle cx="28" cy="54" r="4" fill="#2a2a2a" stroke="#444" stroke-width="1"/>
+                  <circle cx="46" cy="58" r="4" fill="#2a2a2a" stroke="#444" stroke-width="1"/>
+                  <circle cx="60" cy="52" r="4" fill="#2a2a2a" stroke="#444" stroke-width="1"/>
+                </svg>
+                <div><div style="font-size:0.72rem;color: var(--color-text-muted);letter-spacing:0.12em;text-transform:uppercase;">02</div><div style="font-size:1.25rem;font-weight:700;color:#eee;margin-top:3px;">Continuity</div><div style="font-size:1rem;color: var(--color-text-muted);margin-top:4px;line-height:1.5;">Eyes naturally follow smooth, aligned paths</div></div>
+              </div>
+
+              <!-- 03 Proximity -->
+              <div class="g-item" style="display:flex;gap:28px;align-items:center;padding:22px 0;border-bottom:1px solid #161616;">
+                <svg viewBox="0 0 72 72" width="88" height="88" style="flex-shrink:0;">
+                  <circle cx="12" cy="20" r="6" fill="#2dd4bf"/><circle cx="24" cy="20" r="6" fill="#2dd4bf"/>
+                  <circle cx="12" cy="36" r="6" fill="#2dd4bf"/><circle cx="24" cy="36" r="6" fill="#2dd4bf"/>
+                  <circle cx="12" cy="52" r="6" fill="#2dd4bf"/><circle cx="24" cy="52" r="6" fill="#2dd4bf"/>
+                  <circle cx="48" cy="20" r="6" fill="#e85d3a"/><circle cx="60" cy="20" r="6" fill="#e85d3a"/>
+                  <circle cx="48" cy="36" r="6" fill="#e85d3a"/><circle cx="60" cy="36" r="6" fill="#e85d3a"/>
+                  <circle cx="48" cy="52" r="6" fill="#e85d3a"/><circle cx="60" cy="52" r="6" fill="#e85d3a"/>
+                </svg>
+                <div><div style="font-size:0.72rem;color: var(--color-text-muted);letter-spacing:0.12em;text-transform:uppercase;">03</div><div style="font-size:1.25rem;font-weight:700;color:#eee;margin-top:3px;">Proximity</div><div style="font-size:1rem;color: var(--color-text-muted);margin-top:4px;line-height:1.5;">Objects placed close together are perceived as one group</div></div>
+              </div>
+
+              <!-- 04 Figure-Ground -->
+              <div class="g-item" style="display:flex;gap:28px;align-items:center;padding:22px 0;border-bottom:1px solid #161616;">
+                <svg viewBox="0 0 72 72" width="88" height="88" style="flex-shrink:0;">
+                  <rect width="72" height="72" rx="6" fill="#2a2a2a"/>
+                  <rect x="10" y="10" width="30" height="30" rx="4" fill="#e8e8e8"/>
+                  <rect x="30" y="30" width="30" height="30" rx="4" fill="#444"/>
+                  <rect x="32" y="12" width="8" height="8" rx="2" fill="#c43e1c" opacity="0.8"/>
+                </svg>
+                <div><div style="font-size:0.72rem;color: var(--color-text-muted);letter-spacing:0.12em;text-transform:uppercase;">04</div><div style="font-size:1.25rem;font-weight:700;color:#eee;margin-top:3px;">Figure-Ground</div><div style="font-size:1rem;color: var(--color-text-muted);margin-top:4px;line-height:1.5;">We instantly separate a focal figure from its background</div></div>
+              </div>
+
+              <!-- 05 Common Fate -->
+              <div class="g-item" style="display:flex;gap:28px;align-items:center;padding:22px 0;border-bottom:1px solid #161616;">
+                <svg viewBox="0 0 72 72" width="88" height="88" style="flex-shrink:0;">
+                  <polygon points="6,22 14,14 14,30"  fill="#9b59b6"/>
+                  <polygon points="22,22 30,14 30,30" fill="#9b59b6"/>
+                  <polygon points="38,22 46,14 46,30" fill="#9b59b6"/>
+                  <polygon points="54,22 62,14 62,30" fill="#9b59b6"/>
+                  <polygon points="6,52  14,44 14,60"  fill="#333"/>
+                  <polygon points="22,56 30,48 30,64"  fill="#333"/>
+                  <polygon points="38,48 46,40 46,56"  fill="#333"/>
+                  <polygon points="54,54 62,46 62,62"  fill="#333"/>
+                </svg>
+                <div><div style="font-size:0.72rem;color: var(--color-text-muted);letter-spacing:0.12em;text-transform:uppercase;">05</div><div style="font-size:1.25rem;font-weight:700;color:#eee;margin-top:3px;">Common Fate</div><div style="font-size:1rem;color: var(--color-text-muted);margin-top:4px;line-height:1.5;">Elements moving together are perceived as one group</div></div>
+              </div>
+
+              <!-- 06 Closure -->
+              <div class="g-item" style="display:flex;gap:28px;align-items:center;padding:22px 0;border-bottom:1px solid #161616;">
+                <svg viewBox="0 0 72 72" width="88" height="88" style="flex-shrink:0;">
+                  <circle cx="36" cy="36" r="26" fill="none" stroke="#c4956a" stroke-width="3.5" stroke-dasharray="12 7"/>
+                  <circle cx="36" cy="36" r="6" fill="#c4956a" opacity="0.4"/>
+                  <circle cx="36" cy="36" r="2" fill="#c4956a" opacity="0.8"/>
+                </svg>
+                <div><div style="font-size:0.72rem;color: var(--color-text-muted);letter-spacing:0.12em;text-transform:uppercase;">06</div><div style="font-size:1.25rem;font-weight:700;color:#eee;margin-top:3px;">Closure</div><div style="font-size:1rem;color: var(--color-text-muted);margin-top:4px;line-height:1.5;">We mentally complete shapes even when parts are missing</div></div>
+              </div>
+
+              <!-- 07 Symmetry & Order -->
+              <div class="g-item" style="display:flex;gap:28px;align-items:center;padding:22px 0;border-bottom:1px solid #161616;">
+                <svg viewBox="0 0 72 72" width="88" height="88" style="flex-shrink:0;">
+                  <line x1="36" y1="4" x2="36" y2="68" stroke="#222" stroke-width="1" stroke-dasharray="3 3"/>
+                  <rect x="8" y="10" width="20" height="20" rx="3" fill="#6b4a8a"/>
+                  <rect x="44" y="10" width="20" height="20" rx="3" fill="#6b4a8a"/>
+                  <rect x="14" y="38" width="14" height="14" rx="2" fill="#9b59b6" opacity="0.7"/>
+                  <rect x="44" y="38" width="14" height="14" rx="2" fill="#9b59b6" opacity="0.7"/>
+                  <circle cx="36" cy="62" r="6" fill="#6b4a8a" opacity="0.5"/>
+                </svg>
+                <div><div style="font-size:0.72rem;color: var(--color-text-muted);letter-spacing:0.12em;text-transform:uppercase;">07</div><div style="font-size:1.25rem;font-weight:700;color:#eee;margin-top:3px;">Symmetry &amp; Order</div><div style="font-size:1rem;color: var(--color-text-muted);margin-top:4px;line-height:1.5;">Balanced layouts feel stable and distribute weight evenly</div></div>
+              </div>
+
+              <!-- 08 Prägnanz -->
+              <div class="g-item" style="display:flex;gap:28px;align-items:center;padding:22px 0;border-bottom:1px solid #161616;">
+                <svg viewBox="0 0 72 72" width="88" height="88" style="flex-shrink:0;">
+                  <polygon points="10,62 18,12 26,38 36,18 46,44 56,24 62,62" fill="none" stroke="#333" stroke-width="2"/>
+                  <circle cx="36" cy="36" r="22" fill="none" stroke="#eee" stroke-width="2.5" opacity="0.85"/>
+                </svg>
+                <div><div style="font-size:0.72rem;color: var(--color-text-muted);letter-spacing:0.12em;text-transform:uppercase;">08</div><div style="font-size:1.25rem;font-weight:700;color:#eee;margin-top:3px;">Prägnanz</div><div style="font-size:1rem;color: var(--color-text-muted);margin-top:4px;line-height:1.5;">The mind always seeks the simplest interpretation</div></div>
+              </div>
+
+              <!-- 09 Common Region -->
+              <div class="g-item" style="display:flex;gap:28px;align-items:center;padding:22px 0;">
+                <svg viewBox="0 0 72 72" width="88" height="88" style="flex-shrink:0;">
+                  <rect x="4" y="12" width="34" height="48" rx="5" fill="none" stroke="#2dd4bf" stroke-width="2"/>
+                  <circle cx="14" cy="28" r="6" fill="#2dd4bf" opacity="0.85"/>
+                  <circle cx="28" cy="28" r="6" fill="#2dd4bf" opacity="0.85"/>
+                  <circle cx="14" cy="46" r="6" fill="#2dd4bf" opacity="0.85"/>
+                  <circle cx="28" cy="46" r="6" fill="#2dd4bf" opacity="0.85"/>
+                  <circle cx="54" cy="24" r="6" fill="#444"/>
+                  <circle cx="64" cy="40" r="6" fill="#444"/>
+                  <circle cx="52" cy="54" r="6" fill="#444"/>
+                </svg>
+                <div><div style="font-size:0.72rem;color: var(--color-text-muted);letter-spacing:0.12em;text-transform:uppercase;">09</div><div style="font-size:1.25rem;font-weight:700;color:#eee;margin-top:3px;">Common Region</div><div style="font-size:1rem;color: var(--color-text-muted);margin-top:4px;line-height:1.5;">Elements within shared boundaries are automatically grouped</div></div>
+              </div>
+
+            </div><!-- /gestaltTrack -->
+          </div><!-- /clip window -->
+        </div><!-- /right col -->
+      </div>
+
+      <script>
+        (function() {
+          var ITEMS = 9, ITEM_H = 144;
+          var pos = 0;
+          var track = document.getElementById('gestaltTrack');
+          var clipEl = track ? track.parentElement : null;
+          function clamp(v) { return Math.max(0, Math.min(ITEMS - 1, v)); }
+          function scrollTo(newPos) {
+            pos = clamp(newPos);
+            track.style.transform = 'translateY(-' + (pos * ITEM_H) + 'px)';
+          }
+          window._gestalt = function(dir) { scrollTo(pos + dir); };
+          if (clipEl) {
+            clipEl.addEventListener('wheel', function(e) {
+              e.preventDefault();
+              scrollTo(pos + (e.deltaY > 0 ? 1 : -1));
+            }, { passive: false });
+          }
+          scrollTo(0);
+        })();
+      </script>
+    </section>
+
+    <!-- UX Laws -->
+    <section class="slide" data-beat="3" data-title="UX Laws" data-transition="fade" style="background: var(--color-bg-light-alt) !important;">
+      <div style="position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;gap:0;">
+
+        <!-- Left: heading column -->
+        <div class="fade-in fade-in-1" style="display:flex;flex-direction:column;justify-content:center;padding:calc(var(--header-height) + 40px) 7% 40px 7%;">
+          <p class="label" style="color:var(--color-signal);">Science of Usability</p>
+          <h2 class="heading-2" style="margin-top:var(--space-sm);color:var(--color-text-on-light);">UX Laws</h2>
+          <p class="body" style="margin-top:var(--space-lg);color:var(--color-text-on-light);line-height:1.7;">
+            These aren't opinions — they're research-backed principles. Use them in your prompts and your designs get measurably better.
+          </p>
+          <p class="body" style="margin-top:var(--space-md);color:var(--color-text-on-light);font-size:0.9rem;line-height:1.6;opacity:0.7;">
+            Scroll to explore all principles. Use your mouse wheel or trackpad.
+          </p>
+        </div>
+
+        <!-- Right: scrollable laws list -->
+        <div class="fade-in fade-in-2" style="position:relative;overflow:hidden;border-left:1px solid rgba(42,26,14,0.08);">
+          <!-- Fade masks -->
+          <div style="position:absolute;top:0;left:0;right:0;height:80px;background:linear-gradient(to bottom,var(--color-bg-light),transparent);z-index:2;pointer-events:none;"></div>
+          <div style="position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(to top,var(--color-bg-light),transparent);z-index:2;pointer-events:none;"></div>
+          <!-- Track -->
+          <div id="uxLawsTrack" style="padding:calc(var(--header-height) + 40px) 48px 80px;transition:transform 0.45s cubic-bezier(0.4,0,0.2,1);">
+
+            <div class="ux-law-item" style="padding:18px 0;border-bottom:1px solid rgba(42,26,14,0.1);">
+              <div style="font-size:0.68rem;color:var(--color-signal);letter-spacing:0.14em;text-transform:uppercase;font-weight:600;">01</div>
+              <div style="font-size:1.15rem;font-weight:700;color:var(--color-text-on-light);margin-top:3px;">Fitts's Law</div>
+              <div style="font-size:0.92rem;color:var(--color-text-on-light);margin-top:5px;line-height:1.6;opacity:0.8;">The time to reach a target depends on its size and distance. Make important controls <strong>big</strong> and <strong>close</strong>.</div>
+            </div>
+
+            <div class="ux-law-item" style="padding:18px 0;border-bottom:1px solid rgba(42,26,14,0.1);">
+              <div style="font-size:0.68rem;color:var(--color-signal);letter-spacing:0.14em;text-transform:uppercase;font-weight:600;">02</div>
+              <div style="font-size:1.15rem;font-weight:700;color:var(--color-text-on-light);margin-top:3px;">Hick's Law</div>
+              <div style="font-size:0.92rem;color:var(--color-text-on-light);margin-top:5px;line-height:1.6;opacity:0.8;">More choices = slower decisions. Use progressive disclosure — show only what's needed right now.</div>
+            </div>
+
+            <div class="ux-law-item" style="padding:18px 0;border-bottom:1px solid rgba(42,26,14,0.1);">
+              <div style="font-size:0.68rem;color:var(--color-signal);letter-spacing:0.14em;text-transform:uppercase;font-weight:600;">03</div>
+              <div style="font-size:1.15rem;font-weight:700;color:var(--color-text-on-light);margin-top:3px;">Miller's Law</div>
+              <div style="font-size:0.92rem;color:var(--color-text-on-light);margin-top:5px;line-height:1.6;opacity:0.8;">People can hold 7 ± 2 items in working memory. Chunk information into small, digestible groups.</div>
+            </div>
+
+            <div class="ux-law-item" style="padding:18px 0;border-bottom:1px solid rgba(42,26,14,0.1);">
+              <div style="font-size:0.68rem;color:var(--color-signal);letter-spacing:0.14em;text-transform:uppercase;font-weight:600;">04</div>
+              <div style="font-size:1.15rem;font-weight:700;color:var(--color-text-on-light);margin-top:3px;">Jakob's Law</div>
+              <div style="font-size:0.92rem;color:var(--color-text-on-light);margin-top:5px;line-height:1.6;opacity:0.8;">Users spend most of their time on other sites. They expect your product to work the same way. Don't reinvent conventions.</div>
+            </div>
+
+            <div class="ux-law-item" style="padding:18px 0;border-bottom:1px solid rgba(42,26,14,0.1);">
+              <div style="font-size:0.68rem;color:var(--color-signal);letter-spacing:0.14em;text-transform:uppercase;font-weight:600;">05</div>
+              <div style="font-size:1.15rem;font-weight:700;color:var(--color-text-on-light);margin-top:3px;">Doherty Threshold</div>
+              <div style="font-size:0.92rem;color:var(--color-text-on-light);margin-top:5px;line-height:1.6;opacity:0.8;">Responses under 400ms feel instant. Above that, users feel the wait. Speed is a design decision.</div>
+            </div>
+
+            <div class="ux-law-item" style="padding:18px 0;border-bottom:1px solid rgba(42,26,14,0.1);">
+              <div style="font-size:0.68rem;color:var(--color-signal);letter-spacing:0.14em;text-transform:uppercase;font-weight:600;">06</div>
+              <div style="font-size:1.15rem;font-weight:700;color:var(--color-text-on-light);margin-top:3px;">Peak-End Rule</div>
+              <div style="font-size:0.92rem;color:var(--color-text-on-light);margin-top:5px;line-height:1.6;opacity:0.8;">People judge an experience by its most intense moment and how it ends — not the average. Nail the peaks and endings.</div>
+            </div>
+
+            <div class="ux-law-item" style="padding:18px 0;border-bottom:1px solid rgba(42,26,14,0.1);">
+              <div style="font-size:0.68rem;color:var(--color-signal);letter-spacing:0.14em;text-transform:uppercase;font-weight:600;">07</div>
+              <div style="font-size:1.15rem;font-weight:700;color:var(--color-text-on-light);margin-top:3px;">Serial Position Effect</div>
+              <div style="font-size:0.92rem;color:var(--color-text-on-light);margin-top:5px;line-height:1.6;opacity:0.8;">People remember the first and last items in a list best. Put your most important actions at the start or end of navigation.</div>
+            </div>
+
+            <div class="ux-law-item" style="padding:18px 0;border-bottom:1px solid rgba(42,26,14,0.1);">
+              <div style="font-size:0.68rem;color:var(--color-signal);letter-spacing:0.14em;text-transform:uppercase;font-weight:600;">08</div>
+              <div style="font-size:1.15rem;font-weight:700;color:var(--color-text-on-light);margin-top:3px;">Aesthetic-Usability Effect</div>
+              <div style="font-size:0.92rem;color:var(--color-text-on-light);margin-top:5px;line-height:1.6;opacity:0.8;">Attractive designs are perceived as easier to use. Users tolerate minor usability issues when they love how something looks.</div>
+            </div>
+
+            <div class="ux-law-item" style="padding:18px 0;border-bottom:1px solid rgba(42,26,14,0.1);">
+              <div style="font-size:0.68rem;color:var(--color-signal);letter-spacing:0.14em;text-transform:uppercase;font-weight:600;">09</div>
+              <div style="font-size:1.15rem;font-weight:700;color:var(--color-text-on-light);margin-top:3px;">Tesler's Law</div>
+              <div style="font-size:0.92rem;color:var(--color-text-on-light);margin-top:5px;line-height:1.6;opacity:0.8;">Every system has irreducible complexity. Simplifying the UI just moves complexity elsewhere — usually to the developer or the system.</div>
+            </div>
+
+            <div class="ux-law-item" style="padding:18px 0;border-bottom:1px solid rgba(42,26,14,0.1);">
+              <div style="font-size:0.68rem;color:var(--color-signal);letter-spacing:0.14em;text-transform:uppercase;font-weight:600;">10</div>
+              <div style="font-size:1.15rem;font-weight:700;color:var(--color-text-on-light);margin-top:3px;">Von Restorff Effect</div>
+              <div style="font-size:0.92rem;color:var(--color-text-on-light);margin-top:5px;line-height:1.6;opacity:0.8;">When multiple similar objects are present, the one that differs from the rest is most likely to be remembered. Contrast creates memory.</div>
+            </div>
+
+            <div class="ux-law-item" style="padding:18px 0;border-bottom:1px solid rgba(42,26,14,0.1);">
+              <div style="font-size:0.68rem;color:var(--color-signal);letter-spacing:0.14em;text-transform:uppercase;font-weight:600;">11</div>
+              <div style="font-size:1.15rem;font-weight:700;color:var(--color-text-on-light);margin-top:3px;">Zeigarnik Effect</div>
+              <div style="font-size:0.92rem;color:var(--color-text-on-light);margin-top:5px;line-height:1.6;opacity:0.8;">People remember interrupted or incomplete tasks better than completed ones. Progress bars and incomplete states drive re-engagement.</div>
+            </div>
+
+            <div class="ux-law-item" style="padding:18px 0;border-bottom:1px solid rgba(42,26,14,0.1);">
+              <div style="font-size:0.68rem;color:var(--color-signal);letter-spacing:0.14em;text-transform:uppercase;font-weight:600;">12</div>
+              <div style="font-size:1.15rem;font-weight:700;color:var(--color-text-on-light);margin-top:3px;">Goal-Gradient Effect</div>
+              <div style="font-size:0.92rem;color:var(--color-text-on-light);margin-top:5px;line-height:1.6;opacity:0.8;">People accelerate effort as they approach a goal. Showing progress (step 3 of 5) increases task completion rates significantly.</div>
+            </div>
+
+            <div class="ux-law-item" style="padding:18px 0;border-bottom:1px solid rgba(42,26,14,0.1);">
+              <div style="font-size:0.68rem;color:var(--color-signal);letter-spacing:0.14em;text-transform:uppercase;font-weight:600;">13</div>
+              <div style="font-size:1.15rem;font-weight:700;color:var(--color-text-on-light);margin-top:3px;">Recognition over Recall</div>
+              <div style="font-size:0.92rem;color:var(--color-text-on-light);margin-top:5px;line-height:1.6;opacity:0.8;">It's easier to recognize something than to recall it from memory. Show options rather than asking users to remember commands or paths.</div>
+            </div>
+
+            <div class="ux-law-item" style="padding:18px 0;border-bottom:1px solid rgba(42,26,14,0.1);">
+              <div style="font-size:0.68rem;color:var(--color-signal);letter-spacing:0.14em;text-transform:uppercase;font-weight:600;">14</div>
+              <div style="font-size:1.15rem;font-weight:700;color:var(--color-text-on-light);margin-top:3px;">Postel's Law</div>
+              <div style="font-size:0.92rem;color:var(--color-text-on-light);margin-top:5px;line-height:1.6;opacity:0.8;">Be liberal in what you accept, conservative in what you send. Design forms and inputs to handle messy, real-world user input gracefully.</div>
+            </div>
+
+            <div class="ux-law-item" style="padding:18px 0;border-bottom:1px solid rgba(42,26,14,0.1);">
+              <div style="font-size:0.68rem;color:var(--color-signal);letter-spacing:0.14em;text-transform:uppercase;font-weight:600;">15</div>
+              <div style="font-size:1.15rem;font-weight:700;color:var(--color-text-on-light);margin-top:3px;">Pareto Principle</div>
+              <div style="font-size:0.92rem;color:var(--color-text-on-light);margin-top:5px;line-height:1.6;opacity:0.8;">80% of effects come from 20% of causes. Most users use a small subset of features. Optimize ruthlessly for the common case.</div>
+            </div>
+
+            <div class="ux-law-item" style="padding:18px 0;border-bottom:1px solid rgba(42,26,14,0.1);">
+              <div style="font-size:0.68rem;color:var(--color-signal);letter-spacing:0.14em;text-transform:uppercase;font-weight:600;">16</div>
+              <div style="font-size:1.15rem;font-weight:700;color:var(--color-text-on-light);margin-top:3px;">Law of Proximity</div>
+              <div style="font-size:0.92rem;color:var(--color-text-on-light);margin-top:5px;line-height:1.6;opacity:0.8;">Objects near each other are perceived as related. Spacing is not decoration — it communicates structure and relationship.</div>
+            </div>
+
+            <div class="ux-law-item" style="padding:18px 0;border-bottom:1px solid rgba(42,26,14,0.1);">
+              <div style="font-size:0.68rem;color:var(--color-signal);letter-spacing:0.14em;text-transform:uppercase;font-weight:600;">17</div>
+              <div style="font-size:1.15rem;font-weight:700;color:var(--color-text-on-light);margin-top:3px;">Cognitive Load</div>
+              <div style="font-size:0.92rem;color:var(--color-text-on-light);margin-top:5px;line-height:1.6;opacity:0.8;">Every element on screen costs mental effort to process. Reduce unnecessary complexity. If a user has to think, something can be simplified.</div>
+            </div>
+
+            <div class="ux-law-item" style="padding:18px 0;border-bottom:1px solid rgba(42,26,14,0.1);">
+              <div style="font-size:0.68rem;color:var(--color-signal);letter-spacing:0.14em;text-transform:uppercase;font-weight:600;">18</div>
+              <div style="font-size:1.15rem;font-weight:700;color:var(--color-text-on-light);margin-top:3px;">Occam's Razor</div>
+              <div style="font-size:0.92rem;color:var(--color-text-on-light);margin-top:5px;line-height:1.6;opacity:0.8;">Among competing solutions, the simplest one is usually correct. When in doubt, remove. The best feature is the one you don't need to build.</div>
+            </div>
+
+            <div class="ux-law-item" style="padding:18px 0;border-bottom:1px solid rgba(42,26,14,0.1);">
+              <div style="font-size:0.68rem;color:var(--color-signal);letter-spacing:0.14em;text-transform:uppercase;font-weight:600;">19</div>
+              <div style="font-size:1.15rem;font-weight:700;color:var(--color-text-on-light);margin-top:3px;">Mental Models</div>
+              <div style="font-size:0.92rem;color:var(--color-text-on-light);margin-top:5px;line-height:1.6;opacity:0.8;">Users approach your product with existing mental models from past experience. Design with those models in mind — not against them.</div>
+            </div>
+
+            <div class="ux-law-item" style="padding:18px 0;">
+              <div style="font-size:0.68rem;color:var(--color-signal);letter-spacing:0.14em;text-transform:uppercase;font-weight:600;">20</div>
+              <div style="font-size:1.15rem;font-weight:700;color:var(--color-text-on-light);margin-top:3px;">Feedback Loops</div>
+              <div style="font-size:0.92rem;color:var(--color-text-on-light);margin-top:5px;line-height:1.6;opacity:0.8;">Every action needs a reaction. Users need to know their input was received — immediately, clearly, and without ambiguity. Silence is an error state.</div>
+            </div>
+
+          </div><!-- /uxLawsTrack -->
+        </div><!-- /right -->
+      </div>
+      <script>
+        (function() {
+          var track = document.getElementById('uxLawsTrack');
+          var items = track ? track.querySelectorAll('.ux-law-item') : [];
+          var ITEMS = items.length;
+          var ITEM_H = 88;
+          var pos = 0;
+          function scrollTo(newPos) {
+            pos = Math.max(0, Math.min(ITEMS - 3, newPos));
+            track.style.transform = 'translateY(-' + (pos * ITEM_H) + 'px)';
+          }
+          var rightCol = track ? track.parentElement : null;
+          if (rightCol) {
+            rightCol.addEventListener('wheel', function(e) {
+              e.preventDefault();
+              scrollTo(pos + (e.deltaY > 0 ? 1 : -1));
+            }, { passive: false });
+          }
+        })();
+      </script>
+    </section>
+
+    <!-- Component Vocabulary -->
+    <section class="slide" data-beat="3" data-title="Component Vocabulary" data-transition="fade" style="background: var(--color-bg-light-alt) !important;">
+      <div style="position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;gap:0;">
+
+        <!-- Left: heading column -->
+        <div class="fade-in fade-in-1" style="display:flex;flex-direction:column;justify-content:center;padding:calc(var(--header-height) + 40px) 7% 40px 7%;">
+          <p class="label" style="color:var(--color-signal);">Shared Vocabulary</p>
+          <h2 class="heading-2" style="margin-top:var(--space-sm);color:var(--color-text-on-light);">Name what you see.</h2>
+          <p class="body" style="margin-top:var(--space-lg);color:var(--color-text-on-light);line-height:1.7;">
+            When you ask for "a thing that shows more info on hover" you get something random. When you ask for a <strong>tooltip</strong>, everyone — including the AI — knows exactly what you mean.
+          </p>
+          <p class="body" style="margin-top:var(--space-md);color:var(--color-text-on-light);font-size:0.9rem;line-height:1.6;opacity:0.7;">
+            These are the building blocks used across every major design system. Scroll to see them all.
+          </p>
+          <p class="body" style="margin-top:var(--space-lg);font-size:0.8rem;line-height:1.5;">
+            <a href="https://component.gallery/" target="_blank" style="color:var(--color-signal);text-decoration:none;border-bottom:1px solid rgba(196,62,28,0.3);padding-bottom:1px;">component.gallery ↗</a>
+            <span style="color:var(--color-text-on-light);opacity:0.5;margin-left:6px;">— 60+ components across real design systems</span>
+          </p>
+        </div>
+
+        <!-- Right: scrollable 2-col component card grid -->
+        <div id="compGalleryRight" class="fade-in fade-in-2" style="position:relative;overflow:hidden;border-left:1px solid rgba(42,26,14,0.08);">
+          <!-- Fade masks -->
+          <div style="position:absolute;top:0;left:0;right:0;height:80px;background:linear-gradient(to bottom,var(--color-bg-light-alt),transparent);z-index:2;pointer-events:none;"></div>
+          <div style="position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(to top,var(--color-bg-light-alt),transparent);z-index:2;pointer-events:none;"></div>
+          <!-- Track -->
+          <div id="compGalleryTrack" style="padding:calc(var(--header-height) + 40px) 40px 80px;transition:transform 0.45s cubic-bezier(0.4,0,0.2,1);display:grid;grid-template-columns:1fr 1fr;gap:12px;align-content:start;">
+
+            <!-- 1: Button -->
+            <div style="background:#fff;border-radius:10px;padding:14px 16px;border:1px solid rgba(42,26,14,0.08);">
+              <div style="font-size:0.6rem;color:var(--color-signal);letter-spacing:0.12em;text-transform:uppercase;font-weight:700;margin-bottom:10px;">Button</div>
+              <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+                <div style="background:var(--color-signal);color:#fff;padding:7px 16px;border-radius:6px;font-size:0.72rem;font-weight:600;white-space:nowrap;">Primary</div>
+                <div style="background:transparent;color:var(--color-signal);padding:6px 14px;border-radius:6px;font-size:0.72rem;font-weight:600;border:1.5px solid var(--color-signal);white-space:nowrap;">Ghost</div>
+              </div>
+            </div>
+
+            <!-- 2: Input -->
+            <div style="background:#fff;border-radius:10px;padding:14px 16px;border:1px solid rgba(42,26,14,0.08);">
+              <div style="font-size:0.6rem;color:var(--color-signal);letter-spacing:0.12em;text-transform:uppercase;font-weight:700;margin-bottom:10px;">Input</div>
+              <div style="border:1.5px solid #ccc;border-radius:6px;padding:7px 10px;font-size:0.75rem;color:#aaa;background:#fafafa;display:flex;align-items:center;gap:4px;">
+                <span style="display:inline-block;width:1.5px;height:13px;background:var(--color-signal);border-radius:1px;animation:none;"></span>
+                <span>Label...</span>
+              </div>
+            </div>
+
+            <!-- 3: Dropdown -->
+            <div style="background:#fff;border-radius:10px;padding:14px 16px;border:1px solid rgba(42,26,14,0.08);">
+              <div style="font-size:0.6rem;color:var(--color-signal);letter-spacing:0.12em;text-transform:uppercase;font-weight:700;margin-bottom:10px;">Dropdown</div>
+              <div style="position:relative;">
+                <div style="border:1.5px solid #ccc;border-radius:6px;padding:7px 30px 7px 10px;font-size:0.75rem;color:#444;background:#fafafa;">Select option</div>
+                <span style="position:absolute;right:10px;top:50%;transform:translateY(-50%);color:#999;font-size:9px;pointer-events:none;">▼</span>
+                <div style="position:absolute;top:calc(100% + 3px);left:0;right:0;background:#fff;border:1px solid #ddd;border-radius:6px;z-index:5;overflow:hidden;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+                  <div style="padding:5px 10px;font-size:0.7rem;color:#c43e1c;font-weight:600;background:rgba(196,62,28,0.06);">Option A</div>
+                  <div style="padding:5px 10px;font-size:0.7rem;color:#444;">Option B</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4: Toggle -->
+            <div style="background:#fff;border-radius:10px;padding:14px 16px;border:1px solid rgba(42,26,14,0.08);">
+              <div style="font-size:0.6rem;color:var(--color-signal);letter-spacing:0.12em;text-transform:uppercase;font-weight:700;margin-bottom:12px;">Toggle</div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <div style="width:38px;height:21px;background:#ddd;border-radius:11px;position:relative;flex-shrink:0;"><div style="position:absolute;left:3px;top:3px;width:15px;height:15px;background:#fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></div></div>
+                  <span style="font-size:0.7rem;color:#888;">Off</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;">
+                  <div style="width:38px;height:21px;background:var(--color-signal);border-radius:11px;position:relative;flex-shrink:0;"><div style="position:absolute;right:3px;top:3px;width:15px;height:15px;background:#fff;border-radius:50%;box-shadow:0 1px 3px rgba(0,0,0,0.2);"></div></div>
+                  <span style="font-size:0.7rem;color:#333;">On</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 5: Tooltip -->
+            <div style="background:#fff;border-radius:10px;padding:14px 16px;border:1px solid rgba(42,26,14,0.08);">
+              <div style="font-size:0.6rem;color:var(--color-signal);letter-spacing:0.12em;text-transform:uppercase;font-weight:700;margin-bottom:10px;">Tooltip</div>
+              <div style="display:flex;align-items:flex-end;gap:8px;padding-bottom:4px;">
+                <div style="position:relative;display:inline-block;">
+                  <div style="background:#1a1a1a;color:#fff;padding:5px 10px;border-radius:5px;font-size:0.68rem;white-space:nowrap;">Show more info</div>
+                  <div style="position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);border-width:5px 4px 0;border-style:solid;border-color:#1a1a1a transparent transparent;"></div>
+                </div>
+                <svg width="14" height="18" viewBox="0 0 14 18" style="flex-shrink:0;margin-bottom:2px;"><path d="M0 0 L0 14 L3.5 11 L6 17 L8 16 L5.5 10 L10 10Z" fill="#555" stroke="none"/></svg>
+              </div>
+            </div>
+
+            <!-- 6: Modal -->
+            <div style="background:#fff;border-radius:10px;padding:14px 16px;border:1px solid rgba(42,26,14,0.08);position:relative;overflow:hidden;">
+              <div style="font-size:0.6rem;color:var(--color-signal);letter-spacing:0.12em;text-transform:uppercase;font-weight:700;margin-bottom:10px;">Modal</div>
+              <div style="position:relative;height:70px;">
+                <div style="position:absolute;inset:0;background:rgba(0,0,0,0.18);border-radius:4px;"></div>
+                <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff;border-radius:7px;padding:8px 12px;width:110px;box-shadow:0 4px 16px rgba(0,0,0,0.18);">
+                  <div style="font-size:0.65rem;font-weight:700;color:#222;margin-bottom:3px;">Confirm</div>
+                  <div style="font-size:0.6rem;color:#888;margin-bottom:7px;line-height:1.3;">Are you sure?</div>
+                  <div style="display:flex;gap:4px;">
+                    <div style="flex:1;background:#eee;border-radius:4px;padding:3px 0;font-size:0.56rem;text-align:center;color:#666;">Cancel</div>
+                    <div style="flex:1;background:var(--color-signal);border-radius:4px;padding:3px 0;font-size:0.56rem;text-align:center;color:#fff;font-weight:600;">OK</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 7: Toast -->
+            <div style="background:#fff;border-radius:10px;padding:14px 16px;border:1px solid rgba(42,26,14,0.08);">
+              <div style="font-size:0.6rem;color:var(--color-signal);letter-spacing:0.12em;text-transform:uppercase;font-weight:700;margin-bottom:10px;">Toast</div>
+              <div style="display:flex;flex-direction:column;gap:6px;">
+                <div style="background:#1a1a1a;color:#fff;padding:7px 10px;border-radius:7px;font-size:0.68rem;display:flex;align-items:center;gap:7px;">
+                  <span style="width:7px;height:7px;background:#4ade80;border-radius:50%;flex-shrink:0;"></span>Saved
+                </div>
+                <div style="background:#fef2f2;border:1px solid #fca5a5;color:#991b1b;padding:7px 10px;border-radius:7px;font-size:0.68rem;display:flex;align-items:center;gap:7px;">
+                  <span style="width:7px;height:7px;background:#ef4444;border-radius:50%;flex-shrink:0;"></span>Error
+                </div>
+              </div>
+            </div>
+
+            <!-- 8: Tabs -->
+            <div style="background:#fff;border-radius:10px;padding:14px 16px;border:1px solid rgba(42,26,14,0.08);">
+              <div style="font-size:0.6rem;color:var(--color-signal);letter-spacing:0.12em;text-transform:uppercase;font-weight:700;margin-bottom:10px;">Tabs</div>
+              <div style="border-bottom:2px solid #ececec;">
+                <div style="display:flex;gap:0;">
+                  <div style="padding:5px 12px;font-size:0.7rem;color:var(--color-signal);font-weight:600;border-bottom:2px solid var(--color-signal);margin-bottom:-2px;white-space:nowrap;">Overview</div>
+                  <div style="padding:5px 12px;font-size:0.7rem;color:#aaa;white-space:nowrap;">Details</div>
+                  <div style="padding:5px 12px;font-size:0.7rem;color:#aaa;white-space:nowrap;">Activity</div>
+                </div>
+              </div>
+              <div style="padding-top:8px;font-size:0.68rem;color:#888;">Tab panel content</div>
+            </div>
+
+            <!-- 9: Accordion -->
+            <div style="background:#fff;border-radius:10px;padding:14px 16px;border:1px solid rgba(42,26,14,0.08);">
+              <div style="font-size:0.6rem;color:var(--color-signal);letter-spacing:0.12em;text-transform:uppercase;font-weight:700;margin-bottom:10px;">Accordion</div>
+              <div style="border:1px solid #ececec;border-radius:6px;overflow:hidden;">
+                <div style="padding:7px 10px;font-size:0.7rem;font-weight:600;color:#222;display:flex;justify-content:space-between;background:#f7f7f7;border-bottom:1px solid #ececec;"><span>Section A</span><span style="color:var(--color-signal);">−</span></div>
+                <div style="padding:7px 10px;font-size:0.65rem;color:#888;line-height:1.4;">Expanded content shown here.</div>
+                <div style="padding:7px 10px;font-size:0.7rem;font-weight:600;color:#555;display:flex;justify-content:space-between;background:#f7f7f7;border-top:1px solid #ececec;"><span>Section B</span><span style="color:#aaa;">+</span></div>
+              </div>
+            </div>
+
+            <!-- 10: Carousel -->
+            <div style="background:#fff;border-radius:10px;padding:14px 16px;border:1px solid rgba(42,26,14,0.08);">
+              <div style="font-size:0.6rem;color:var(--color-signal);letter-spacing:0.12em;text-transform:uppercase;font-weight:700;margin-bottom:10px;">Carousel</div>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <div style="color:#ccc;font-size:1.1rem;line-height:1;flex-shrink:0;">‹</div>
+                <div style="flex:1;background:#f0ede8;border-radius:6px;height:52px;display:flex;align-items:center;justify-content:center;font-size:0.68rem;color:#888;font-weight:500;">Slide 2 / 4</div>
+                <div style="color:var(--color-signal);font-size:1.1rem;line-height:1;flex-shrink:0;">›</div>
+              </div>
+              <div style="display:flex;gap:4px;justify-content:center;margin-top:8px;">
+                <div style="width:5px;height:5px;border-radius:50%;background:#ddd;"></div>
+                <div style="width:5px;height:5px;border-radius:50%;background:var(--color-signal);"></div>
+                <div style="width:5px;height:5px;border-radius:50%;background:#ddd;"></div>
+                <div style="width:5px;height:5px;border-radius:50%;background:#ddd;"></div>
+              </div>
+            </div>
+
+            <!-- 11: Badge / Chip -->
+            <div style="background:#fff;border-radius:10px;padding:14px 16px;border:1px solid rgba(42,26,14,0.08);">
+              <div style="font-size:0.6rem;color:var(--color-signal);letter-spacing:0.12em;text-transform:uppercase;font-weight:700;margin-bottom:10px;">Badge / Chip</div>
+              <div style="display:flex;gap:5px;flex-wrap:wrap;">
+                <span style="background:#fee2e2;color:#c43e1c;padding:3px 9px;border-radius:99px;font-size:0.63rem;font-weight:600;">New</span>
+                <span style="background:#e5e7eb;color:#444;padding:3px 9px;border-radius:99px;font-size:0.63rem;">Design</span>
+                <span style="background:#d1fae5;color:#065f46;padding:3px 9px;border-radius:99px;font-size:0.63rem;">Active</span>
+                <span style="background:#ede9fe;color:#5b21b6;padding:3px 9px;border-radius:99px;font-size:0.63rem;">Beta</span>
+              </div>
+            </div>
+
+            <!-- 12: Avatar -->
+            <div style="background:#fff;border-radius:10px;padding:14px 16px;border:1px solid rgba(42,26,14,0.08);">
+              <div style="font-size:0.6rem;color:var(--color-signal);letter-spacing:0.12em;text-transform:uppercase;font-weight:700;margin-bottom:10px;">Avatar</div>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <div style="width:36px;height:36px;border-radius:50%;background:var(--color-signal);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:#fff;flex-shrink:0;">NM</div>
+                <div style="width:30px;height:30px;border-radius:50%;background:#4a6fa5;display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;color:#fff;flex-shrink:0;">JD</div>
+                <div style="width:26px;height:26px;border-radius:50%;background:#065f46;display:flex;align-items:center;justify-content:center;font-size:0.58rem;font-weight:700;color:#fff;flex-shrink:0;">+3</div>
+                <div style="margin-left:4px;">
+                  <div style="font-size:0.7rem;font-weight:600;color:#222;">Nick M.</div>
+                  <div style="font-size:0.6rem;color:#888;">+ 2 others</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 13: Card -->
+            <div style="background:#fff;border-radius:10px;padding:14px 16px;border:1px solid rgba(42,26,14,0.08);">
+              <div style="font-size:0.6rem;color:var(--color-signal);letter-spacing:0.12em;text-transform:uppercase;font-weight:700;margin-bottom:10px;">Card</div>
+              <div style="background:#f7f7f7;border-radius:7px;overflow:hidden;border:1px solid #ececec;">
+                <div style="height:32px;background:linear-gradient(135deg,#c43e1c 0%,#e87050 100%);"></div>
+                <div style="padding:7px 9px;">
+                  <div style="font-size:0.7rem;font-weight:700;color:#222;margin-bottom:2px;">Card Title</div>
+                  <div style="font-size:0.6rem;color:#888;line-height:1.3;">Supporting description text</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 14: Progress Bar -->
+            <div style="background:#fff;border-radius:10px;padding:14px 16px;border:1px solid rgba(42,26,14,0.08);">
+              <div style="font-size:0.6rem;color:var(--color-signal);letter-spacing:0.12em;text-transform:uppercase;font-weight:700;margin-bottom:12px;">Progress Bar</div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:#888;margin-bottom:5px;"><span>Uploading…</span><span>68%</span></div>
+                <div style="background:#ececec;border-radius:99px;height:7px;overflow:hidden;"><div style="background:var(--color-signal);width:68%;height:100%;border-radius:99px;"></div></div>
+              </div>
+              <div style="margin-top:10px;">
+                <div style="display:flex;justify-content:space-between;font-size:0.62rem;color:#888;margin-bottom:5px;"><span>Step 3 of 5</span></div>
+                <div style="display:flex;gap:3px;">
+                  <div style="flex:1;height:5px;background:var(--color-signal);border-radius:2px;"></div>
+                  <div style="flex:1;height:5px;background:var(--color-signal);border-radius:2px;"></div>
+                  <div style="flex:1;height:5px;background:var(--color-signal);border-radius:2px;"></div>
+                  <div style="flex:1;height:5px;background:#ddd;border-radius:2px;"></div>
+                  <div style="flex:1;height:5px;background:#ddd;border-radius:2px;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 15: Breadcrumb -->
+            <div style="background:#fff;border-radius:10px;padding:14px 16px;border:1px solid rgba(42,26,14,0.08);">
+              <div style="font-size:0.6rem;color:var(--color-signal);letter-spacing:0.12em;text-transform:uppercase;font-weight:700;margin-bottom:10px;">Breadcrumb</div>
+              <div style="display:flex;align-items:center;gap:4px;font-size:0.7rem;flex-wrap:wrap;">
+                <a style="color:var(--color-signal);text-decoration:none;font-weight:500;">Home</a>
+                <span style="color:#ccc;">/</span>
+                <span style="color:#888;">Library</span>
+                <span style="color:#ccc;">/</span>
+                <span style="color:#333;font-weight:600;">Components</span>
+              </div>
+              <div style="margin-top:10px;display:flex;align-items:center;gap:4px;font-size:0.7rem;">
+                <span style="color:var(--color-signal);">⌂</span>
+                <span style="color:#ccc;">›</span>
+                <span style="color:#888;">Settings</span>
+                <span style="color:#ccc;">›</span>
+                <span style="color:#333;font-weight:600;">Profile</span>
+              </div>
+            </div>
+
+            <!-- 16: Pagination -->
+            <div style="background:#fff;border-radius:10px;padding:14px 16px;border:1px solid rgba(42,26,14,0.08);">
+              <div style="font-size:0.6rem;color:var(--color-signal);letter-spacing:0.12em;text-transform:uppercase;font-weight:700;margin-bottom:12px;">Pagination</div>
+              <div style="display:flex;gap:4px;align-items:center;flex-wrap:wrap;">
+                <div style="width:24px;height:24px;border-radius:5px;border:1px solid #ddd;display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:#aaa;">‹</div>
+                <div style="width:24px;height:24px;border-radius:5px;border:1px solid #ddd;display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:#555;">1</div>
+                <div style="width:24px;height:24px;border-radius:5px;background:var(--color-signal);display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:#fff;font-weight:700;">2</div>
+                <div style="width:24px;height:24px;border-radius:5px;border:1px solid #ddd;display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:#555;">3</div>
+                <div style="font-size:0.65rem;color:#aaa;padding:0 2px;">···</div>
+                <div style="width:24px;height:24px;border-radius:5px;border:1px solid #ddd;display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:#555;">9</div>
+                <div style="width:24px;height:24px;border-radius:5px;border:1px solid #ddd;display:flex;align-items:center;justify-content:center;font-size:0.65rem;color:#aaa;">›</div>
+              </div>
+            </div>
+
+            <!-- 17: Sidebar Nav -->
+            <div style="background:#fff;border-radius:10px;padding:14px 16px;border:1px solid rgba(42,26,14,0.08);">
+              <div style="font-size:0.6rem;color:var(--color-signal);letter-spacing:0.12em;text-transform:uppercase;font-weight:700;margin-bottom:10px;">Sidebar Nav</div>
+              <div style="background:#f7f7f7;border-radius:7px;overflow:hidden;border:1px solid #ececec;">
+                <div style="padding:5px 10px 5px 10px;font-size:0.58rem;color:#aaa;letter-spacing:0.1em;text-transform:uppercase;font-weight:600;border-bottom:1px solid #ececec;">Menu</div>
+                <div style="padding:6px 10px;font-size:0.7rem;color:var(--color-signal);background:rgba(196,62,28,0.07);font-weight:600;border-left:2px solid var(--color-signal);">⊡ Dashboard</div>
+                <div style="padding:6px 10px;font-size:0.7rem;color:#666;">◷ Analytics</div>
+                <div style="padding:6px 10px;font-size:0.7rem;color:#666;">⚙ Settings</div>
+              </div>
+            </div>
+
+            <!-- 18: Command Bar -->
+            <div style="background:#fff;border-radius:10px;padding:14px 16px;border:1px solid rgba(42,26,14,0.08);">
+              <div style="font-size:0.6rem;color:var(--color-signal);letter-spacing:0.12em;text-transform:uppercase;font-weight:700;margin-bottom:10px;">Command Bar</div>
+              <div style="background:#1a1a1a;border-radius:8px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,0.18);">
+                <div style="padding:8px 10px;display:flex;align-items:center;gap:7px;border-bottom:1px solid rgba(255,255,255,0.08);">
+                  <span style="font-size:0.75rem;color:#666;">⌕</span>
+                  <span style="font-size:0.7rem;color:#888;flex:1;">Search commands…</span>
+                  <span style="background:#2a2a2a;border-radius:3px;padding:1px 5px;font-size:0.55rem;color:#666;border:1px solid #333;">⌘K</span>
+                </div>
+                <div style="padding:5px 10px;font-size:0.68rem;color:var(--color-signal);font-weight:500;">New Document</div>
+                <div style="padding:5px 10px;font-size:0.68rem;color:#aaa;">Open Recent</div>
+              </div>
+            </div>
+
+          </div><!-- end track -->
+        </div><!-- end right -->
+      </div>
+
+      <script>
+      (function() {
+        var track = document.getElementById('compGalleryTrack');
+        var right = document.getElementById('compGalleryRight');
+        if (!track || !right) return;
+        var ROW_H = 130; // card height + gap
+        var TOTAL_ROWS = 9; // ceil(18/2)
+        var pos = 0;
+        function scrollTo(newPos) {
+          pos = Math.max(0, Math.min(TOTAL_ROWS - 4, newPos));
+          track.style.transform = 'translateY(-' + (pos * ROW_H) + 'px)';
+        }
+        right.addEventListener('wheel', function(e) {
+          e.preventDefault();
+          scrollTo(pos + (e.deltaY > 0 ? 1 : -1));
+        }, { passive: false });
+      })();
+      </script>
+    </section>
+
+    <!-- Visual Hierarchy & Typography -->
+    <section class="slide" data-beat="3" data-title="Visual Hierarchy" data-transition="fade" style="background: var(--color-bg-dark) !important;">
+      <div style="position:absolute;inset:0;display:flex;align-items:stretch;padding:0;">
+
+        <!-- Left: heading column -->
+        <div class="fade-in fade-in-1" style="width:36%;flex-shrink:0;display:flex;flex-direction:column;justify-content:center;padding:calc(var(--header-height) + 40px) 5% 40px 7%;">
+          <p class="label" style="color:var(--color-accent);">Hierarchy &amp; Type</p>
+          <h2 class="heading-2" style="margin-top:var(--space-sm);">Guide the eye.</h2>
+          <p class="body" style="margin-top:var(--space-lg);line-height:1.7;">
+            Visual hierarchy controls what people see first, second, and third. Size, weight, contrast, and spacing all create reading order.
+          </p>
+          <p class="body" style="margin-top:var(--space-md);color:var(--color-text-muted);font-size:0.9rem;line-height:1.6;">
+            Typography is your most powerful tool. The numbered sequence on the right shows exactly how hierarchy is felt before it's read.
+          </p>
+        </div>
+
+        <!-- Right: "you will read this first" demo -->
+        <div class="fade-in fade-in-2" style="flex:1;display:flex;align-items:center;justify-content:center;padding:calc(var(--header-height) + 32px) 5% 32px;">
+          <div style="width:100%;max-width:580px;padding:48px 52px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:20px;position:relative;">
+
+            <!-- Step 1: Dominant headline -->
+            <div style="position:relative;margin-bottom:28px;">
+
+              <div style="font-family:var(--font-display);font-size:3.6rem;font-weight:400;color:#ffffff;line-height:1.05;letter-spacing:-0.01em;">You read this first.</div>
+            </div>
+
+            <!-- Step 2: Subheading -->
+            <div style="position:relative;margin-bottom:20px;">
+
+              <div style="font-size:1.25rem;font-weight:600;color:rgba(240,237,232,0.88);line-height:1.3;">Then your eye finds this subheading.</div>
+            </div>
+
+            <!-- Step 3: Body text -->
+            <div style="position:relative;margin-bottom:24px;">
+
+              <div style="font-size:0.95rem;font-weight:400;color:rgba(240,237,232,0.55);line-height:1.7;max-width:420px;">After the headline and subheading have established context, you arrive here. Body text is intentionally quiet — it rewards those who want more.</div>
+            </div>
+
+            <!-- Step 4: Label/metadata -->
+            <div style="position:relative;margin-bottom:28px;">
+
+              <div style="font-size:0.68rem;font-weight:500;color:rgba(240,237,232,0.3);letter-spacing:0.12em;text-transform:uppercase;">Supporting detail · Category label · Metadata</div>
+            </div>
+
+            <!-- Step 5: CTA -->
+            <div style="position:relative;display:inline-block;">
+
+              <div style="background:var(--color-signal);color:#fff;padding:12px 28px;border-radius:10px;font-size:0.95rem;font-weight:700;letter-spacing:0.02em;display:inline-block;">Then you want to press this.</div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Color Theory -->
+    <section class="slide" data-beat="3" data-title="Color Theory" data-transition="fade" style="background: var(--color-bg-light) !important;">
+      <div class="slide-center" style="max-width:1100px;padding:0 var(--space-2xl);">
+        <p class="label fade-in fade-in-1" style="color:var(--color-signal);">Color</p>
+        <h2 class="heading-2 fade-in fade-in-2" style="color:var(--color-text-on-light);margin-top:var(--space-sm);">Color communicates before words do.</h2>
+        <p class="body fade-in fade-in-3" style="margin-top:var(--space-md);color:var(--color-text-on-light);max-width:640px;margin-left:auto;margin-right:auto;line-height:1.6;">
+          Contrast creates focus. Semantic color creates meaning. A limited palette creates cohesion.
+        </p>
+        <div class="fade-in fade-in-4" style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-2xl);margin-top:var(--space-2xl);">
+
+          <!-- Contrast -->
+          <div style="text-align:center;">
+            <div style="display:flex;gap:12px;justify-content:center;align-items:center;margin-bottom:var(--space-lg);">
+              <div style="width:120px;height:120px;background:#2a1a0e;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#eeeee4;font-weight:800;font-size:2.8rem;">Aa</div>
+              <div style="width:120px;height:120px;background:#d4c9b8;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#c8bdb0;font-weight:800;font-size:2.8rem;">Aa</div>
+            </div>
+            <div style="font-size:1rem;font-weight:700;color:var(--color-text-on-light);">Contrast</div>
+            <div style="font-size:0.85rem;color:var(--color-text-on-light);margin-top:6px;line-height:1.5;opacity:0.75;">4.5:1 minimum for readable text.<br>High contrast = high priority.</div>
+          </div>
+
+          <!-- Semantic -->
+          <div style="text-align:center;">
+            <div style="display:flex;gap:10px;justify-content:center;margin-bottom:var(--space-lg);flex-wrap:wrap;">
+              <div style="width:80px;height:80px;background:#d93025;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;" title="Error/Danger">⛔</div>
+              <div style="width:80px;height:80px;background:#f59e0b;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;" title="Warning">⚠️</div>
+              <div style="width:80px;height:80px;background:#16a34a;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;" title="Success">✅</div>
+              <div style="width:80px;height:80px;background:#2563eb;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;" title="Info">ℹ️</div>
+            </div>
+            <div style="font-size:1rem;font-weight:700;color:var(--color-text-on-light);">Semantic Color</div>
+            <div style="font-size:0.85rem;color:var(--color-text-on-light);margin-top:6px;line-height:1.5;opacity:0.75;">Red = danger, green = success.<br>Color carries meaning before reading.</div>
+          </div>
+
+          <!-- Limited palette — actual presentation palette -->
+          <div style="text-align:center;">
+            <div style="display:flex;gap:8px;justify-content:center;margin-bottom:var(--space-lg);align-items:flex-end;">
+              <div style="width:52px;height:100px;background:#0f0d0b;border-radius:10px;border:1px solid rgba(0,0,0,0.1);"></div>
+              <div style="width:52px;height:80px;background:#1e1a16;border-radius:10px;"></div>
+              <div style="width:52px;height:100px;background:#c43e1c;border-radius:10px;"></div>
+              <div style="width:52px;height:70px;background:#e8e2d9;border-radius:10px;border:1px solid rgba(0,0,0,0.08);"></div>
+              <div style="width:52px;height:100px;background:#eeeee4;border-radius:10px;border:1px solid rgba(0,0,0,0.08);"></div>
+            </div>
+            <div style="font-size:1rem;font-weight:700;color:var(--color-text-on-light);">Limited Palette</div>
+            <div style="font-size:0.85rem;color:var(--color-text-on-light);margin-top:6px;line-height:1.5;opacity:0.75;">This presentation's actual palette.<br>1 signal + 4 neutrals = cohesion.</div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================
          BEAT 4 — THE WORKFLOW
          ======================================================== -->
 
     <!-- Slide 13: Here's how it actually works -->
-    <section class="slide" data-id="workflow" data-beat="4" data-title="The Workflow" data-transition="zoom" data-3d="float">
+    <section class="slide" data-id="workflow" data-beat="4" data-title="The Proof" data-transition="zoom" data-3d="float">
       <div class="slide-center">
-        <p class="label fade-in fade-in-1">Putting it into practice</p>
+        <p class="label fade-in fade-in-1">The proof</p>
         <h1 class="heading-1 fade-in fade-in-2" style="margin-top: var(--space-md);">
-          Here's how it<br><span class="accent">actually works.</span>
+          Same AI. Same task.<br><span class="accent">Different words.</span>
         </h1>
         <p class="body-large fade-in fade-in-3" style="margin-top: var(--space-xl); max-width: 650px; margin-left: auto; margin-right: auto;">
-          Vocabulary transforms your prompts. Let's see the difference.
+          Watch what happens when you swap vague descriptions for design vocabulary.
         </p>
       </div>
     </section>
 
     <!-- Slide 14: Before/After -->
     <section class="slide" data-beat="4" data-title="Before / After" data-transition="zoom" data-3d="earth">
-      <div class="slide-center" style="max-width: 1100px;">
-        <h2 class="heading-3 fade-in fade-in-1" style="margin-bottom: var(--space-2xl);">The power of vocabulary</h2>
+      <div style="width: 100%; max-width: 1200px; padding: 0 var(--space-2xl);">
+        <h2 class="heading-3 fade-in fade-in-1" style="margin-bottom: var(--space-xl); text-align: center;">The power of vocabulary</h2>
         <div class="before-after fade-in fade-in-2">
           <div class="panel">
             <div class="panel-label bad">✕ Without vocabulary</div>
             <p class="prompt-text">
               "Make me a dashboard that looks good. It should show user stats and have some charts. Make it modern and clean."
             </p>
+            <div class="panel-screenshot" id="screenshot-without">
+              <img src="assets/bad%20design%20example.png" alt="Bad design example — without vocabulary" />
+            </div>
           </div>
           <div class="panel">
             <div class="panel-label good">✦ With vocabulary</div>
             <p class="prompt-text">
               "Create a dashboard with a clear visual hierarchy: primary metric cards at the top with large type, secondary charts below. Use 24px spacing rhythm, muted backgrounds for data containers, and a single accent color for CTAs. Left sidebar navigation, content area uses a 12-column grid."
             </p>
+            <div class="panel-screenshot" id="screenshot-with">
+              <img src="assets/good%20design%20example.png" alt="Good design example — with vocabulary" />
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Slide 15: The Tools -->
-    <section class="slide" data-beat="4" data-title="The Tools" data-transition="zoom" style="background: #f5f5f5 !important;">
-      <div class="slide-split">
-        <div class="content">
-          <p class="label fade-in fade-in-1" style="color: #888;">Your next steps</p>
-          <h2 class="heading-2 fade-in fade-in-2" style="color: #1a1a1a;">Working With the Tools</h2>
-          <div class="body fade-in fade-in-3" style="margin-top: var(--space-md);">
-            <p style="margin-bottom: var(--space-lg); color: #444;">
-              <strong style="color: #1a1a1a;">1. Get a Figma link</strong><br>
-              Ask your designer for a file prepared for AI. A well-structured Figma file dramatically increases your output.
-            </p>
-            <p style="margin-bottom: var(--space-lg); color: #444;">
-              <strong style="color: #1a1a1a;">2. Figma MCP</strong><br>
-              Connect AI directly to the design file. Read components, inspect tokens, understand the system.
-              <br><a href="https://modelcontextprotocol.io" target="_blank" style="color: var(--color-accent); text-decoration: underline;">📎 MCP Documentation</a>
-            </p>
-            <p style="margin-bottom: var(--space-lg); color: #444;">
-              <strong style="color: #1a1a1a;">3. Design Partner Skill</strong><br>
-              An AI skill with design vocabulary, heuristics, and component knowledge baked in. Install it and start designing.
-              <br><a href="#" onclick="document.getElementById('glossaryDialog').showModal(); return false;" style="color: var(--color-accent); text-decoration: underline;">📖 Open Design Glossary</a>
+    <!-- Visual Debugging Tools -->
+    <section class="slide slide-boat" data-beat="2" data-title="Right-Sized Tools" data-transition="fade-up">
+      <canvas id="boatSunrise" style="position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0;"></canvas>
+      <div class="boat-content fade-in fade-in-1">
+        <p class="label">The right tool for the job</p>
+        <h2 class="heading-2 fade-in fade-in-2" style="margin-top: var(--space-md); color: #fff;">
+          Most people need a <span class="accent">dinghy</span>,<br>not an aircraft carrier.
+        </h2>
+        <p class="body fade-in fade-in-3" style="margin-top: var(--space-lg); max-width: 420px; color: #fff;">
+          Today's creative tools are built for every use case. They're powerful — but complex. What if you could build exactly what you need, nothing more?
+        </p>
+        <p class="body fade-in fade-in-4" style="margin-top: var(--space-md); max-width: 420px; color: rgba(255,255,255,0.7);">
+          AI makes purpose-built tools possible. Personal, precise, and yours.
+        </p>
+      </div>
+      <div class="boat-image fade-in fade-in-2">
+        <img id="boatImg" src="assets/2024-talk/extracted/image-13-1.png" alt="A tiny tugboat next to a massive aircraft carrier" />
+      </div>
+    </section>
+
+    <!-- ========================================================
+         BEAT 2 (cont.) — INTERACTIVE DOCUMENTS
+         ======================================================== -->
+
+    <!-- Slide 12: Interactive Documents -->
+    <section class="slide" data-beat="4" data-title="Visual Debugging Tools" data-transition="fade" style="background: var(--color-bg-dark) !important; padding: 0 !important;">
+      <div style="position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;gap:0;">
+
+        <!-- Left: description -->
+        <div class="fade-in fade-in-1" style="display:flex;flex-direction:column;justify-content:center;padding:calc(var(--header-height) + 40px) 7% 40px 7%;">
+          <p class="label" style="color:var(--color-signal);">Techniques</p>
+          <h2 class="heading-2 fade-in fade-in-2" style="margin-top:var(--space-sm);">Build your own<br>design panel.</h2>
+          <p class="body fade-in fade-in-3" style="margin-top:var(--space-lg);color:var(--color-text-muted);line-height:1.7;">
+            A visual debugging tool turns your running product into an editable canvas. Click any element, tweak values, copy the output. No devtools spelunking required.
+          </p>
+          <p class="body fade-in fade-in-4" style="margin-top:var(--space-md);color:var(--color-text-dim);font-size:0.9rem;line-height:1.6;">
+            Drop it into any vibe-coded project — Cursor, VS Code, a plain HTML file. One script tag. Instant design feedback loop.
+          </p>
+          <div class="fade-in fade-in-4" style="margin-top:var(--space-xl);display:flex;align-items:center;gap:12px;">
+            <div style="width:32px;height:32px;background:var(--color-signal);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#000;flex-shrink:0;">D</div>
+            <span style="font-size:0.85rem;color:var(--color-text-dim);font-style:italic;">Press D to see it live right now.</span>
+          </div>
+        </div>
+
+        <!-- Right: code snippet -->
+        <div class="fade-in fade-in-2" style="display:flex;flex-direction:column;justify-content:center;padding:calc(var(--header-height) + 40px) 7% 40px 5%;border-left:1px solid rgba(255,255,255,0.06);">
+          <div style="background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.08);border-radius:12px;overflow:hidden;">
+            <!-- Code header -->
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,0.07);background:rgba(255,255,255,0.03);">
+              <div style="display:flex;gap:6px;">
+                <div style="width:10px;height:10px;border-radius:50%;background:#ff5f57;"></div>
+                <div style="width:10px;height:10px;border-radius:50%;background:#febc2e;"></div>
+                <div style="width:10px;height:10px;border-radius:50%;background:#28c840;"></div>
+              </div>
+              <span style="font-size:10px;color:#444;font-family:'Courier New',monospace;">debug-panel.js</span>
+              <button onclick="
+                var code = document.getElementById('debugSnippet').textContent;
+                navigator.clipboard.writeText(code.trim());
+                this.textContent = '✓ Copied';
+                var btn = this;
+                setTimeout(function(){ btn.textContent = 'Copy'; }, 1800);
+              " style="font-size:10px;color:#a78bfa;background:rgba(167,139,250,0.12);border:1px solid rgba(167,139,250,0.25);border-radius:5px;padding:3px 10px;cursor:pointer;">Copy</button>
+            </div>
+            <!-- Code body -->
+            <pre id="debugSnippet" style="margin:0;padding:20px;font-family:'Courier New',monospace;font-size:12px;line-height:1.7;color:#cdd6f4;overflow-x:auto;"><span style="color:#6c7086;">// Drop into any HTML project</span>
+<span style="color:#cba6f7;">document</span><span style="color:#89b4fa;">.addEventListener</span>(<span style="color:#a6e3a1;">'keydown'</span>, <span style="color:#cba6f7;">e</span> => {
+  <span style="color:#89dceb;">if</span> (<span style="color:#cba6f7;">e</span>.key !== <span style="color:#a6e3a1;">'d'</span>) <span style="color:#89dceb;">return</span>;
+  <span style="color:#89dceb;">let</span> <span style="color:#cba6f7;">panel</span> = <span style="color:#cba6f7;">document</span>.<span style="color:#89b4fa;">getElementById</span>(<span style="color:#a6e3a1;">'_dbg'</span>);
+  <span style="color:#89dceb;">if</span> (!<span style="color:#cba6f7;">panel</span>) {
+    <span style="color:#cba6f7;">panel</span> = <span style="color:#cba6f7;">document</span>.<span style="color:#89b4fa;">createElement</span>(<span style="color:#a6e3a1;">'div'</span>);
+    <span style="color:#cba6f7;">panel</span>.id = <span style="color:#a6e3a1;">'_dbg'</span>;
+    <span style="color:#6c7086;">// style it, add controls, wire up clicks</span>
+    <span style="color:#cba6f7;">document</span>.<span style="color:#89b4fa;">body</span>.<span style="color:#89b4fa;">appendChild</span>(<span style="color:#cba6f7;">panel</span>);
+  }
+  <span style="color:#cba6f7;">panel</span>.style.display =
+    <span style="color:#cba6f7;">panel</span>.style.display === <span style="color:#a6e3a1;">'none'</span>
+      ? <span style="color:#a6e3a1;">'block'</span> : <span style="color:#a6e3a1;">'none'</span>;
+});</pre>
+          </div>
+          <!-- Callout -->
+          <div style="margin-top:16px;display:flex;align-items:flex-start;gap:10px;padding:12px 16px;background:rgba(167,139,250,0.07);border:1px solid rgba(167,139,250,0.15);border-radius:8px;">
+            <span style="font-size:16px;flex-shrink:0;">💡</span>
+            <p style="font-size:0.8rem;color:var(--color-text-muted);line-height:1.6;margin:0;">
+              Ask AI to expand this with sliders, color pickers, and a copy-CSS button. The full version in this talk is ~800 lines — and was built entirely with prompts.
             </p>
           </div>
         </div>
-        <div class="visual fade-in fade-in-4">
-          <img src="assets/2024-talk/extracted/image-16-1.png" alt="Evolution from coding to direct manipulation" style="border-radius: 12px;" />
+      </div>
+    </section>
+
+    <!-- Design Jigs -->
+    <section class="slide" data-beat="4" data-title="Design Jigs" data-transition="fade" style="background: var(--color-bg-light-alt) !important; padding: 0 !important;">
+      <div style="position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr;gap:0;">
+
+        <!-- Left: description -->
+        <div class="fade-in fade-in-1" style="display:flex;flex-direction:column;justify-content:center;padding:calc(var(--header-height) + 40px) 7% 40px 7%;">
+          <p class="label" style="color:var(--color-signal);">Techniques</p>
+          <h2 class="heading-2 fade-in fade-in-2" style="margin-top:var(--space-sm);color:var(--color-text-on-light);">Jigs: editors inside<br>your prototype.</h2>
+          <p class="body fade-in fade-in-3" style="margin-top:var(--space-lg);color:var(--color-text-on-light);line-height:1.7;">
+            A jig is a small harness you build into your UI. Click an element, drag it to exactly where it belongs, then read off the output. Not devtools. Not guessing. A real editor for your real design.
+          </p>
+          <p class="body fade-in fade-in-4" style="margin-top:var(--space-md);color:var(--color-text-on-light);font-size:0.9rem;line-height:1.6;opacity:0.65;">
+            Build it once, use it for every spacing decision. The output tells you exactly what to hand back to the code.
+          </p>
+        </div>
+
+        <!-- Right: 3-step diagram -->
+        <div class="fade-in fade-in-2" style="display:flex;flex-direction:column;justify-content:center;gap:0;padding:calc(var(--header-height) + 32px) 7% 32px 5%;border-left:1px solid rgba(42,26,14,0.1);">
+
+          <!-- Step 1 -->
+          <div style="display:flex;gap:16px;align-items:flex-start;padding:18px 0;border-bottom:1px solid rgba(42,26,14,0.08);">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--color-signal);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;">1</div>
+            <div style="flex:1;">
+              <div style="font-size:1rem;font-weight:700;color:var(--color-text-on-light);">Select</div>
+              <div style="font-size:0.85rem;color:var(--color-text-on-light);opacity:0.65;margin-top:4px;line-height:1.5;">Click any element. The jig highlights it and reads its current position and spacing.</div>
+              <div style="margin-top:8px;display:inline-flex;align-items:center;gap:6px;padding:5px 10px;background:rgba(42,26,14,0.06);border:1px solid rgba(42,26,14,0.12);border-radius:6px;">
+                <div style="width:28px;height:18px;border:2px solid var(--color-signal);border-radius:3px;"></div>
+                <span style="font-size:10px;font-family:'Courier New',monospace;color:var(--color-signal);">.hero-title</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2 -->
+          <div style="display:flex;gap:16px;align-items:flex-start;padding:18px 0;border-bottom:1px solid rgba(42,26,14,0.08);">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--color-signal);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;">2</div>
+            <div style="flex:1;">
+              <div style="font-size:1rem;font-weight:700;color:var(--color-text-on-light);">Drag</div>
+              <div style="font-size:0.85rem;color:var(--color-text-on-light);opacity:0.65;margin-top:4px;line-height:1.5;">Click and drag to reposition. The element moves live — you see exactly what it looks like in context.</div>
+              <div style="margin-top:8px;display:inline-flex;align-items:center;gap:8px;padding:5px 12px;background:rgba(42,26,14,0.06);border:1px solid rgba(42,26,14,0.12);border-radius:6px;">
+                <span style="font-size:13px;">↔</span>
+                <span style="font-size:10px;font-family:'Courier New',monospace;color:var(--color-text-on-light);opacity:0.7;">translate(+24px, −8px)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 3 -->
+          <div style="display:flex;gap:16px;align-items:flex-start;padding:18px 0;">
+            <div style="width:36px;height:36px;border-radius:50%;background:var(--color-signal);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;">3</div>
+            <div style="flex:1;">
+              <div style="font-size:1rem;font-weight:700;color:var(--color-text-on-light);">Export</div>
+              <div style="font-size:0.85rem;color:var(--color-text-on-light);opacity:0.65;margin-top:4px;line-height:1.5;">Hit Export. The jig outputs the exact CSS to paste back into your code or hand to AI.</div>
+              <div style="margin-top:8px;padding:8px 12px;background:rgba(42,26,14,0.06);border:1px solid rgba(42,26,14,0.12);border-radius:6px;font-family:'Courier New',monospace;font-size:10px;color:var(--color-signal);line-height:1.7;">
+                /* Jig Export */<br>
+                transform: translate(24px, -8px);
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 15: The Tools -->
+    <section class="slide" data-beat="4" data-title="The Tools" data-transition="zoom" style="background: var(--color-bg-light-alt) !important;">
+      <div class="slide-split">
+        <div class="content" style="position: relative; z-index: 1; width: calc(100% + 80px); padding-right: 80px; background: radial-gradient(ellipse 72% 82% at 25% 50%, rgba(238,238,228,0.88) 40%, rgba(238,238,228,0) 85%);">
+          <p class="label fade-in fade-in-1" style="color: var(--color-signal);">Your toolkit</p>
+          <h2 class="heading-2 fade-in fade-in-2" style="color: var(--color-text-on-light);">Design tools are<br>still worth knowing.</h2>
+          <div class="body fade-in fade-in-3" style="margin-top: var(--space-md);">
+            <p style="margin-bottom: var(--space-lg); color: var(--color-text-on-light);">
+              Design tools aren't going away — they're how you give AI the <em>context</em> it needs to do real work. Components, tokens, spacing systems — all of it becomes AI-readable.
+            </p>
+            <p style="margin-bottom: var(--space-lg); color: var(--color-text-on-light);">
+              <strong>Ask for an AI-ready file.</strong><br>
+              If you're working with a designer, ask them to structure it for AI. A messy file burns tokens fast. A well-structured one gives AI everything it needs.
+            </p>
+            <p style="color: var(--color-text-on-light);">
+              <strong>Connect your tool to AI.</strong><br>
+              Figma MCP lets AI read the design file directly — tokens, spacing, components, all of it. Design right in the canvas, with AI as your co-pilot.
+              <br><a href="https://www.figma.com/developers/mcp" target="_blank" style="color: var(--color-signal); text-decoration: underline;">📎 Figma MCP</a>
+            </p>
+          </div>
+        </div>
+        <div class="visual fade-in fade-in-4" style="overflow: visible; display: flex; align-items: center; justify-content: center;">
+          <img src="assets/2024-talk/extracted/image-16-1.png" alt="Evolution from coding to direct manipulation" style="width: 110%; max-width: none; height: auto; transform: scale(1.6); transform-origin: center center;" />
         </div>
       </div>
     </section>
@@ -544,7 +1905,7 @@
     <dialog id="glossaryDialog" style="max-width: 700px; width: 90%; max-height: 80vh; border: 1px solid #333; border-radius: 16px; background: #111; color: #eee; padding: 0; overflow: hidden;">
       <div style="padding: var(--space-xl) var(--space-2xl); display: flex; flex-direction: column; height: 100%;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-lg);">
-          <h2 style="font-size: var(--font-size-xl); font-weight: 700;">📖 Design Vocabulary Glossary</h2>
+          <h2 style="font-size: var(--font-size-xl); font-family: var(--font-display); font-weight: 400;">📖 Design Vocabulary Glossary</h2>
           <button onclick="this.closest('dialog').close()" style="all: unset; cursor: pointer; font-size: 20px; color: #888; padding: 4px 8px;">✕</button>
         </div>
         <div style="overflow-y: auto; flex: 1; font-size: var(--font-size-sm); line-height: 1.8; color: #ccc;">
@@ -574,33 +1935,125 @@
       </div>
     </dialog>
 
+    <!-- No Figma Seat — framing -->
+    <section class="slide" data-beat="4" data-title="No Figma Seat?" data-transition="hard-cut" style="background: var(--color-bg-dark) !important;">
+      <div class="slide-center" style="max-width:900px;">
+        <p class="label fade-in fade-in-1" style="color:var(--color-signal);">The Ecosystem</p>
+        <h1 class="fade-in fade-in-2" style="font-family:var(--font-display);font-size:5rem;font-weight:400;line-height:0.95;letter-spacing:-0.02em;color:var(--color-text);margin-top:var(--space-lg);">
+          No Figma seat?<br><span style="color:var(--color-signal);">No problem.</span>
+        </h1>
+        <p class="body-large fade-in fade-in-3" style="margin-top:var(--space-2xl);max-width:600px;margin-left:auto;margin-right:auto;color:var(--color-text-muted);line-height:1.7;">
+          The design tool landscape is moving fast. Figma is excellent — but it's not the only path. Open-source, self-hosted, and IDE-native tools are catching up quickly, and most of them work with AI out of the box.
+        </p>
+      </div>
+    </section>
+
+    <!-- Open Design Stack — tool cards -->
+    <section class="slide" data-beat="4" data-title="Open Design Stack" data-transition="fade" style="background: var(--color-bg-light-alt) !important;">
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:calc(var(--header-height) + 40px) var(--space-4xl) 40px;">
+
+        <div class="fade-in fade-in-1" style="text-align:center;margin-bottom:var(--space-2xl);">
+          <p class="label" style="color:var(--color-signal);">Alternatives Worth Knowing</p>
+          <h2 class="heading-2" style="margin-top:var(--space-sm);color:var(--color-text-on-light);">The open design stack.</h2>
+        </div>
+
+        <div class="fade-in fade-in-2" style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-xl);width:100%;max-width:1100px;">
+
+          <!-- Pencil -->
+          <div style="background:#fff;border-radius:16px;padding:32px 28px;border:1px solid rgba(42,26,14,0.08);display:flex;flex-direction:column;gap:var(--space-lg);">
+            <div style="display:flex;align-items:center;gap:14px;">
+              <div style="width:44px;height:44px;background:#1a1a2e;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;">✏️</div>
+              <div>
+                <div style="font-size:1.15rem;font-weight:800;color:#1a1a1a;line-height:1.1;">Pencil</div>
+                <div style="font-size:0.75rem;color:#888;margin-top:2px;">pencil.dev</div>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:0.82rem;font-weight:700;color:var(--color-text-on-light);margin-bottom:6px;">Design without leaving your IDE</div>
+              <p style="font-size:0.82rem;color:#555;line-height:1.6;margin:0;">A VS Code extension that puts a full visual canvas right inside your editor. Design, iterate, and land directly in code — no tab switching required.</p>
+            </div>
+            <div style="margin-top:auto;display:flex;flex-wrap:wrap;gap:5px;">
+              <span style="background:#f0f0f0;color:#444;padding:3px 10px;border-radius:99px;font-size:0.65rem;font-weight:600;">VS Code</span>
+              <span style="background:#f0f0f0;color:#444;padding:3px 10px;border-radius:99px;font-size:0.65rem;font-weight:600;">Canvas</span>
+              <span style="background:#f0f0f0;color:#444;padding:3px 10px;border-radius:99px;font-size:0.65rem;font-weight:600;">Free</span>
+            </div>
+            <a href="https://pencil.dev" target="_blank" style="display:block;text-align:center;padding:9px;border-radius:8px;border:1.5px solid rgba(42,26,14,0.15);font-size:0.75rem;font-weight:600;color:var(--color-text-on-light);text-decoration:none;">pencil.dev ↗</a>
+          </div>
+
+          <!-- Paper -->
+          <div style="background:#fff;border-radius:16px;padding:32px 28px;border:1px solid rgba(42,26,14,0.08);display:flex;flex-direction:column;gap:var(--space-lg);position:relative;">
+            <div style="position:absolute;top:16px;right:16px;background:#fef9ec;border:1px solid rgba(196,62,28,0.2);border-radius:99px;padding:2px 9px;font-size:0.6rem;font-weight:700;color:var(--color-signal);">Alpha</div>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <div style="width:44px;height:44px;background:#f5f0e8;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;">📄</div>
+              <div>
+                <div style="font-size:1.15rem;font-weight:800;color:#1a1a1a;line-height:1.1;">Paper</div>
+                <div style="font-size:0.75rem;color:#888;margin-top:2px;">paper.design</div>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:0.82rem;font-weight:700;color:var(--color-text-on-light);margin-bottom:6px;">A canvas that speaks code</div>
+              <p style="font-size:0.82rem;color:#555;line-height:1.6;margin:0;">HTML/CSS-native canvas — everything you design outputs real, production-ready code. Has an MCP server so AI agents can read and write to the canvas directly.</p>
+            </div>
+            <div style="margin-top:auto;display:flex;flex-wrap:wrap;gap:5px;">
+              <span style="background:#fef3e2;color:#b45309;padding:3px 10px;border-radius:99px;font-size:0.65rem;font-weight:600;">MCP</span>
+              <span style="background:#f0f0f0;color:#444;padding:3px 10px;border-radius:99px;font-size:0.65rem;font-weight:600;">HTML/CSS</span>
+              <span style="background:#f0f0f0;color:#444;padding:3px 10px;border-radius:99px;font-size:0.65rem;font-weight:600;">Free Alpha</span>
+            </div>
+            <a href="https://paper.design" target="_blank" style="display:block;text-align:center;padding:9px;border-radius:8px;border:1.5px solid rgba(42,26,14,0.15);font-size:0.75rem;font-weight:600;color:var(--color-text-on-light);text-decoration:none;">paper.design ↗</a>
+          </div>
+
+          <!-- Penpot -->
+          <div style="background:#fff;border-radius:16px;padding:32px 28px;border:1px solid rgba(42,26,14,0.08);display:flex;flex-direction:column;gap:var(--space-lg);">
+            <div style="display:flex;align-items:center;gap:14px;">
+              <div style="width:44px;height:44px;background:#1d1d2e;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;">🐧</div>
+              <div>
+                <div style="font-size:1.15rem;font-weight:800;color:#1a1a1a;line-height:1.1;">Penpot</div>
+                <div style="font-size:0.75rem;color:#888;margin-top:2px;">penpot.app</div>
+              </div>
+            </div>
+            <div>
+              <div style="font-size:0.82rem;font-weight:700;color:var(--color-text-on-light);margin-bottom:6px;">Open source. MCP-ready. Self-hosted.</div>
+              <p style="font-size:0.82rem;color:#555;line-height:1.6;margin:0;">A full Figma alternative — components, tokens, prototyping. Open source and self-hostable. Has an official MCP server that works with Claude, Cursor, and Copilot.</p>
+            </div>
+            <div style="margin-top:auto;display:flex;flex-wrap:wrap;gap:5px;">
+              <span style="background:#f0fdf4;color:#15803d;padding:3px 10px;border-radius:99px;font-size:0.65rem;font-weight:600;">Open Source</span>
+              <span style="background:#fef3e2;color:#b45309;padding:3px 10px;border-radius:99px;font-size:0.65rem;font-weight:600;">MCP</span>
+              <span style="background:#f0fdf4;color:#15803d;padding:3px 10px;border-radius:99px;font-size:0.65rem;font-weight:600;">Self-host</span>
+            </div>
+            <a href="https://penpot.app" target="_blank" style="display:block;text-align:center;padding:9px;border-radius:8px;border:1.5px solid rgba(42,26,14,0.15);font-size:0.75rem;font-weight:600;color:var(--color-text-on-light);text-decoration:none;">penpot.app ↗</a>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
     <!-- ========================================================
          BEAT 5 — THE TAKEAWAY
          ======================================================== -->
 
     <!-- Slide 16: What you're leaving with -->
-    <section class="slide" data-beat="5" data-title="The Takeaway" data-transition="rise" style="background: #f5f5f5 !important;">
+    <section class="slide" data-beat="5" data-title="Next Steps" data-transition="rise" style="background: var(--color-bg-light-alt) !important;">
       <div class="slide-split">
-        <div class="content">
-          <p class="label fade-in fade-in-1" style="color: #888;">The takeaway</p>
-          <h2 class="heading-2 fade-in fade-in-2" style="color: #1a1a1a;">Creativity lies<br>within each of us.</h2>
+        <div class="content" style="position: relative; z-index: 1; width: calc(100% + 80px); padding-right: 80px; background: radial-gradient(ellipse 72% 82% at 25% 50%, rgba(238,238,228,0.88) 40%, rgba(238,238,228,0) 85%);">
+          <p class="label fade-in fade-in-1" style="color: var(--color-signal);">What to do next</p>
+          <h2 class="heading-2 fade-in fade-in-2" style="color: var(--color-text-on-light);">Your path<br>forward.</h2>
           <div class="body fade-in fade-in-3" style="margin-top: var(--space-lg);">
-            <p style="margin-bottom: var(--space-lg); color: #444;">
-              <strong style="color: #1a1a1a;">Design is a learnable skill.</strong><br>
-              Not the taste part — the communication part. And that's the part that matters most.
+            <p style="margin-bottom: var(--space-lg); color: var(--color-text-on-light);">
+              <strong>Ask for an AI-ready design file.</strong><br>
+              Whether it's Figma, Penpot, or Paper — a well-structured file with components and tokens gives AI everything it needs. A messy one burns through your context fast.
             </p>
-            <p style="margin-bottom: var(--space-lg); color: #444;">
-              <strong style="color: #1a1a1a;">Talk to your designer.</strong><br>
-              Ask for a Figma file structured for AI. Ask about components, tokens, and patterns. The conversation itself makes you better.
+            <p style="margin-bottom: var(--space-lg); color: var(--color-text-on-light);">
+              <strong>Connect your design tool to AI.</strong><br>
+              Figma MCP, Penpot MCP, Paper's native canvas — whichever tool you use, let AI read the design system directly.
             </p>
-            <p style="color: #444;">
-              <strong style="color: #1a1a1a;">Anyone can learn to communicate visually.</strong><br>
-              The tools are no longer gated. The vocabulary is the key.
+            <p style="color: var(--color-text-on-light);">
+              <strong>Use your vocabulary.</strong><br>
+              Not a list of words — the language you've been building this whole talk. Visual hierarchy, tokens, components, rhythm. Put it in every prompt.
             </p>
           </div>
         </div>
-        <div class="visual fade-in fade-in-4">
-          <img src="assets/2024-talk/extracted/image-14-1.png" alt="Collaboration matrix" />
+        <div class="visual fade-in fade-in-4" style="overflow: visible; display: flex; align-items: center; justify-content: center;">
+          <img src="assets/2024-talk/extracted/image-14-1.png" alt="Collaboration matrix" style="width: 110%; max-width: none; height: auto; transform: scale(1.6); transform-origin: center center;" />
         </div>
       </div>
     </section>
@@ -613,76 +2066,102 @@
           <h2 class="heading-2 fade-in fade-in-2">How this presentation<br>was <span class="accent">vibe coded</span></h2>
           <div class="body fade-in fade-in-3" style="margin-top: var(--space-lg);">
             <p style="margin-bottom: var(--space-md);">
-              This entire presentation is a single HTML file — built through conversation with an AI copilot.
+              This entire presentation is a single HTML file — built entirely through conversation with GitHub Copilot. No PowerPoint. No Keynote. No design tool export.
             </p>
             <p style="margin-bottom: var(--space-md);">
-              No PowerPoint. No Keynote. No design tool. Just ideas → words → code.
+              Every slide, interaction, animation, and layout was described in plain language and shaped through iteration.
             </p>
             <p style="color: var(--color-text-muted);">
-              The 3D models are voxel art from MagicaVoxel. The weather is live. The transitions are CSS. The whole thing is ~1,500 lines of hand-shaped HTML.
+              The design editor you saw? Built live in this session. The fly on slide one? Same. This is what vibe coding at scale actually looks like.
             </p>
           </div>
         </div>
         <div class="visual fade-in fade-in-4">
-          <div style="background: var(--color-surface); border-radius: 12px; padding: var(--space-xl); border: 1px solid var(--color-border);">
-            <p class="label" style="margin-bottom: var(--space-lg);">The stack</p>
-            <div style="display: flex; flex-direction: column; gap: var(--space-md);">
-              <div style="display: flex; align-items: center; gap: var(--space-md);">
-                <span style="font-size: 1.5rem;">💬</span>
+          <div style="background: var(--color-surface); border-radius: 16px; padding: var(--space-xl); border: 1px solid var(--color-border); display: flex; flex-direction: column; gap: var(--space-lg);">
+
+            <!-- Headline stats -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-md); text-align: center;">
+              <div style="background: var(--color-bg); border-radius: 10px; padding: var(--space-md);">
+                <div style="font-size: 1.9rem; font-weight: 700; color: var(--color-signal); font-family: var(--font-display); line-height: 1;">32</div>
+                <div style="font-size: var(--font-size-xs); color: var(--color-text-muted); margin-top: 4px;">slides</div>
+              </div>
+              <div style="background: var(--color-bg); border-radius: 10px; padding: var(--space-md);">
+                <div style="font-size: 1.9rem; font-weight: 700; color: var(--color-signal); font-family: var(--font-display); line-height: 1;">12.7k</div>
+                <div style="font-size: var(--font-size-xs); color: var(--color-text-muted); margin-top: 4px;">lines of code</div>
+              </div>
+              <div style="background: var(--color-bg); border-radius: 10px; padding: var(--space-md);">
+                <div style="font-size: 1.9rem; font-weight: 700; color: var(--color-signal); font-family: var(--font-display); line-height: 1;">27</div>
+                <div style="font-size: var(--font-size-xs); color: var(--color-text-muted); margin-top: 4px;">JS + CSS modules</div>
+              </div>
+            </div>
+
+            <!-- Tech stack tags -->
+            <div>
+              <p class="label" style="margin-bottom: var(--space-sm); font-size: var(--font-size-xs);">Technologies</p>
+              <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                <span style="background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 6px; padding: 3px 10px; font-size: var(--font-size-xs); color: var(--color-text);">Vanilla HTML/CSS/JS</span>
+                <span style="background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 6px; padding: 3px 10px; font-size: var(--font-size-xs); color: var(--color-text);">Three.js r128</span>
+                <span style="background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 6px; padding: 3px 10px; font-size: var(--font-size-xs); color: var(--color-text);">MagicaVoxel</span>
+                <span style="background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 6px; padding: 3px 10px; font-size: var(--font-size-xs); color: var(--color-text);">Live Weather API</span>
+                <span style="background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 6px; padding: 3px 10px; font-size: var(--font-size-xs); color: var(--color-text);">CSS Custom Properties</span>
+                <span style="background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 6px; padding: 3px 10px; font-size: var(--font-size-xs); color: var(--color-text);">GitHub Copilot</span>
+                <span style="background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 6px; padding: 3px 10px; font-size: var(--font-size-xs); color: var(--color-text);">Figma MCP</span>
+                <span style="background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 6px; padding: 3px 10px; font-size: var(--font-size-xs); color: var(--color-text);">OBJ + GLTF + MTL</span>
+              </div>
+            </div>
+
+            <!-- Feature breakdown -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-sm);">
+              <div style="display: flex; align-items: flex-start; gap: var(--space-sm);">
+                <span style="font-size: 1.1rem; line-height: 1.4;">🎬</span>
                 <div>
-                  <strong style="color: var(--color-text);">Conversation</strong>
-                  <p style="font-size: var(--font-size-sm); color: var(--color-text-muted);">Brainstorm → outline → narrative arc</p>
+                  <strong style="font-size: var(--font-size-sm); color: var(--color-text);">6 transition types</strong>
+                  <p style="font-size: var(--font-size-xs); color: var(--color-text-muted);">fade, zoom, rise, hard-cut, slide-left, fade-up</p>
                 </div>
               </div>
-              <div style="display: flex; align-items: center; gap: var(--space-md);">
-                <span style="font-size: 1.5rem;">🧱</span>
+              <div style="display: flex; align-items: flex-start; gap: var(--space-sm);">
+                <span style="font-size: 1.1rem; line-height: 1.4;">🎮</span>
                 <div>
-                  <strong style="color: var(--color-text);">HTML + CSS + JS</strong>
-                  <p style="font-size: var(--font-size-sm); color: var(--color-text-muted);">Vanilla web — no frameworks needed</p>
+                  <strong style="font-size: var(--font-size-sm); color: var(--color-text);">Embedded game</strong>
+                  <p style="font-size: var(--font-size-xs); color: var(--color-text-muted);">3D space game with planets + physics</p>
                 </div>
               </div>
-              <div style="display: flex; align-items: center; gap: var(--space-md);">
-                <span style="font-size: 1.5rem;">🎮</span>
+              <div style="display: flex; align-items: flex-start; gap: var(--space-sm);">
+                <span style="font-size: 1.1rem; line-height: 1.4;">🛠️</span>
                 <div>
-                  <strong style="color: var(--color-text);">Three.js + MagicaVoxel</strong>
-                  <p style="font-size: var(--font-size-sm); color: var(--color-text-muted);">3D voxel art in the browser</p>
+                  <strong style="font-size: var(--font-size-sm); color: var(--color-text);">Live design editor</strong>
+                  <p style="font-size: var(--font-size-xs); color: var(--color-text-muted);">Press D — inspect + edit anything</p>
                 </div>
               </div>
-              <div style="display: flex; align-items: center; gap: var(--space-md);">
-                <span style="font-size: 1.5rem;">🌧️</span>
+              <div style="display: flex; align-items: flex-start; gap: var(--space-sm);">
+                <span style="font-size: 1.1rem; line-height: 1.4;">📦</span>
                 <div>
-                  <strong style="color: var(--color-text);">Live data</strong>
-                  <p style="font-size: var(--font-size-sm); color: var(--color-text-muted);">Weather API → real-time visuals</p>
-                </div>
-              </div>
-              <div style="display: flex; align-items: center; gap: var(--space-md);">
-                <span style="font-size: 1.5rem;">🎬</span>
-                <div>
-                  <strong style="color: var(--color-text);">CSS animations</strong>
-                  <p style="font-size: var(--font-size-sm); color: var(--color-text-muted);">6 transition types, per-slide theming</p>
+                  <strong style="font-size: var(--font-size-sm); color: var(--color-text);">474MB of assets</strong>
+                  <p style="font-size: var(--font-size-xs); color: var(--color-text-muted);">53 files — 3D models, screenshots, graphics</p>
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </div>
     </section>
 
     <!-- Slide 17: Closing -->
-    <section class="slide" data-beat="5" data-title="Closing" data-transition="rise" data-theme="warm">
-      <div class="slide-center">
-        <h1 class="heading-1 fade-in fade-in-1">
-          Creativity lies within<br><span class="accent">each of us.</span>
+    <section class="slide" data-beat="5" data-title="Closing" data-transition="hard-cut" style="background: var(--color-bg-dark) !important;">
+      <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; padding: var(--space-4xl); text-align: left;">
+        <h1 class="fade-in fade-in-1" style="font-size: 4.5rem; font-family: var(--font-display); font-weight: 400; letter-spacing: -0.04em; line-height: 1.0; color: var(--color-text);">
+          Go make something<br>that doesn't look like<br><span style="color: var(--color-signal);">everything else.</span>
         </h1>
-        <p class="heading-3 fade-in fade-in-2" style="margin-top: var(--space-lg); font-weight: 300; color: var(--color-text-muted);">
-          Now you have the language to prove it.
+        <p class="fade-in fade-in-2" style="margin-top: var(--space-xl); font-size: var(--font-size-xl); font-weight: 300; color: var(--color-text-dim);">
+          The tools are ready. The principles are learnable.<br>Happy Fix Hack Learn.
         </p>
-        <ul class="resource-list fade-in fade-in-3" style="margin-top: var(--space-3xl); max-width: 500px; margin-left: auto; margin-right: auto;">
-          <li><span class="resource-icon">🎨</span> Design Partner skill</li>
-          <li><span class="resource-icon">🔗</span> Figma MCP setup guide</li>
-          <li><span class="resource-icon">📖</span> Design vocabulary reference</li>
-          <li><span class="resource-icon">💬</span> Nick McVey &amp; Greg Gonyea</li>
-        </ul>
+        <div class="fade-in fade-in-3" style="margin-top: var(--space-3xl); display: flex; gap: var(--space-xl); font-size: var(--font-size-base); color: var(--color-text-muted);">
+          <span>🎨 Design Partner skill</span>
+          <span>🔗 Figma MCP guide</span>
+          <span>📖 Design glossary</span>
+          <span>💬 Nick McVey &amp; Greg Gonyea</span>
+        </div>
       </div>
     </section>
 
@@ -723,7 +2202,366 @@
   <script src="js/effects.js"></script>
   <script src="js/video-theater.js"></script>
   <script src="js/index-grid.js"></script>
+
+  <!-- Generic UI Flood — 3D card physics drop -->
+  <script>
+  (function() {
+    var flood = document.getElementById('genericFlood');
+    var textDiv = document.getElementById('genericFloodText');
+    console.log('[CardFlood] Init — flood:', !!flood, 'textDiv:', !!textDiv);
+    if (!flood) { console.error('[CardFlood] No #genericFlood element!'); return; }
+
+    var MANIFEST_URL = 'assets/vibedscreenshots_bad/manifest.json';
+    var BASE_PATH = 'assets/vibedscreenshots_bad/';
+    var CARD_W = 6.0;
+    var CARD_H = 3.7;
+    var CARD_DEPTH = 0.06;
+    var CARD_RADIUS = 0.2;
+    var GROUND_Y = 0;
+    var GRAVITY = -22;
+    var BOUNCE = 0.15;
+    var SPREAD_X = 18;
+    var SPREAD_Z = 10;
+
+    var scene3d, cam3d, renderer3d, canvas3d;
+    var cardBodies = [];
+    var landedPositions = []; // for collision avoidance
+    var running = false;
+    var animId = null;
+    var dropTimer = null;
+    var autoTimer = null;
+    var screenshots = [];
+    var dropIndex = 0;
+    var messageShown = false;
+
+    function initScene() {
+      canvas3d = document.createElement('canvas');
+      canvas3d.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+      flood.appendChild(canvas3d);
+
+      // Use the slides container size since the flood div might still be transitioning
+      var container = document.getElementById('slidesContainer');
+      var w = container ? container.clientWidth : window.innerWidth;
+      var h = container ? container.clientHeight : window.innerHeight;
+      if (w === 0 || h === 0) { w = window.innerWidth; h = window.innerHeight; }
+
+      scene3d = new THREE.Scene();
+      scene3d.background = new THREE.Color(0xeeeee4);
+
+      // Soft directional light for shadows
+      var dirLight = new THREE.DirectionalLight(0xffffff, 0.55);
+      dirLight.position.set(6, 20, 10);
+      dirLight.castShadow = true;
+      dirLight.shadow.mapSize.width = 2048;
+      dirLight.shadow.mapSize.height = 2048;
+      dirLight.shadow.camera.near = 1;
+      dirLight.shadow.camera.far = 50;
+      dirLight.shadow.camera.left = -22;
+      dirLight.shadow.camera.right = 22;
+      dirLight.shadow.camera.top = 16;
+      dirLight.shadow.camera.bottom = -16;
+      dirLight.shadow.radius = 6;
+      dirLight.shadow.bias = -0.001;
+      scene3d.add(dirLight);
+      scene3d.add(new THREE.AmbientLight(0xffffff, 0.65));
+
+      // Ground plane — large, receives shadows
+      var groundGeo = new THREE.PlaneGeometry(60, 50);
+      var groundMat = new THREE.ShadowMaterial({ opacity: 0.1 });
+      var ground = new THREE.Mesh(groundGeo, groundMat);
+      ground.rotation.x = -Math.PI / 2;
+      ground.position.y = GROUND_Y;
+      ground.receiveShadow = true;
+      scene3d.add(ground);
+
+      // Camera: top-down, pulled back for bigger cards
+      cam3d = new THREE.PerspectiveCamera(45, w / h, 0.1, 100);
+      cam3d.position.set(0, 24, 8);
+      cam3d.lookAt(0, GROUND_Y, -1);
+
+      renderer3d = new THREE.WebGLRenderer({ canvas: canvas3d, antialias: true, alpha: false });
+      renderer3d.setSize(w, h);
+      renderer3d.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer3d.shadowMap.enabled = true;
+      renderer3d.shadowMap.type = THREE.PCFSoftShadowMap;
+    }
+
+    // Find a landing spot that doesn't overlap existing cards
+    function findLandingSpot() {
+      for (var attempt = 0; attempt < 30; attempt++) {
+        var x = (Math.random() - 0.5) * SPREAD_X;
+        var z = (Math.random() - 0.5) * SPREAD_Z;
+        var ok = true;
+        for (var i = 0; i < landedPositions.length; i++) {
+          var dx = x - landedPositions[i].x;
+          var dz = z - landedPositions[i].z;
+          if (Math.abs(dx) < CARD_W * 0.7 && Math.abs(dz) < CARD_H * 0.7) {
+            ok = false; break;
+          }
+        }
+        if (ok) return { x: x, z: z };
+      }
+      // Fallback: slight overlap is OK after many cards
+      return { x: (Math.random() - 0.5) * SPREAD_X, z: (Math.random() - 0.5) * SPREAD_Z };
+    }
+
+    function simulate(dt) {
+      cardBodies.forEach(function(b) {
+        if (b.landed && b.settleTime > 1.5) return;
+
+        if (!b.landed) {
+          b.vy += GRAVITY * dt;
+          b.mesh.position.y += b.vy * dt;
+
+          if (b.mesh.position.y <= b.stackY) {
+            b.mesh.position.y = b.stackY;
+            if (Math.abs(b.vy) > 2) {
+              b.vy = -b.vy * BOUNCE;
+            } else {
+              b.vy = 0;
+              b.landed = true;
+            }
+          }
+        } else {
+          b.settleTime += dt;
+          // Flatten: group rotation goes to (0, targetRotY, 0) = lying flat
+          b.mesh.rotation.x += (0 - b.mesh.rotation.x) * 5 * dt;
+          b.mesh.rotation.z += (0 - b.mesh.rotation.z) * 5 * dt;
+          b.mesh.rotation.y += (b.targetRotY - b.mesh.rotation.y) * 3 * dt;
+        }
+      });
+    }
+
+    var lastTime = 0;
+    function animate3d(time) {
+      animId = requestAnimationFrame(animate3d);
+      var dt = Math.min((time - lastTime) / 1000, 0.05);
+      lastTime = time;
+      simulate(dt);
+      renderer3d.render(scene3d, cam3d);
+    }
+
+    var raycaster = new THREE.Raycaster();
+    var mousePlane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0);
+    var mouseWorld = new THREE.Vector3();
+    var mouseNDC = new THREE.Vector2();
+    var sprayInterval = null;
+    var totalSpawned = 0;
+    var MAX_CARDS = 80;
+
+    function getMouseWorld(e) {
+      if (!cam3d) return mouseWorld;
+      var rect = flood.getBoundingClientRect();
+      if (rect.width === 0) return mouseWorld;
+      mouseNDC.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+      mouseNDC.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+      raycaster.setFromCamera(mouseNDC, cam3d);
+      raycaster.ray.intersectPlane(mousePlane, mouseWorld);
+      return mouseWorld;
+    }
+
+    function spawnAtCursor(e) {
+      if (!scene3d || totalSpawned >= MAX_CARDS || screenshots.length === 0) return;
+      var pos = getMouseWorld(e);
+      var src = screenshots[totalSpawned % screenshots.length];
+
+      var loader = new THREE.TextureLoader();
+      loader.load(BASE_PATH + src, function(tex) {
+        if (tex.encoding !== undefined) tex.encoding = THREE.sRGBEncoding;
+
+        // Card group: white box body + textured plane on top
+        var group = new THREE.Group();
+
+        // Card body — white box with slight depth
+        var bodyGeo = new THREE.BoxGeometry(CARD_W, CARD_DEPTH, CARD_H);
+        var bodyMat = new THREE.MeshPhongMaterial({ color: 0xffffff, shininess: 5 });
+        var body = new THREE.Mesh(bodyGeo, bodyMat);
+        body.castShadow = true;
+        body.receiveShadow = true;
+        group.add(body);
+
+        // Screenshot face — plane sitting on top of the box
+        var faceGeo = new THREE.PlaneGeometry(CARD_W, CARD_H);
+        var faceMat = new THREE.MeshPhongMaterial({ map: tex, shininess: 10 });
+        var face = new THREE.Mesh(faceGeo, faceMat);
+        face.rotation.x = -Math.PI / 2;
+        face.position.y = CARD_DEPTH / 2 + 0.001; // just above the box top
+        face.castShadow = false;
+        group.add(face);
+
+        var spreadX = (Math.random() - 0.5) * 5;
+        var spreadZ = (Math.random() - 0.5) * 3;
+        var spawnX = pos.x + spreadX;
+        var spawnZ = pos.z + spreadZ;
+
+        group.position.set(spawnX, 10 + Math.random() * 6, spawnZ);
+        group.rotation.set(
+          (Math.random() - 0.5) * 0.4,
+          (Math.random() - 0.5) * 0.6,
+          (Math.random() - 0.5) * 0.3
+        );
+
+        scene3d.add(group);
+
+        var stackY = GROUND_Y + CARD_DEPTH / 2 + 0.008 * totalSpawned;
+
+        cardBodies.push({
+          mesh: group,
+          vy: -(3 + Math.random() * 4),
+          targetRotY: (Math.random() - 0.5) * 0.6,
+          stackY: stackY,
+          landed: false,
+          settleTime: 0
+        });
+
+        totalSpawned++;
+      });
+    }
+
+    // Prevent text selection on the slide
+    var slideForSelect = flood.closest('.slide');
+    if (slideForSelect) slideForSelect.style.userSelect = 'none';
+
+    // Click = spray burst, hold = continuous spray
+    flood.addEventListener('mousedown', function(e) {
+      console.log('[CardFlood] mousedown — running:', running, 'scene3d:', !!scene3d);
+      if (!running || !scene3d) return;
+      e.preventDefault();
+      e.stopPropagation();
+
+      // Text stays visible — cards fall behind it (z-index keeps text on top)
+
+      for (var i = 0; i < 3; i++) {
+        (function(evt) { setTimeout(function() { spawnAtCursor(evt); }, i * 40); })(e);
+      }
+
+      var lastEvt = e;
+      var moveHandler = function(me) { me.preventDefault(); lastEvt = me; };
+      flood.addEventListener('mousemove', moveHandler);
+      sprayInterval = setInterval(function() {
+        spawnAtCursor(lastEvt);
+      }, 80);
+
+      function onUp() {
+        clearInterval(sprayInterval);
+        flood.removeEventListener('mousemove', moveHandler);
+        window.removeEventListener('mouseup', onUp);
+      }
+      window.addEventListener('mouseup', onUp);
+    });
+
+    function startFlood() {
+      console.log('[CardFlood] startFlood called — running:', running);
+      if (running) return;
+      running = true;
+      messageShown = false;
+      cardBodies = [];
+      landedPositions = [];
+      totalSpawned = 0;
+
+      initScene();
+      console.log('[CardFlood] Scene initialized — canvas:', !!canvas3d, 'renderer:', !!renderer3d, 'flood size:', flood.clientWidth, 'x', flood.clientHeight);
+      lastTime = performance.now();
+      animId = requestAnimationFrame(animate3d);
+
+      // Show hint
+      var hint = document.createElement('div');
+      hint.style.cssText = 'position:absolute;bottom:40px;left:50%;transform:translateX(-50%);z-index:10;'
+        + 'font-size:0.85rem;color:#999;font-family:Inter,sans-serif;pointer-events:none;'
+        + 'opacity:0;transition:opacity 0.5s;';
+      hint.textContent = 'Click and drag to spray generic designs';
+      flood.appendChild(hint);
+      setTimeout(function() { hint.style.opacity = '1'; }, 300);
+    }
+
+    function showMessage() {
+      if (messageShown) return;
+      messageShown = true;
+      var msg = document.createElement('div');
+      msg.style.cssText = 'position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:20;'
+        + 'background:rgba(245,245,245,0.82);text-align:center;opacity:0;transition:opacity 1s ease;';
+      msg.innerHTML = '<p style="font-size:2.5rem;font-weight:800;color:#1a1a1a;line-height:1.2;">They all look the same.</p>'
+        + '<p style="margin-top:16px;font-size:1.1rem;color:#666;max-width:400px;">Let\u2019s learn how to make something that doesn\u2019t.</p>'
+        + '<p style="margin-top:32px;font-size:0.8rem;color:#bbb;">Press \u2192 to continue</p>';
+      flood.appendChild(msg);
+      msg.offsetWidth;
+      msg.style.opacity = '1';
+    }
+
+    function cleanup() {
+      clearTimeout(autoTimer);
+      clearInterval(dropTimer);
+      if (animId) cancelAnimationFrame(animId);
+      if (renderer3d) renderer3d.dispose();
+      if (scene3d) {
+        scene3d.traverse(function(obj) {
+          if (obj.geometry) obj.geometry.dispose();
+          if (obj.material) {
+            if (obj.material.map) obj.material.map.dispose();
+            obj.material.dispose();
+          }
+        });
+      }
+      flood.innerHTML = '';
+      textDiv.style.opacity = '1';
+      running = false;
+      cardBodies = [];
+      scene3d = null; cam3d = null; renderer3d = null; canvas3d = null;
+      animId = null; dropTimer = null; messageShown = false;
+    }
+
+    // Load manifest then set up triggers
+    fetch(MANIFEST_URL).then(function(r) { return r.json(); }).then(function(files) {
+      screenshots = files;
+      console.log('[CardFlood] Manifest loaded:', files.length, 'screenshots');
+
+      var slideEl = flood.closest('.slide');
+      console.log('[CardFlood] Slide element:', slideEl ? slideEl.getAttribute('data-title') : 'NOT FOUND');
+      if (!slideEl) return;
+
+      function checkAndStart() {
+        var isActive = slideEl.classList.contains('active');
+        console.log('[CardFlood] checkAndStart — active:', isActive, 'running:', running, 'screenshots:', screenshots.length);
+        if (isActive && !running && screenshots.length > 0) {
+          setTimeout(startFlood, 200);
+        }
+      }
+
+      var obs = new MutationObserver(function() {
+        var isActive = slideEl.classList.contains('active');
+        console.log('[CardFlood] Slide class changed — active:', isActive, 'running:', running);
+        if (isActive && !running) {
+          setTimeout(startFlood, 200);
+        }
+        if (!isActive && running) {
+          cleanup();
+        }
+      });
+      obs.observe(slideEl, { attributes: true, attributeFilter: ['class'] });
+
+      checkAndStart();
+    }).catch(function(e) {
+      console.warn('Could not load screenshot manifest:', e);
+    });
+  })();
+  </script>
+
+  <script src="js/scaler.js"></script>
   <script>PRES.init();</script>
+
+  <!-- Live Design Editor — toggle with 'D' key -->
+  <script src="js/design-editor-v4.js"></script>
+  <script src="js/layout-compose.js"></script>
+  <script src="js/fly.js"></script>
+  <script src="js/interactive-doc.js"></script>
+
+  <!-- Tooltip card for interactive doc (lives outside slides container, fixed positioning) -->
+  <div id="doc-tooltip" role="tooltip" aria-hidden="true">
+    <div class="tip-title" id="tipTitle"></div>
+    <div id="tipContent"></div>
+  </div>
 
 </body>
 </html>
+
+

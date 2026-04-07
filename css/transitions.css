@@ -1,25 +1,25 @@
 /* ============================================================
-   transitions.css — Slide Transition Types & Entrance Animations
-   Includes: fade-up (default), fade, slide-left, slide-right,
-   zoom, rise transitions + staggered fade-in delays.
+   transitions.css — Slide Transitions & Entrance Animations
+   Aesthetic: Mechanical precision. Bold, purposeful movement.
+   Like the satisfying click of a Braun dial.
    ============================================================ */
 
-/* STAGGERED ENTRANCE ANIMATIONS */
+/* STAGGERED ENTRANCE — crisp, deliberate reveals */
 .slide.active .fade-in {
-  animation: fadeInUp var(--duration-gentle) var(--ease-out) both;
+  animation: revealUp var(--duration-gentle) var(--ease-mechanical) both;
 }
 
 .slide.active .fade-in-1 { animation-delay: 0ms; }
-.slide.active .fade-in-2 { animation-delay: 150ms; }
-.slide.active .fade-in-3 { animation-delay: 300ms; }
-.slide.active .fade-in-4 { animation-delay: 450ms; }
-.slide.active .fade-in-5 { animation-delay: 600ms; }
-.slide.active .fade-in-6 { animation-delay: 750ms; }
+.slide.active .fade-in-2 { animation-delay: 120ms; }
+.slide.active .fade-in-3 { animation-delay: 240ms; }
+.slide.active .fade-in-4 { animation-delay: 360ms; }
+.slide.active .fade-in-5 { animation-delay: 480ms; }
+.slide.active .fade-in-6 { animation-delay: 600ms; }
 
-@keyframes fadeInUp {
+@keyframes revealUp {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(30px);
   }
   to {
     opacity: 1;
@@ -27,12 +27,12 @@
   }
 }
 
-/* Reset animations when slide is not active */
+/* Reset when not active */
 .slide:not(.active) .fade-in {
   opacity: 0;
 }
 
-/* SLIDE TRANSITION VARIANTS */
+/* ── TRANSITION: FADE — Clean dissolve ── */
 .slide[data-transition="fade"] {
   transform: none;
   opacity: 0;
@@ -44,11 +44,12 @@
 .slide[data-transition="fade"].exiting {
   opacity: 0;
   transform: none;
-  transition: opacity var(--duration-normal) var(--ease-in-out);
+  transition: opacity var(--duration-slow) var(--ease-in-out);
 }
 
+/* ── TRANSITION: SLIDE-LEFT — Horizontal mechanical slide ── */
 .slide[data-transition="slide-left"] {
-  transform: translateX(60px);
+  transform: translateX(100px);
   opacity: 0;
 }
 .slide[data-transition="slide-left"].active {
@@ -56,15 +57,16 @@
   opacity: 1;
 }
 .slide[data-transition="slide-left"].exiting {
-  transform: translateX(-60px);
+  transform: translateX(-100px);
   opacity: 0;
   transition:
-    opacity var(--duration-normal) var(--ease-in-out),
-    transform var(--duration-normal) var(--ease-in-out);
+    opacity var(--duration-normal) var(--ease-mechanical),
+    transform var(--duration-normal) var(--ease-mechanical);
 }
 
+/* ── TRANSITION: SLIDE-RIGHT — Reverse horizontal ── */
 .slide[data-transition="slide-right"] {
-  transform: translateX(-60px);
+  transform: translateX(-100px);
   opacity: 0;
 }
 .slide[data-transition="slide-right"].active {
@@ -72,15 +74,16 @@
   opacity: 1;
 }
 .slide[data-transition="slide-right"].exiting {
-  transform: translateX(60px);
+  transform: translateX(100px);
   opacity: 0;
   transition:
-    opacity var(--duration-normal) var(--ease-in-out),
-    transform var(--duration-normal) var(--ease-in-out);
+    opacity var(--duration-normal) var(--ease-mechanical),
+    transform var(--duration-normal) var(--ease-mechanical);
 }
 
+/* ── TRANSITION: ZOOM — Precise scale, no bounce ── */
 .slide[data-transition="zoom"] {
-  transform: scale(0.95);
+  transform: scale(0.92);
   opacity: 0;
 }
 .slide[data-transition="zoom"].active {
@@ -88,39 +91,40 @@
   opacity: 1;
 }
 .slide[data-transition="zoom"].exiting {
-  transform: scale(0.95);
+  transform: scale(1.08);
   opacity: 0;
   transition:
-    opacity var(--duration-normal) var(--ease-in-out),
-    transform var(--duration-normal) var(--ease-in-out);
+    opacity var(--duration-normal) var(--ease-mechanical),
+    transform var(--duration-normal) var(--ease-mechanical);
 }
 
+/* ── TRANSITION: RISE — Elevator precision ── */
 .slide[data-transition="rise"] {
-  transform: translateY(40px);
+  transform: translateY(60px);
   opacity: 0;
   transition:
-    opacity 1200ms var(--ease-out),
-    transform 1200ms var(--ease-out);
+    opacity var(--duration-slow) var(--ease-mechanical),
+    transform var(--duration-slow) var(--ease-mechanical);
 }
 .slide[data-transition="rise"].active {
   transform: translateY(0);
   opacity: 1;
 }
 .slide[data-transition="rise"].exiting {
-  transform: translateY(-20px);
+  transform: translateY(-40px);
   opacity: 0;
   transition:
-    opacity var(--duration-normal) var(--ease-in-out),
-    transform var(--duration-normal) var(--ease-in-out);
+    opacity var(--duration-normal) var(--ease-mechanical),
+    transform var(--duration-normal) var(--ease-mechanical);
 }
 
-/* Zoom-into — like flying through the outgoing slide into the next one */
+/* ── TRANSITION: ZOOM-INTO — Fly-through ── */
 .slide[data-transition="zoom-into"] {
   transform: scale(0.5);
   opacity: 0;
   transition:
-    opacity 1000ms var(--ease-out),
-    transform 1000ms var(--ease-out);
+    opacity 800ms var(--ease-mechanical),
+    transform 800ms var(--ease-mechanical);
 }
 .slide[data-transition="zoom-into"].active {
   transform: scale(1);
@@ -130,26 +134,85 @@
   transform: scale(2.5);
   opacity: 0;
   transition:
-    opacity 800ms var(--ease-in-out),
-    transform 800ms var(--ease-in-out);
+    opacity 600ms var(--ease-mechanical),
+    transform 600ms var(--ease-mechanical);
 }
 
-/* Gravity-fall — incoming content drops from above */
+/* ── TRANSITION: GRAVITY-FALL — Weighted drop ── */
 .slide[data-transition="gravity-fall"] {
-  transform: translateY(-30px);
+  transform: translateY(-50px);
   opacity: 0;
   transition:
-    opacity 600ms var(--ease-out),
-    transform 600ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    opacity 500ms var(--ease-mechanical),
+    transform 500ms var(--ease-mechanical);
 }
 .slide[data-transition="gravity-fall"].active {
   transform: translateY(0);
   opacity: 1;
 }
 .slide[data-transition="gravity-fall"].exiting {
-  transform: translateY(40px);
+  transform: translateY(60px);
   opacity: 0;
   transition:
-    opacity var(--duration-normal) var(--ease-in-out),
-    transform var(--duration-normal) cubic-bezier(0.55, 0, 1, 0.45);
+    opacity var(--duration-normal) var(--ease-mechanical),
+    transform var(--duration-normal) var(--ease-mechanical);
+}
+
+/* ── TRANSITION: HARD-CUT — Instant. The most Rams move. ── */
+.slide[data-transition="hard-cut"] {
+  opacity: 0;
+  transform: none;
+  transition: none;
+}
+.slide[data-transition="hard-cut"].active {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+.slide[data-transition="hard-cut"].exiting {
+  opacity: 0;
+  transform: none;
+  transition: none;
+}
+
+/* ── TRANSITION: WIPE — Clean horizontal reveal ── */
+.slide[data-transition="wipe"] {
+  clip-path: inset(0 100% 0 0);
+  opacity: 1;
+  transform: none;
+  transition:
+    clip-path var(--duration-slow) var(--ease-mechanical);
+}
+.slide[data-transition="wipe"].active {
+  clip-path: inset(0 0 0 0);
+  opacity: 1;
+  transform: none;
+}
+.slide[data-transition="wipe"].exiting {
+  clip-path: inset(0 0 0 100%);
+  opacity: 1;
+  transform: none;
+  transition:
+    clip-path var(--duration-normal) var(--ease-mechanical);
+}
+
+
+.slide[data-transition="split"] {
+  clip-path: inset(50% 0);
+  opacity: 1;
+  transform: none;
+  transition:
+    clip-path var(--duration-slow) var(--ease-mechanical);
+}
+.slide[data-transition="split"].active {
+  clip-path: inset(0 0);
+  opacity: 1;
+  transform: none;
+}
+.slide[data-transition="split"].exiting {
+  clip-path: inset(50% 0);
+  opacity: 1;
+  transform: none;
+  transition:
+    clip-path var(--duration-normal) var(--ease-mechanical);
 }

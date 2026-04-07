@@ -8,25 +8,39 @@
 
 .slide-weather {
   padding: 0 !important;
-  overflow-y: auto !important;
-  overflow-x: hidden !important;
+  overflow: hidden !important;
   align-items: flex-start !important;
 }
 
 .slide-weather.active {
-  overflow-y: auto !important;
+  overflow: hidden !important;
 }
 
 .slide-weather .weather-bg {
-  position: fixed;
+  position: absolute;
   inset: 0;
   z-index: 0;
 }
 
-/* 50/50 split layout */
+/* Soft gradient vignette over the left half — lives on the slide itself so it can't be clipped */
+.slide-weather::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 55%;
+  height: 100%;
+  z-index: 1;
+  background:
+    radial-gradient(ellipse 100% 80% at 30% 50%, rgba(2, 2, 2, 0.92) 0%, transparent 70%),
+    radial-gradient(ellipse 80% 100% at 0% 50%, rgba(2, 2, 2, 0.85) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+/* 50/50 split layout — left static, right scrollable */
 .weather-split {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--space-2xl);
@@ -40,10 +54,24 @@
   flex-direction: column;
   justify-content: center;
   gap: var(--space-lg);
-  position: sticky;
-  top: calc(var(--header-height) + var(--space-xl));
-  align-self: start;
-  height: calc(100vh - var(--header-height) - var(--space-2xl));
+  position: relative;
+  align-self: center;
+  padding: var(--space-xl) var(--space-2xl);
+  color: #fff;
+}
+
+/* Force white text on weather left */
+.weather-left .label,
+.weather-left .heading-2,
+.weather-left .body,
+.weather-left .body p,
+.weather-left .body strong,
+.weather-left p {
+  color: #fff !important;
+}
+.weather-left .body p:last-child,
+.weather-left .accent {
+  color: var(--color-accent) !important;
 }
 
 .weather-right {
@@ -51,6 +79,13 @@
   flex-direction: column;
   gap: var(--space-xl);
   padding-bottom: var(--space-3xl);
+  overflow-y: auto;
+  max-height: 100%;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.weather-right::-webkit-scrollbar {
+  display: none;
 }
 
 .weather-bg {
@@ -63,6 +98,9 @@
 /* Weather background states */
 .weather-bg.sunny {
   background: linear-gradient(180deg, #1a3a5c 0%, #2d5a87 30%, #d4883a 80%, #c4602a 100%);
+}
+.weather-bg.partlyCloudy {
+  background: linear-gradient(180deg, #1a3f7a 0%, #2d6aa8 25%, #5a92c0 55%, #dfc870 82%, #c8a040 100%);
 }
 .weather-bg.cloudy {
   background: linear-gradient(180deg, #1e2436 0%, #2e3648 40%, #3e4658 80%, #2e3648 100%);
@@ -600,3 +638,36 @@
   font-size: var(--font-size-sm);
   color: var(--color-text-muted);
 }
+
+/* ============================================================
+   Accessibility overrides — all weather backgrounds are dark.
+   Replace invisible color-text-dim / color-accent tokens with
+   explicit bright values so everything is readable.
+   ============================================================ */
+.slide-weather .weather-timestamp    { color: rgba(240,237,232,0.65); }
+.slide-weather .weather-desc         { color: rgba(240,237,232,0.9); }
+.slide-weather .weather-details      { color: rgba(240,237,232,0.65); }
+.slide-weather .weather-stat-label   { color: rgba(240,237,232,0.65); }
+.slide-weather .weather-stat-bar     { background: rgba(255,255,255,0.12); }
+.slide-weather .weather-stat-fill    { background: #d4a053; }
+.slide-weather .weather-section-title{ color: rgba(240,237,232,0.65); }
+.slide-weather .weather-hour-time    { color: rgba(240,237,232,0.65); }
+.slide-weather .weather-hour         { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.1); }
+.slide-weather .weather-hour:hover   { background: rgba(255,255,255,0.1); }
+.slide-weather .weather-weekly       { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.08); }
+.slide-weather .weather-day-row      { background: rgba(255,255,255,0.02); }
+.slide-weather .weather-day-row:hover{ background: rgba(255,255,255,0.06); }
+.slide-weather .weather-day-low      { color: rgba(240,237,232,0.65); }
+.slide-weather .weather-history-label{ color: rgba(240,237,232,0.65); }
+.slide-weather .history-bar          { background: rgba(240,237,232,0.2); }
+.slide-weather .history-bar:hover    { background: rgba(240,237,232,0.45); }
+.slide-weather .history-bar-tip      { color: rgba(240,237,232,0.85); }
+.slide-weather .weather-message p    { color: rgba(240,237,232,0.65); }
+.slide-weather .weather-picker-label { color: rgba(240,237,232,0.8); }
+.slide-weather .uv-gauge-labels      { color: rgba(240,237,232,0.6); }
+.slide-weather .uv-desc              { color: rgba(240,237,232,0.8); }
+.slide-weather .sun-time             { color: rgba(240,237,232,0.8); }
+.slide-weather .sun-label            { color: #d4a053; }
+.slide-weather .sparkline-container  { background: rgba(255,255,255,0.03); border-color: rgba(255,255,255,0.08); }
+.slide-weather .weather-sun-card,
+.slide-weather .weather-uv-card      { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.1); }

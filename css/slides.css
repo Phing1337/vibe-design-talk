@@ -6,6 +6,15 @@
    slide-space, stars, planets, annotations.
    ============================================================ */
 
+/* ── Layout Compose interaction (slide 13) ── */
+[data-interactive="layout-compose"].composed #layoutComposeText {
+  left: 5% !important;
+  transform: translateY(-50%) !important;
+  text-align: left !important;
+}
+[data-interactive="layout-compose"].composed #layoutComposeHint { opacity: 0; }
+[data-interactive="layout-compose"].composed #layoutComposeLabel { opacity: 1 !important; }
+
 /* TABLE */
 .comparison-table {
   width: 100%;
@@ -14,18 +23,18 @@
 
 .comparison-table th {
   text-align: left;
-  font-size: var(--font-size-sm);
+  font-size: var(--font-size-lg);
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--color-accent);
   padding: var(--space-md) var(--space-lg);
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 2px solid var(--color-border);
 }
 
 .comparison-table td {
-  padding: var(--space-md) var(--space-lg);
-  font-size: var(--font-size-base);
+  padding: var(--space-lg) var(--space-lg);
+  font-size: var(--font-size-xl);
   color: var(--color-text-muted);
   border-bottom: 1px solid var(--color-border);
   vertical-align: top;
@@ -73,11 +82,11 @@
   border-bottom: none;
 }
 
-/* CARD COMPONENT EXAMPLE */
+/* CARD COMPONENT EXAMPLE — Minimal, sharp */
 .card-example {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: 16px;
+  border-radius: 2px;
   padding: var(--space-xl);
   width: 100%;
   max-width: 360px;
@@ -88,7 +97,7 @@
   width: 100%;
   aspect-ratio: 16/9;
   background: var(--color-bg);
-  border-radius: 8px;
+  border-radius: 1px;
   margin-bottom: var(--space-lg);
 }
 
@@ -109,10 +118,11 @@
   padding: var(--space-sm) var(--space-lg);
   background: var(--color-accent);
   color: var(--color-bg);
-  border-radius: 8px;
+  border-radius: 1px;
   font-size: var(--font-size-sm);
   font-weight: 600;
   text-decoration: none;
+  letter-spacing: 0.04em;
 }
 
 .annotation {
@@ -225,7 +235,7 @@
 .before-after .panel {
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: 12px;
+  border-radius: 2px;
   padding: var(--space-xl);
 }
 
@@ -247,6 +257,25 @@
   font-family: 'Inter', monospace;
 }
 
+.panel-screenshot {
+  margin-top: var(--space-lg);
+  aspect-ratio: 16 / 10;
+  border-radius: 8px;
+  border: 1px dashed var(--color-border);
+  background: var(--color-bg-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.panel-screenshot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
 /* RESOURCE LIST */
 .resource-list {
   list-style: none;
@@ -261,7 +290,7 @@
   padding: var(--space-md) var(--space-lg);
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  border-radius: 8px;
+  border-radius: 2px;
   display: flex;
   align-items: center;
   gap: var(--space-md);
@@ -271,22 +300,22 @@
   font-size: var(--font-size-lg);
 }
 
-/* SLIDE COLOR THEMES */
+/* SLIDE COLOR THEMES — Industrial palette, restrained signal colors */
 .slide[data-theme="blue"] {
-  --color-accent: #4a9eff;
-  --color-accent-dim: rgba(74, 158, 255, 0.2);
+  --color-accent: #8aafcc;
+  --color-accent-dim: rgba(138, 175, 204, 0.12);
 }
 .slide[data-theme="teal"] {
-  --color-accent: #2dd4bf;
-  --color-accent-dim: rgba(45, 212, 191, 0.2);
+  --color-accent: #7ab8a8;
+  --color-accent-dim: rgba(122, 184, 168, 0.12);
 }
 .slide[data-theme="warm"] {
-  --color-accent: #f59e0b;
-  --color-accent-dim: rgba(245, 158, 11, 0.2);
+  --color-accent: #d4a053;
+  --color-accent-dim: rgba(212, 160, 83, 0.12);
 }
 .slide[data-theme="purple"] {
-  --color-accent: #a78bfa;
-  --color-accent-dim: rgba(167, 139, 250, 0.2);
+  --color-accent: #a89abd;
+  --color-accent-dim: rgba(168, 154, 189, 0.12);
 }
 
 /* SHADER BACKGROUND SLIDES — pixel art sunrise/sunset */
@@ -319,81 +348,306 @@
   overflow: hidden;
 }
 
+/* ── Index Grid Layout ── */
 .index-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: var(--space-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
   flex: 1;
   overflow-y: auto;
   padding-bottom: var(--space-xl);
+  perspective: var(--card-perspective);
+  scrollbar-width: none;
+}
+.index-grid::-webkit-scrollbar { display: none; }
+
+.index-beat-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
 }
 
+.index-beat-label {
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-text-dim);
+  padding-left: 2px;
+}
+
+.index-beat-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--space-md);
+}
+
+/* ── Holographic Card ── */
 .index-thumb {
   position: relative;
-  aspect-ratio: 16/9;
-  border-radius: 8px;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--card-radius);
   overflow: hidden;
   cursor: pointer;
-  border: 1px solid var(--color-border);
+  border: var(--card-border);
   background: var(--color-surface);
-  transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out), border-color 0.3s;
+  box-shadow: var(--card-shadow);
+  transform-style: preserve-3d;
+  transform: rotateX(0deg) rotateY(0deg);
+  transition:
+    transform 0.4s var(--ease-out),
+    box-shadow 0.5s var(--ease-out),
+    border-color 0.4s;
+  will-change: transform;
+}
+
+/* ── Holographic Foil — WebGL shader overlay ──
+   A shared <canvas> is positioned over the hovered card.
+   No CSS pseudo-element gradient needed. */
+.index-holo-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--card-radius);
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-out);
+  mix-blend-mode: screen;
+}
+
+.index-thumb:hover .index-holo-canvas {
+  opacity: 1;
+}
+
+/* Glare — specular overlay that follows the mouse */
+.index-thumb::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--card-radius);
+  background-image: radial-gradient(
+    farthest-corner circle at var(--pointer-x, 50%) var(--pointer-y, 50%),
+    hsla(0, 0%, 100%, 0.35) 0%,
+    hsla(0, 0%, 100%, 0.15) 25%,
+    transparent 70%
+  );
+  mix-blend-mode: overlay;
+  opacity: 0;
+  transition: opacity 0.3s var(--ease-out);
+  z-index: 4;
+  pointer-events: none;
 }
 
 .index-thumb:hover {
-  transform: scale(1.04);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-  border-color: var(--color-accent);
+  box-shadow: var(--card-shadow-hover);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
-.index-thumb-inner {
+.index-thumb:hover::before {
+  opacity: calc(0.3 + var(--pointer-from-center, 0) * 0.7);
+}
+
+/* Card image (only used inside zoom clone now) */
+.index-thumb > img {
   position: absolute;
   inset: 0;
-  transform: scale(0.2);
-  transform-origin: top left;
-  width: 500%;
-  height: 500%;
-  pointer-events: none;
-  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
 }
 
+/* Card label — solid dark background for readability on any card */
 .index-thumb-label {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: var(--space-xs) var(--space-sm);
-  background: linear-gradient(transparent, rgba(0,0,0,0.8));
-  font-size: 0.6rem;
-  color: var(--color-text-muted);
-  z-index: 1;
+  padding: var(--space-sm) var(--space-md);
+  background: rgba(0, 0, 0, 0.8);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  color: #fff;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.index-thumb:hover .index-thumb-label {
+  color: #fff;
 }
 
 .index-thumb-number {
-  color: var(--color-accent);
-  font-weight: 700;
-  margin-right: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: var(--color-accent);
+  color: #000;
+  font-weight: 800;
+  font-size: 0.6rem;
+  flex-shrink: 0;
 }
 
-/* Zoom transition overlay */
-.index-zoom-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 200;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.index-zoom-clone {
+/* Fallback visual for cards without images */
+.index-thumb-fallback {
   position: absolute;
-  border-radius: 8px;
-  overflow: hidden;
-  transition: all 0.6s var(--ease-out);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  z-index: 1;
+  padding: var(--space-md);
+  text-align: center;
+  pointer-events: none;
 }
 
-.index-zoom-clone.zoomed {
+.index-thumb-fallback-icon {
+  font-size: 2rem;
+  filter: grayscale(0.2);
+  opacity: 0.9;
+}
+
+.index-thumb-fallback-text {
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  line-height: 1.3;
+  max-width: 85%;
+}
+
+/* Light bg variant */
+.index-thumb--light .index-thumb-fallback-text {
+  color: rgba(0, 0, 0, 0.35);
+}
+
+/* ── Realistic Slide Preview (scaled clone) ── */
+.index-thumb-preview {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+  border-radius: var(--card-radius);
+  /* Parallax: shifts opposite to tilt for depth */
+  transform: translateX(var(--parallax-x, 0px)) translateY(var(--parallax-y, 0px));
+  transition: transform 0.3s var(--ease-out);
+}
+
+.index-thumb-preview-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 1920px;
+  height: 1080px;
+  transform-origin: top left;
+  /* scale set by JS based on actual thumb size */
+}
+
+/* Force the cloned slide to be visible and fill its container */
+.index-preview-slide {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+  pointer-events: none !important;
+  z-index: 0 !important;
+  display: block !important;
+}
+
+/* Force all animated children to be visible in preview */
+.index-preview-slide .fade-in,
+.index-preview-slide [class*="fade-in"] {
+  opacity: 1 !important;
+  animation: none !important;
+  transform: none !important;
+}
+
+/* Hide interactive/runtime elements in preview clones */
+.index-preview-slide video,
+.index-preview-slide canvas,
+.index-preview-slide iframe,
+.index-preview-slide .weather-right,
+.index-preview-slide .game-overlay,
+.index-preview-slide .weather-picker {
+  display: none !important;
+}
+
+/* ── Fluid Zoom Transitions (index ↔ slides) ── */
+
+/* Suppress staggered entrance animations during zoom transitions */
+.slide.zoom-no-stagger .fade-in,
+.slide.zoom-no-stagger [class*="fade-in"] {
+  animation: none !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* When zooming IN: the slide starts transformed to the card position */
+.slide.zoom-enter {
+  opacity: 1 !important;
+  pointer-events: none !important;
+  transition: none !important;
+  /* transform set by JS to match card rect */
+  border-radius: var(--card-radius);
+  overflow: hidden;
+}
+
+.slide.zoom-enter-active {
+  transition:
+    transform 700ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-radius 700ms cubic-bezier(0.16, 1, 0.3, 1) !important;
+  transform: translate(0, 0) scale(1) !important;
   border-radius: 0;
-  box-shadow: none;
+}
+
+/* When zooming OUT: the slide shrinks to the card position */
+.slide.zoom-exit {
+  opacity: 1 !important;
+  pointer-events: none !important;
+  transition:
+    transform 600ms cubic-bezier(0.4, 0, 0.2, 1),
+    border-radius 600ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 600ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+  /* transform set by JS to target card rect */
+  border-radius: var(--card-radius);
+  overflow: hidden;
+}
+
+/* Index slide fading in/out during zoom */
+.slide-index.zoom-reveal {
+  opacity: 1 !important;
+  pointer-events: none !important;
+  transform: none !important;
+  transition: opacity 500ms var(--ease-out) !important;
+}
+
+/* Click ripple on card */
+.index-click-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212, 160, 83, 0.6) 0%, transparent 70%);
+  transform: scale(0);
+  animation: indexRipple 0.6s var(--ease-out) forwards;
+  pointer-events: none;
+  z-index: 10;
+}
+
+@keyframes indexRipple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
 }
 
 /* DESIGN PRIMITIVES — white bg with planet shadows */
@@ -444,8 +698,20 @@
   position: absolute;
   top: calc(var(--header-height) + var(--space-2xl));
   left: var(--space-3xl);
-  z-index: 2;
+  z-index: 3;
   max-width: 480px;
+}
+
+/* Dark gradient behind boat text — on the slide itself to prevent clipping */
+.slide-boat::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background:
+    radial-gradient(ellipse 65% 90% at 18% 45%, rgba(10, 18, 62, 0.62) 0%, transparent 100%),
+    radial-gradient(ellipse 45% 100% at 0% 50%, rgba(10, 18, 62, 0.5) 0%, transparent 80%);
+  pointer-events: none;
 }
 
 .boat-image {

@@ -109,7 +109,7 @@
 
     threeCanvas.addEventListener('mousedown', function(e) {
       if (PRES.current3DMode !== 'space') return;
-      if (!threeCanvas.classList.contains('space-mode')) return;
+      // space-mode class is omitted for slide-primitives (light bg) — use current3DMode only
 
       var camera = PRES.camera;
       if (!camera) return;
@@ -191,4 +191,34 @@
   PRES.draggedPlanet = null;
   PRES.showSpacePlanets = showSpacePlanets;
   PRES.hideSpacePlanets = hideSpacePlanets;
+
+  // Animate planets to right-side composed positions (called by layout-compose)
+  PRES.composePlanets = function() {
+    var targets = [
+      { x: 5.5, y:  2.5 },
+      { x: 7.5, y: -1.5 },
+      { x: 6.0, y:  4.0 },
+      { x: 8.5, y: -3.0 },
+      { x: 4.5, y:  0.5 },
+    ];
+    spacePlanets.forEach(function(p, i) {
+      var pv = planetVelocities[i];
+      if (!pv) return;
+      pv.free    = true;
+      pv.falling = false;
+      pv.vx      = 0;
+      pv.vy      = 0;
+      pv.toX     = targets[i] ? targets[i].x : 5;
+      pv.toY     = targets[i] ? targets[i].y : 0;
+    });
+  };
+
+  // Reset planets back to orbits (called when leaving compose slide)
+  PRES.deComposePlanets = function() {
+    planetVelocities.forEach(function(pv) {
+      if (!pv) return;
+      delete pv.toX; delete pv.toY;
+      pv.free = false; pv.falling = false; pv.vx = 0; pv.vy = 0;
+    });
+  };
 })();
