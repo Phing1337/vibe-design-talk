@@ -22,14 +22,66 @@
   padding: calc(var(--header-height) + 7%) 5% 7% 7%;
 }
 
+/* ── Editorial quip bubble ── */
+@keyframes quipPop {
+  0%   { opacity: 0; transform: scale(0.75) translateY(10px); }
+  65%  { transform: scale(1.04) translateY(-3px); }
+  82%  { transform: scale(0.98) translateY(1px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.idoc-quip {
+  margin-top: 28px;
+}
+
+.quip-bubble {
+  position: relative;
+  display: inline-block;
+  background: #fdf8ef;
+  border-radius: 14px;
+  padding: 13px 18px 11px;
+  max-width: 260px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.22), 0 1px 4px rgba(0,0,0,0.14);
+  opacity: 0;
+  animation: quipPop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 1.6s forwards;
+}
+
+/* tail pointing right toward the paper */
+.quip-bubble::after {
+  content: '';
+  position: absolute;
+  right: -9px;
+  top: 18px;
+  width: 0;
+  height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 9px solid #fdf8ef;
+}
+
+.quip-text {
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 0.92rem;
+  font-style: italic;
+  color: #26190e;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.quip-sub {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.58rem;
+  color: rgba(139,115,85,0.72);
+  margin: 5px 0 0;
+  letter-spacing: 0.03em;
+}
+
 .idoc-right {
   flex: 1;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding: calc(var(--header-height) + 16px) 40px 0;
   position: relative;
-  overflow: hidden; /* static bg — no panel scroll, only paper scrolls internally */
+  overflow: hidden; /* clips paper bottom and edges; shadows stay fixed */
+  perspective: 1600px;
+  perspective-origin: 50% 36%;
   /* Warm desert gradient — always visible. PNG overlays on top if it loads. */
   background: linear-gradient(
     168deg,
@@ -102,17 +154,100 @@
   100% { transform: rotate(-1.4deg); }
 }
 
-/* Paper scene sits above bg but below shadows */
-.idoc-right .paper-scene { position: relative; z-index: 2; }
+/* ── Scroll track — the layer that physically scrolls ── */
+.idoc-scroll-track {
+  position: relative;
+  z-index: 2; /* above bg/before; below shadows (z-index:5) */
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: visible;
+  scrollbar-width: none;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: calc(var(--header-height) + 20px) 0 60px;
+  transform-origin: center center;
+  will-change: transform;
+}
+.idoc-scroll-track::-webkit-scrollbar { display: none; }
 
-.idoc-right::-webkit-scrollbar { display: none; }
+/* ── Paper stack container (all three sheets scroll together) ── */
+.paper-stack-container {
+  position: relative;
+  flex-shrink: 0;
+  /* width/height driven by paper-scene inside */
+}
+
+.paper-stack-b,
+.paper-stack-m {
+  position: absolute;
+  border-radius: 10px;
+  background: #f5ecd6;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+}
+
+.paper-stack-b {
+  inset: 0;
+  transform: rotate(-2.8deg) translate(-10px, 8px);
+  background: #ede2c8;
+  z-index: 0;
+}
+
+.paper-stack-m {
+  inset: 0;
+  transform: rotate(-1.3deg) translate(-5px, 4px);
+  background: #f5ecd6;
+  z-index: 1;
+}
+
+/* ── Fixed vacation Polaroids — sit below scroll track, paper slides over them ── */
+.idoc-polaroids {
+  position: absolute;
+  inset: 0;
+  z-index: 1; /* below scroll track (z:2); palm shadows (z:5) cast over them */
+  pointer-events: none;
+}
+
+.idoc-pol {
+  position: absolute;
+  width: 126px;
+  background: #fff;
+  padding: 7px 7px 32px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.15), 0 1px 3px rgba(0,0,0,0.07);
+  border-radius: 1px;
+}
+
+.idoc-pol .pol-photo {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  display: block;
+  border-radius: 1px;
+}
+
+.idoc-pol .pol-caption {
+  font-family: 'Great Vibes', cursive;
+  font-size: 0.82rem;
+  color: #4a3420;
+  text-align: center;
+  margin: 7px 0 0;
+  line-height: 1;
+}
+
+/* Individual positions + subtle rotations */
+.pol-1 { right: 20px;  top: 13%;     transform: rotate(-5.5deg); }
+.pol-2 { right: 38px;  top: 55%;     transform: rotate( 7.2deg); }
+.pol-3 { left: 12px;   top: 22%;     transform: rotate(-11deg);  }
+.pol-4 { left: 18px;   top: 61%;     transform: rotate( 4.8deg); }
+.pol-5 { right: 14px;  bottom: 9%;   transform: rotate(-3.2deg); }
 
 /* ── 3D scene wrapper ── */
 .paper-scene {
   perspective: 1600px;
-  perspective-origin: 50% 15%;
+  perspective-origin: 50% 12%;
   position: relative;
-  width: 1000px;
+  z-index: 2;
+  width: calc((100vh - var(--header-height) + 100px) * 8.5 / 11);
 }
 
 /* Ambient reflected warmth from the desk surface rising up around the card */
@@ -129,18 +264,18 @@
   z-index: -1;
 }
 
-/* ── Flipping wrapper ── */
+/* ── Flipping wrapper — portrait 8.5×11, always slightly taller than viewport ── */
 .paper-wrapper {
   position: relative;
-  width: 1000px;
-  height: 1500px;
+  width:  calc((100vh - var(--header-height) + 100px) * 8.5 / 11);
+  height: calc( 100vh - var(--header-height) + 100px);
   transform-style: preserve-3d;
   transition: transform 0.75s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.paper-wrapper.flipped {
-  transform: rotateY(180deg);
-}
+/* (flip class no longer used — analytics panel is shown via opacity overlay) */
+/* .paper-wrapper.flipped { transform: rotateY(180deg); } */
+
 
 /* ── Both faces ── */
 .paper-face {
@@ -172,13 +307,6 @@
   /* Organic paper feel — warm center, cooler aged edges */
   background-color: #fdf8ef;
   background-image:
-    repeating-linear-gradient(
-      to bottom,
-      transparent 0px,
-      transparent 27px,
-      rgba(0,0,0,0.026) 27px,
-      rgba(0,0,0,0.026) 28px
-    ),
     radial-gradient(
       ellipse 110% 75% at 48% 22%,
       rgba(255, 253, 244, 0.9) 0%,
@@ -191,83 +319,133 @@
 }
 
 .paper-header {
-  padding: 38px 44px 24px;
-  border-bottom: 1px solid rgba(0,0,0,0.08);
+  padding: 36px 52px 22px;
   flex-shrink: 0;
   background: transparent;
   position: relative;
   z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.paper-monogram {
+  font-size: 1.0rem;
+  color: rgba(139,115,85,0.45);
+  margin: 0 0 10px;
+  letter-spacing: 0.25em;
+}
+
+.paper-rule {
+  height: 1px;
+  margin: 0 52px 0;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(139,115,85,0.25) 20%,
+    rgba(139,115,85,0.35) 50%,
+    rgba(139,115,85,0.25) 80%,
+    transparent 100%
+  );
+  flex-shrink: 0;
+}
+
+.paper-toggle-btn {
+  position: absolute;
+  top: calc(var(--header-height) + 18px);
+  right: 22px;
+  z-index: 15;
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255,255,255,0.82);
+  border: 1px solid rgba(139,115,85,0.28);
+  border-radius: 50%;
+  font-size: 1.1rem;
+  color: #7a6244;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+  user-select: none;
+  padding: 0;
+  backdrop-filter: blur(4px);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+.paper-toggle-btn:hover {
+  background: rgba(255,255,255,0.96);
+  border-color: rgba(139,115,85,0.5);
+  transform: scale(1.06);
 }
 
 .paper-title {
   font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
-  font-size: 1.85rem;
+  font-size: 2.1rem;
   font-weight: 700;
   color: #1a1612;
-  line-height: 1.22;
-  margin: 0 0 8px;
+  line-height: 1.2;
+  margin: 0 0 10px;
+  text-align: center;
 }
 
 .paper-byline {
   font-family: 'Great Vibes', 'Brush Script MT', cursive;
-  font-size: 1.6rem;
+  font-size: 1.85rem;
   color: #8b7355;
   margin: 0;
   line-height: 1;
+  text-align: center;
 }
 
-/* Scrollable interior with fade masks */
-.paper-front-inner {
-  position: relative;
+/* Flat document body — no internal scroll; whole paper scrolls externally */
+.paper-body {
   flex: 1;
-  overflow: hidden;
+  padding: 28px 52px 32px;
 }
 
-.paper-front-inner::before,
-.paper-front-inner::after {
-  content: '';
-  position: absolute;
-  left: 0;
-  right: 0;
-  height: 28px;
-  z-index: 3;
-  pointer-events: none;
+/* Closing signature block */
+.paper-closing {
+  padding: 20px 52px 44px;
+  flex-shrink: 0;
+  border-top: 1px solid rgba(139,115,85,0.1);
+  margin-top: 8px;
 }
 
-.paper-front-inner::before {
-  top: 0;
-  background: linear-gradient(to bottom, #fdf8ef, transparent);
+.paper-close-word {
+  font-family: 'Crimson Text', Georgia, serif;
+  font-size: 1.0rem;
+  font-style: italic;
+  color: #5c3d1e;
+  margin: 0 0 4px;
 }
 
-.paper-front-inner::after {
-  bottom: 0;
-  background: linear-gradient(to top, #f8f0e4, transparent);
+.paper-signature {
+  font-family: 'Great Vibes', cursive;
+  font-size: 2.4rem;
+  color: #3a2510;
+  margin: 0 0 6px;
+  line-height: 1.1;
 }
 
-.paper-scroll {
-  position: absolute;
-  inset: 0;
-  overflow-y: auto;
-  padding: 24px 44px 80px;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(139,115,85,0.3) transparent;
-}
-
-.paper-scroll::-webkit-scrollbar { width: 3px; }
-.paper-scroll::-webkit-scrollbar-track { background: transparent; }
-.paper-scroll::-webkit-scrollbar-thumb {
-  background: rgba(139,115,85,0.35);
-  border-radius: 2px;
+.paper-close-role {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(139,115,85,0.55);
+  margin: 0;
 }
 
 .paper-section-label {
-  font-family: 'Crimson Text', 'Palatino Linotype', Georgia, serif;
-  font-size: 0.6rem;
-  font-weight: 600;
-  letter-spacing: 0.15em;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: #8b7355;
-  margin: 16px 0 5px;
+  margin: 24px 0 6px;
   display: block;
 }
 
@@ -275,12 +453,11 @@
 
 .paper-text {
   font-family: 'Crimson Text', 'Palatino Linotype', Georgia, serif;
-  font-size: 1.0rem;
-  line-height: 1.82;
-  /* Warm ink on aged paper — not pure black, slightly warm and blended */
+  font-size: 1.12rem;
+  line-height: 1.88;
   color: #26190e;
   text-shadow: 0 0.4px 0 rgba(255, 245, 225, 0.22);
-  margin: 0 0 10px;
+  margin: 0 0 12px;
 }
 
 .paper-text:last-child { margin-bottom: 0; }
@@ -293,29 +470,35 @@
   font-weight: 600;
 }
 
-/* ── Flip button (inside scroll area, end of article) ── */
-.paper-flip-btn {
-  display: block;
-  margin: 28px auto 8px;
-  padding: 9px 22px;
-  background: transparent;
-  border: 1px solid rgba(139,115,85,0.28);
-  border-radius: 24px;
-  font-family: 'Crimson Text', serif;
-  font-size: 0.82rem;
-  color: #7a6244;
-  cursor: pointer;
-  transition: background 0.2s, border-color 0.2s;
-  user-select: none;
-  letter-spacing: 0.04em;
+
+/* ── Analytics overlay panel — replaces 3D back face to avoid overflow/preserve-3d conflict ── */
+.paper-analytics-panel {
+  position: absolute;
+  inset: 0;
+  z-index: 10; /* above scroll track, polaroids, palm shadows */
+  background: #fdf8f0;
+  background-image: radial-gradient(
+    ellipse 100% 60% at 50% 0%,
+    rgba(255, 252, 244, 0.85) 0%,
+    transparent 58%
+  );
+  display: flex;
+  flex-direction: column;
+  padding: calc(var(--header-height) + 18px) 22px 18px;
+  opacity: 0;
+  pointer-events: none;
+  transform: rotateY(-90deg);
+  transform-origin: center center;
+  will-change: transform;
 }
 
-.paper-flip-btn:hover {
-  background: rgba(139,115,85,0.08);
-  border-color: rgba(139,115,85,0.45);
+.paper-analytics-panel.analytics-open {
+  opacity: 1;
+  pointer-events: auto;
+  transform: rotateY(0deg);
 }
 
-/* ── BACK: analytics dashboard ── */
+/* ── BACK: analytics dashboard (legacy rule kept for reference) ── */
 .paper-back {
   background: #fdf8f0;
   background-image: radial-gradient(
@@ -403,8 +586,8 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 14px;
-  padding-bottom: 12px;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
   border-bottom: 1px solid rgba(0,0,0,0.08);
   flex-shrink: 0;
 }
@@ -416,6 +599,54 @@
   color: #1a1612;
   flex: 1;
 }
+
+/* Back button lives in analytics header top-left */
+.paper-back-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid rgba(139,115,85,0.28);
+  border-radius: 50%;
+  font-size: 0.85rem;
+  color: #7a6244;
+  cursor: pointer;
+  transition: background 0.2s;
+  user-select: none;
+  flex-shrink: 0;
+  padding: 0;
+  line-height: 1;
+}
+
+.paper-back-btn:hover { background: rgba(139,115,85,0.12); }
+
+/* Scatter plot reader dots */
+.rdr-dot {
+  cursor: pointer;
+  transition: r 0.15s, opacity 0.15s;
+  opacity: 0.82;
+}
+.rdr-dot:hover { opacity: 1; r: 7; }
+
+/* Scatter tooltip */
+#cloudTip {
+  position: absolute;
+  pointer-events: none;
+  background: #1a1612;
+  color: #e8d8b8;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.6rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.12s;
+  z-index: 10;
+  transform: translate(-50%, -130%);
+}
+#cloudTip.visible { opacity: 1; }
 
 .analytics-badge {
   background: #f97316;

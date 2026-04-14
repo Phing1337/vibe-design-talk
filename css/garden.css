@@ -1,0 +1,667 @@
+﻿/* ============================================================
+   garden.css — Work Digital Garden Showcase Slide
+   "Your Digital Space"
+   ============================================================ */
+
+/* ── Slide layout ── */
+.slide-garden {
+  display: flex !important;
+  align-items: stretch !important;
+  padding: 0 !important;
+}
+
+/* ── Left pitch column ── */
+.garden-left {
+  width: 35%;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: calc(var(--header-height) + 7%) 5% 7% 7%;
+}
+
+/* ── Right: full-bleed scrapbook panel ── */
+.garden-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(148deg, #1c1710 0%, #0f0d0b 60%, #0c0a08 100%);
+}
+
+/* Ambient warm glow */
+.garden-right::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 65%;
+  height: 100%;
+  background: radial-gradient(
+    ellipse 80% 55% at 65% 40%,
+    rgba(200, 97, 63, 0.05) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Identity bar ── */
+.gd-identity-bar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: calc(var(--header-height) + 28px) 52px 0;
+  position: relative;
+  z-index: 1;
+}
+
+.gd-identity-spacer { flex: 1; }
+
+.gd-identity-name {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.72);
+  letter-spacing: 0.02em;
+}
+
+.gd-identity-sep {
+  color: rgba(255, 255, 255, 0.2);
+  margin: 0 5px;
+  font-weight: 300;
+}
+
+.gd-identity-role {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 0.02em;
+}
+
+/* ── Card deck area ── */
+.gd-deck-area {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  padding: 0 40px;
+  position: relative;
+  z-index: 1;
+  min-height: 0;
+}
+
+.gd-deck-scroll {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  overflow-x: auto;
+  padding: 28px 12px 32px;
+  scrollbar-width: none;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+}
+
+.gd-deck-scroll::-webkit-scrollbar { display: none; }
+
+/* ── Project card ── */
+.gd-card {
+  flex-shrink: 0;
+  width: 158px;
+  height: 205px;
+  background: #fdf8ef;
+  border-radius: 5px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  scroll-snap-align: start;
+  user-select: none;
+  /* Stacked shadow — curved warm falloff */
+  box-shadow:
+    0  1px  1px  rgba(110, 82, 46, 0.10),
+    0  2px  2px  rgba(105, 78, 44, 0.10),
+    0  4px  4px  rgba(100, 75, 42, 0.09),
+    0  8px  8px  rgba( 95, 70, 38, 0.09),
+    0 16px 16px  rgba( 88, 65, 35, 0.07),
+    0 32px 32px  rgba( 80, 58, 30, 0.05),
+    inset 0  1px 0 rgba(255, 255, 255, 0.75),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+  transition: transform 0.32s cubic-bezier(0.25, 0, 0, 1),
+              box-shadow 0.32s cubic-bezier(0.25, 0, 0, 1);
+}
+
+/* Per-card rotations — scrapbook scatter */
+.gd-card:nth-child(1) { transform: rotate(-2.6deg); }
+.gd-card:nth-child(2) { transform: rotate( 1.7deg); }
+.gd-card:nth-child(3) { transform: rotate(-1.1deg); }
+.gd-card:nth-child(4) { transform: rotate( 3.2deg); }
+.gd-card:nth-child(5) { transform: rotate(-0.7deg); }
+.gd-card:nth-child(6) { transform: rotate( 2.3deg); }
+
+.gd-card:hover {
+  transform: rotate(0deg) translateY(-10px);
+  box-shadow:
+    0  2px  2px  rgba(110, 82, 46, 0.12),
+    0  4px  4px  rgba(105, 78, 44, 0.12),
+    0  8px  8px  rgba(100, 75, 42, 0.10),
+    0 16px 16px  rgba( 95, 70, 38, 0.09),
+    0 32px 32px  rgba( 88, 65, 35, 0.08),
+    0 48px 48px  rgba( 80, 58, 30, 0.06),
+    inset 0  1px 0 rgba(255, 255, 255, 0.75),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.05);
+}
+
+/* Pinned (clicked) state — held level like picking up the card */
+.gd-card.gd-pinned {
+  transform: rotate(0deg) translateY(-14px) scale(1.02);
+  box-shadow:
+    0  4px  4px  rgba(110, 82, 46, 0.14),
+    0  8px  8px  rgba(105, 78, 44, 0.13),
+    0 16px 16px  rgba(100, 75, 42, 0.11),
+    0 32px 32px  rgba( 95, 70, 38, 0.10),
+    0 52px 52px  rgba( 88, 65, 35, 0.08),
+    0 72px 72px  rgba( 80, 58, 30, 0.06),
+    inset 0  1px 0 rgba(255, 255, 255, 0.80),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.06);
+}
+
+/* Colored accent stripe per card */
+.gd-card-stripe {
+  height: 4px;
+  flex-shrink: 0;
+}
+
+.gd-card:nth-child(1) .gd-card-stripe { background: #c8613f; }
+.gd-card:nth-child(2) .gd-card-stripe { background: #e8a020; }
+.gd-card:nth-child(3) .gd-card-stripe { background: #7a9e6b; }
+.gd-card:nth-child(4) .gd-card-stripe { background: #5b8ac7; }
+.gd-card:nth-child(5) .gd-card-stripe { background: #c8613f; }
+.gd-card:nth-child(6) .gd-card-stripe { background: #9b7bc7; }
+
+/* Card body */
+.gd-card-body {
+  flex: 1;
+  padding: 14px 14px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.gd-card-title {
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  color: #1a1612;
+  margin: 0 0 8px;
+  line-height: 1.28;
+}
+
+.gd-card-desc {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 0.6rem;
+  font-style: italic;
+  color: #6b5335;
+  margin: 0;
+  line-height: 1.52;
+  flex: 1;
+}
+
+/* Card footer */
+.gd-card-foot {
+  flex-shrink: 0;
+  padding: 8px 14px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid rgba(139, 115, 85, 0.1);
+}
+
+/* Compact layer transitions (used for fade-out on expand, fade-in on close) */
+.gd-card-body,
+.gd-card-foot {
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.gd-card-year {
+  font-family: var(--font-body);
+  font-size: 0.5rem;
+  letter-spacing: 0.06em;
+  color: #a8927a;
+}
+
+.gd-card-arrow {
+  font-size: 0.6rem;
+  color: rgba(200, 97, 63, 0.6);
+  transition: transform 0.18s, opacity 0.18s;
+  opacity: 0;
+}
+
+.gd-card:hover .gd-card-arrow {
+  opacity: 1;
+  transform: translateX(3px);
+}
+
+/* ── Bottom three-section strip ── */
+.gd-bottom-strip {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 18px 52px 22px;
+  gap: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.gd-strip-col {
+  padding: 0 24px;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.gd-strip-col:first-child { padding-left: 0; }
+.gd-strip-col:last-child  { padding-right: 0; border-right: none; }
+
+.gd-strip-label {
+  font-family: var(--font-body);
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.28);
+  margin-bottom: 10px;
+  display: block;
+}
+
+/* Playlist */
+.gd-playlist-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.gd-vinyl {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: conic-gradient(
+    #1a1612 0deg,  #282010 18deg,
+    #1a1612 18deg, #282010 36deg,
+    #1a1612 36deg, #282010 54deg,
+    #1a1612 54deg, #282010 72deg,
+    #1a1612 72deg, #282010 90deg,
+    #1a1612 90deg, #282010 108deg,
+    #1a1612 108deg,#282010 126deg,
+    #1a1612 126deg,#282010 144deg,
+    #1a1612 144deg,#282010 162deg,
+    #1a1612 162deg,#282010 180deg,
+    #1a1612 180deg,#282010 198deg,
+    #1a1612 198deg,#282010 216deg,
+    #1a1612 216deg,#282010 234deg,
+    #1a1612 234deg,#282010 252deg,
+    #1a1612 252deg,#282010 270deg,
+    #1a1612 270deg,#282010 288deg,
+    #1a1612 288deg,#282010 306deg,
+    #1a1612 306deg,#282010 324deg,
+    #1a1612 324deg,#282010 342deg,
+    #1a1612 342deg,#282010 360deg
+  );
+  position: relative;
+  animation: gdSpin 4s linear infinite;
+}
+
+@keyframes gdSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.gd-vinyl::after {
+  content: '';
+  position: absolute;
+  inset: 28%;
+  border-radius: 50%;
+  background: #c8613f;
+}
+
+.gd-np-track {
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.72);
+  margin: 0 0 2px;
+}
+
+.gd-np-artist {
+  font-family: var(--font-body);
+  font-size: 0.52rem;
+  color: rgba(255, 255, 255, 0.3);
+  margin: 0;
+}
+
+/* Links chips */
+.gd-links-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.gd-link-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 100px;
+  font-family: var(--font-body);
+  font-size: 0.52rem;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  user-select: none;
+}
+
+.gd-link-chip:hover {
+  background: rgba(200, 97, 63, 0.15);
+  border-color: rgba(200, 97, 63, 0.4);
+  color: #e8b49a;
+}
+
+/* Downloads list */
+.gd-dl-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.gd-dl-item {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.gd-dl-item:hover { opacity: 0.75; }
+
+.gd-dl-icon {
+  font-size: 0.8rem;
+  width: 18px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.gd-dl-name {
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  flex: 1;
+}
+
+.gd-dl-desc {
+  font-family: var(--font-body);
+  font-size: 0.5rem;
+  color: rgba(255, 255, 255, 0.25);
+  white-space: nowrap;
+}
+
+/* ── Deck area: pin-board texture ── */
+.gd-deck-area::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(210, 180, 130, 0.07) 1px, transparent 1px);
+  background-size: 22px 22px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Deck backdrop: smoke overlay behind expanded card ── */
+.gd-deck-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(8, 7, 5, 0.72);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.30s, visibility 0.30s;
+  z-index: 9000;
+  cursor: pointer;
+}
+.gd-deck-backdrop.gd-vis { opacity: 1; visibility: visible; }
+
+/* ── Expanded card state — same element, two sizes ── */
+
+/* Lifted shadow + sheen */
+.gd-card.is-expanded {
+  cursor: default;
+  box-shadow:
+    0  2px  4px  rgba(40, 20,  5, 0.16),
+    0  6px 10px  rgba(40, 20,  5, 0.13),
+    0 14px 22px  rgba(40, 20,  5, 0.11),
+    0 28px 44px  rgba(40, 20,  5, 0.08),
+    0 56px 84px  rgba(40, 20,  5, 0.06),
+    0 96px 128px rgba(40, 20,  5, 0.04),
+    inset 0 1px 0 rgba(255, 252, 245, 0.85);
+}
+
+.gd-card.is-expanded::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 12%, rgba(255, 250, 238, 0.38) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 78% 90%, rgba(180, 148, 90,  0.06) 0%, transparent 55%);
+  pointer-events: none;
+  z-index: 20;
+  border-radius: inherit;
+}
+
+/* Compact content fades out when expanded */
+.gd-card.is-expanded .gd-card-body,
+.gd-card.is-expanded .gd-card-foot {
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+}
+
+/* ── Expanded content panel — position:absolute, hidden by opacity ── */
+.gd-card-exp {
+  position: absolute;
+  inset: 0;
+  z-index: 22;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.01s ease;
+}
+
+.gd-card.is-expanded .gd-card-exp {
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.15s ease 0.50s;
+}
+
+/* Close button */
+.gd-exp-close {
+  position: absolute;
+  top: 11px;
+  right: 13px;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: rgba(26, 22, 18, 0.07);
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 0.72rem;
+  color: rgba(26, 22, 18, 0.40);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 25;
+  transition: background 0.15s, color 0.15s;
+  line-height: 1;
+}
+
+.gd-exp-close:hover {
+  background: rgba(26, 22, 18, 0.13);
+  color: #1a1612;
+}
+
+/* ── Hero area (top of expanded card, grows from stripe) ── */
+.gd-exp-hero {
+  height: 0;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+  transition: height 0.30s cubic-bezier(0.22, 0, 0, 1);
+}
+
+.gd-card.is-expanded .gd-exp-hero {
+  height: 160px;
+  transition: height 0.30s cubic-bezier(0.22, 0, 0, 1) 0.46s;
+}
+
+.gd-exp-hero-bg {
+  position: absolute;
+  inset: 0;
+  opacity: 0.62;
+  /* background set by JS to match stripe color */
+}
+
+.gd-exp-hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(10, 6, 3, 0.65) 100%
+  );
+}
+
+.gd-exp-hero-text {
+  position: absolute;
+  bottom: 14px;
+  left: 20px;
+  right: 50px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.gd-card.is-expanded .gd-exp-hero-text {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.22s ease 0.64s, transform 0.22s ease 0.64s;
+}
+
+.gd-exp-kicker {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.48rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.52);
+  margin-bottom: 4px;
+}
+
+/* Body area */
+.gd-exp-body {
+  flex: 1;
+  padding: 16px 22px 14px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.gd-card.is-expanded .gd-exp-body {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.26s ease 0.68s, transform 0.26s ease 0.68s;
+}
+
+.gd-exp-title {
+  font-family: var(--font-display);
+  font-size: 1.12rem;
+  color: #fff;
+  margin: 0;
+  line-height: 1.22;
+}
+
+.gd-exp-desc {
+  font-family: 'Lora', Georgia, serif;
+  font-size: 0.68rem;
+  line-height: 1.65;
+  color: #3a3028;
+  margin: 0 0 auto;
+  flex: 1;
+  overflow: hidden;
+}
+
+.gd-exp-meta {
+  display: flex;
+  gap: 14px;
+  padding: 11px 0 0;
+  border-top: 1px solid rgba(139, 115, 85, 0.12);
+  margin-top: 10px;
+}
+
+.gd-exp-date,
+.gd-exp-collabs {
+  font-family: var(--font-body);
+  font-size: 0.52rem;
+  color: #a8927a;
+  letter-spacing: 0.02em;
+}
+
+.gd-exp-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding-top: 14px;
+}
+
+.gd-exp-link {
+  font-family: var(--font-body);
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: #1a1612;
+  text-decoration: none;
+  padding: 5px 13px;
+  border: 1.5px solid rgba(26, 22, 18, 0.15);
+  border-radius: 100px;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.gd-exp-link:hover {
+  background: rgba(26, 22, 18, 0.06);
+  border-color: rgba(26, 22, 18, 0.30);
+}
+
+/* ── Closing state — added before FLIP-back, removed after card returns ── */
+
+/* Exp panel snaps out fast */
+.gd-card.is-closing .gd-card-exp {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.14s ease;
+}
+
+/* Compact content returns */
+.gd-card.is-closing .gd-card-body,
+.gd-card.is-closing .gd-card-foot {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}

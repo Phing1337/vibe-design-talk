@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HTML in Canvas — Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Young+Serif&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: #0f0d0b;
+      overflow: hidden;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: block;
+    }
+
+    #the-ui {
+      width: 680px;
+      height: 560px;
+      font-family: Inter, sans-serif;
+      color: #f0ede8;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8);
+      position: absolute;
+      top: 0; left: 0;
+    }
+
+    #the-ui * { box-sizing: border-box; }
+
+    /* ── Hero (160px) ──────────────────────────────────────── */
+    #s-hero {
+      background: #1e1a16;
+      height: 160px;
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .avatar {
+      width: 80px; height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #e8824a 0%, #c43e1c 100%);
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.02em;
+    }
+
+    .hero-info { flex: 1; min-width: 0; }
+
+    .hero-name {
+      font-family: 'Young Serif', serif;
+      font-size: 1.6rem;
+      color: #f0ede8;
+      line-height: 1.15;
+      margin-bottom: 2px;
+    }
+
+    .hero-subtitle {
+      font-size: 0.73rem;
+      color: #a09890;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .hero-oneliner {
+      font-size: 0.7rem;
+      color: #c8c0b8;
+      margin-bottom: 11px;
+    }
+
+    .hero-buttons { display: flex; gap: 8px; }
+
+    .btn-follow {
+      background: #c43e1c;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      padding: 6px 16px;
+      font-size: 0.73rem;
+      font-family: Inter, sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-message {
+      background: transparent;
+      color: #f0ede8;
+      border: 1px solid rgba(240, 237, 232, 0.28);
+      border-radius: 6px;
+      padding: 6px 16px;
+      font-size: 0.73rem;
+      font-family: Inter, sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    /* ── Stats (80px) ──────────────────────────────────────── */
+    #s-stats {
+      background: #16130f;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 10px;
+    }
+
+    .stat-block {
+      flex: 1;
+      border: 1px solid rgba(240, 237, 232, 0.1);
+      border-radius: 8px;
+      padding: 8px 10px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #f0ede8;
+      line-height: 1.2;
+    }
+
+    .stat-label {
+      font-size: 0.58rem;
+      color: #a09890;
+      margin-top: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Work (160px) ──────────────────────────────────────── */
+    #s-work {
+      background: #1e1a16;
+      height: 160px;
+      padding: 14px 16px;
+    }
+
+    .section-heading {
+      font-size: 0.63rem;
+      font-weight: 600;
+      color: #a09890;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+    }
+
+    .work-cards { display: flex; gap: 8px; }
+
+    .work-card {
+      flex: 1;
+      height: 104px;
+      border-radius: 8px;
+      background: #16130f;
+      overflow: hidden;
+      border: 1px solid rgba(240, 237, 232, 0.07);
+    }
+
+    .work-card-band { height: 6px; }
+
+    .work-card-body { padding: 9px 11px; }
+
+    .work-card-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: #f0ede8;
+      margin-bottom: 4px;
+    }
+
+    .work-card-sub { font-size: 0.6rem; color: #a09890; }
+
+    /* ── Skills (160px) ────────────────────────────────────── */
+    #s-skills {
+      background: #16130f;
+      height: 160px;
+      padding: 14px 16px;
+    }
+
+    .skills-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .skill-pill {
+      background: rgba(196, 62, 28, 0.15);
+      border: 1px solid rgba(196, 62, 28, 0.4);
+      color: #f0ede8;
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 0.67rem;
+      font-weight: 500;
+    }
+
+    /* ── Controls overlay ─────────────────────────────────── */
+    #controls {
+      position: fixed;
+      top: 16px; left: 16px;
+      z-index: 100;
+      background: rgba(30, 26, 22, 0.82);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(240, 237, 232, 0.1);
+      border-radius: 100px;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: Inter, sans-serif;
+    }
+
+    .ctrl-label {
+      font-size: 0.67rem;
+      color: #a09890;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    #btn-reset {
+      background: rgba(240, 237, 232, 0.07);
+      border: 1px solid rgba(240, 237, 232, 0.13);
+      color: #f0ede8;
+      border-radius: 100px;
+      padding: 4px 10px;
+      font-size: 0.67rem;
+      font-family: Inter, sans-serif;
+      cursor: pointer;
+    }
+    #btn-reset:hover { background: rgba(240, 237, 232, 0.13); }
+
+    .status-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+      flex-shrink: 0;
+    }
+    .status-dot.fallback { background: #f97316; }
+
+    .status-text {
+      font-size: 0.67rem;
+      font-weight: 600;
+      color: #f0ede8;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Controls (DOM, not canvas) -->
+  <div id="controls">
+    <span class="ctrl-label">HTML in Canvas</span>
+    <button id="btn-reset">🔄 Reset</button>
+    <div class="status-dot" id="status-dot"></div>
+    <span class="status-text" id="status-text">LIVE</span>
+  </div>
+
+  <!-- canvas layoutsubtree — #the-ui MUST be a static markup child -->
+  <canvas layoutsubtree id="main-canvas">
+
+    <div id="the-ui">
+
+      <!-- ── Hero ─────────────────────────────────────────── -->
+      <div id="s-hero">
+        <div class="avatar">NM</div>
+        <div class="hero-info">
+          <div class="hero-name">Nick McVey</div>
+          <div class="hero-subtitle">Design Engineer · Microsoft</div>
+          <div class="hero-oneliner">Building at the intersection of design + AI</div>
+          <div class="hero-buttons">
+            <button class="btn-follow">Follow</button>
+            <button class="btn-message">Message</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Stats ─────────────────────────────────────────── -->
+      <div id="s-stats">
+        <div class="stat-block">
+          <div class="stat-value">28.4K</div>
+          <div class="stat-label">Followers</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-value">342</div>
+          <div class="stat-label">Projects</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-value">1.2K</div>
+          <div class="stat-label">Following</div>
+        </div>
+        <div class="stat-block">
+          <div class="stat-value">94%</div>
+          <div class="stat-label">AI Rate</div>
+        </div>
+      </div>
+
+      <!-- ── Work ──────────────────────────────────────────── -->
+      <div id="s-work">
+        <div class="section-heading">Recent Work</div>
+        <div class="work-cards">
+          <div class="work-card">
+            <div class="work-card-band" style="background:linear-gradient(90deg,#c43e1c,#e8824a);"></div>
+            <div class="work-card-body">
+              <div class="work-card-title">Fluent Design 3.0</div>
+              <div class="work-card-sub">Design system</div>
+            </div>
+          </div>
+          <div class="work-card">
+            <div class="work-card-band" style="background:linear-gradient(90deg,#15803d,#4ade80);"></div>
+            <div class="work-card-body">
+              <div class="work-card-title">Xbox Helix UI</div>
+              <div class="work-card-sub">Console experience</div>
+            </div>
+          </div>
+          <div class="work-card">
+            <div class="work-card-band" style="background:linear-gradient(90deg,#e2d9cc,#f5f0ea);"></div>
+            <div class="work-card-body">
+              <div class="work-card-title">Vibe Design Talk</div>
+              <div class="work-card-sub">Community</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Skills ────────────────────────────────────────── -->
+      <div id="s-skills">
+        <div class="section-heading">Skills</div>
+        <div class="skills-pills">
+          <span class="skill-pill">Design Systems</span>
+          <span class="skill-pill">Canvas API</span>
+          <span class="skill-pill">React</span>
+          <span class="skill-pill">Motion</span>
+          <span class="skill-pill">Figma</span>
+          <span class="skill-pill">TypeScript</span>
+          <span class="skill-pill">Xbox</span>
+        </div>
+      </div>
+
+    </div>
+  </canvas>
+
+  <script>
+    'use strict';
+
+    // ── Constants ─────────────────────────────────────────────────────────────
+    const UW = 680, UH = 560;
+
+    // Section y-bounds (hard-coded to match CSS heights: 160+80+160+160 = 560)
+    const SECTION_BOUNDS = [
+      { id: 's-hero',   y0: 0,   y1: 160 },
+      { id: 's-stats',  y0: 160, y1: 240 },
+      { id: 's-work',   y0: 240, y1: 400 },
+      { id: 's-skills', y0: 400, y1: 560 },
+    ];
+
+    // ── Element refs ──────────────────────────────────────────────────────────
+    const canvas    = document.getElementById('main-canvas');
+    const theUI     = document.getElementById('the-ui');
+    const statusDot = document.getElementById('status-dot');
+    const statusTxt = document.getElementById('status-text');
+    const btnReset  = document.getElementById('btn-reset');
+    const ctx       = canvas.getContext('2d');
+
+    // ── API detection ─────────────────────────────────────────────────────────
+    const LIVE = typeof ctx.drawElementImage === 'function';
+    if (!LIVE) {
+      statusDot.classList.add('fallback');
+      statusTxt.textContent = 'FALLBACK';
+    }
+
+    // ── Canvas dimensions ─────────────────────────────────────────────────────
+    let cw = 0, ch = 0;
+
+    // ── Mesh physics state ────────────────────────────────────────────────────
+    const GCOLS = 7, GROWS = 5;  // 8×6 = 48 control points, 7×5 = 35 quads = 70 triangles
+    const SPRING_K = 0.09, REST_K = 0.004, MESH_DAMP = 0.88;
+    let pts = [];  // pts[c][r] = { x, y, vx, vy, rx, ry }
+    let grabC = -1, grabR = -1;
+    let dragStartX = 0, dragStartY = 0;
+    let snap = null, snapCtx = null;  // OffscreenCanvas for HTML snapshot
+
+    // ── Shards ────────────────────────────────────────────────────────────────
+    let shards = [];
+    let firstShatterDone = false;
+
+    // ── Timing / FPS ─────────────────────────────────────────────────────────
+    let hintStartTime = null;
+    let frameCount = 0, fps = 60, lastFpsTime = performance.now();
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Helpers
+    // ─────────────────────────────────────────────────────────────────────────
+
+    function canvasPt(e) {
+      const rect = canvas.getBoundingClientRect();
+      return { cx: e.clientX - rect.left, cy: e.clientY - rect.top };
+    }
+
+    function pSign(px, py, ax, ay, bx, by) {
+      return (px - bx) * (ay - by) - (ax - bx) * (py - by);
+    }
+    function pointInTri(px, py, ax, ay, bx, by, cx2, cy2) {
+      const d1 = pSign(px,py,ax,ay,bx,by);
+      const d2 = pSign(px,py,bx,by,cx2,cy2);
+      const d3 = pSign(px,py,cx2,cy2,ax,ay);
+      return !((d1<0||d2<0||d3<0) && (d1>0||d2>0||d3>0));
+    }
+
+    /** Canvas point → which section element, using mesh quad hit-test */
+    function hitSectionByCanvas(cx, cy) {
+      for (const s of SECTION_BOUNDS) {
+        const el = document.getElementById(s.id);
+        if (el.dataset.shattered) continue;
+        const r0 = Math.max(0, Math.floor((s.y0 / UH) * GROWS) - 1);
+        const r1 = Math.min(GROWS - 1, Math.ceil((s.y1 / UH) * GROWS));
+        for (let c = 0; c < GCOLS; c++) {
+          for (let r = r0; r <= r1; r++) {
+            const tl = pts[c][r], tr2 = pts[c+1][r];
+            const bl = pts[c][r+1], br = pts[c+1][r+1];
+            if (pointInTri(cx,cy, tl.x,tl.y, tr2.x,tr2.y, bl.x,bl.y) ||
+                pointInTri(cx,cy, tr2.x,tr2.y, br.x,br.y, bl.x,bl.y)) {
+              return el;
+            }
+          }
+        }
+      }
+      return null;
+    }
+
+    /** Find nearest mesh control point within threshold */
+    function nearestPt(cx, cy) {
+      let best = Infinity, bc = -1, br = -1;
+      for (let c = 0; c <= GCOLS; c++) {
+        for (let r = 0; r <= GROWS; r++) {
+          const d = Math.hypot(pts[c][r].x - cx, pts[c][r].y - cy);
+          if (d < best) { best = d; bc = c; br = r; }
+        }
+      }
+      return best < 120 ? { c: bc, r: br } : null;
+    }
+
+    /** UV (0..1, 0..1) → bilinear-interpolated canvas position */
+    function meshUVtoCanvas(u, v) {
+      const fc = Math.max(0, Math.min(GCOLS - 0.001, u * GCOLS));
+      const fr = Math.max(0, Math.min(GROWS - 0.001, v * GROWS));
+      const c0 = Math.floor(fc), c1 = c0 + 1;
+      const r0 = Math.floor(fr), r1 = r0 + 1;
+      const tc = fc - c0, tr = fr - r0;
+      const p00 = pts[c0][r0], p10 = pts[c1][r0];
+      const p01 = pts[c0][r1], p11 = pts[c1][r1];
+      return {
+        x: p00.x*(1-tc)*(1-tr) + p10.x*tc*(1-tr) + p01.x*(1-tc)*tr + p11.x*tc*tr,
+        y: p00.y*(1-tc)*(1-tr) + p10.y*tc*(1-tr) + p01.y*(1-tc)*tr + p11.y*tc*tr,
+      };
+    }
+
+    function meshCenter() {
+      let mx = 0, my = 0;
+      const n = (GCOLS+1) * (GROWS+1);
+      for (let c = 0; c <= GCOLS; c++) for (let r = 0; r <= GROWS; r++) {
+        mx += pts[c][r].x; my += pts[c][r].y;
+      }
+      return { x: mx / n, y: my / n };
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Glass shatter
+    // ─────────────────────────────────────────────────────────────────────────
+
+    function shatterSection(section, clickCx, clickCy) {
+      // Snapshot the canvas BEFORE hiding anything
+      const snap = new OffscreenCanvas(cw, ch);
+      snap.getContext('2d').drawImage(canvas, 0, 0);
+
+      const sb = SECTION_BOUNDS.find(s => s.id === section.id);
+      const y0 = sb.y0, y1 = sb.y1;
+
+      // Build a grid of canvas-space points with random jitter
+      const COLS = 6, ROWS = 4, W = COLS + 1;
+      const pts = [];
+      for (let r = 0; r <= ROWS; r++) {
+        for (let c = 0; c <= COLS; c++) {
+          const lx = (c / COLS) * UW;
+          const ly = y0 + (r / ROWS) * (y1 - y0);
+          const cp  = meshUVtoCanvas(lx / UW, ly / UH);
+          const edge = (r === 0 || r === ROWS || c === 0 || c === COLS);
+          const jit  = edge ? 0 : 20;
+          pts.push({
+            x: cp.x + (Math.random() - 0.5) * jit,
+            y: cp.y + (Math.random() - 0.5) * jit,
+          });
+        }
+      }
+
+      // Pair each grid cell into 2 triangles
+      for (let r = 0; r < ROWS; r++) {
+        for (let c = 0; c < COLS; c++) {
+          const p0 = pts[ r      * W + c    ];
+          const p1 = pts[ r      * W + c + 1];
+          const p2 = pts[(r + 1) * W + c    ];
+          const p3 = pts[(r + 1) * W + c + 1];
+
+          for (const tri of [[p0, p1, p2], [p1, p3, p2]]) {
+            const ocx  = (tri[0].x + tri[1].x + tri[2].x) / 3;
+            const ocy  = (tri[0].y + tri[1].y + tri[2].y) / 3;
+            const dx   = ocx - clickCx, dy = ocy - clickCy;
+            const dist = Math.hypot(dx, dy) || 1;
+            const spd  = 3 + Math.random() * 9;
+            const frac = 0.5 + Math.random() * 0.8;
+            shards.push({
+              verts:  tri.map(p => [p.x, p.y]),
+              origCx: ocx, origCy: ocy,
+              cx: ocx, cy: ocy,
+              vx: (dx / dist) * spd * frac,
+              vy: (dy / dist) * spd * frac - 1.5,
+              angle: 0,
+              spin:  (Math.random() - 0.5) * 0.08,
+              alpha: 1,
+              snap,
+            });
+          }
+        }
+      }
+
+      section.dataset.shattered = '1';
+      section.style.visibility  = 'hidden';
+      firstShatterDone = true;
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Reset
+    // ─────────────────────────────────────────────────────────────────────────
+
+    function resetAll() {
+      for (const s of SECTION_BOUNDS) {
+        const el = document.getElementById(s.id);
+        el.removeAttribute('data-shattered');
+        el.style.visibility = '';
+      }
+      shards = [];
+      firstShatterDone = false;
+      grabC = -1; grabR = -1;
+      initMesh();
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Resize
+    // ─────────────────────────────────────────────────────────────────────────
+
+    function resize() {
+      cw = canvas.width  = window.innerWidth;
+      ch = canvas.height = window.innerHeight;
+      initMesh();
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Mesh physics + OffscreenCanvas rendering
+    // ─────────────────────────────────────────────────────────────────────────
+
+    function initMesh() {
+      const ox = cw / 2 - UW / 2, oy = ch / 2 - UH / 2;
+      pts = Array.from({ length: GCOLS + 1 }, (_, c) =>
+        Array.from({ length: GROWS + 1 }, (_, r) => ({
+          x:  ox + c * (UW / GCOLS),
+          y:  oy + r * (UH / GROWS),
+          rx: ox + c * (UW / GCOLS),
+          ry: oy + r * (UH / GROWS),
+          vx: 0, vy: 0,
+        }))
+      );
+    }
+
+    function updateMesh() {
+      for (let c = 0; c <= GCOLS; c++) {
+        for (let r = 0; r <= GROWS; r++) {
+          if (c === grabC && r === grabR) continue;
+          const p = pts[c][r];
+          const nbrs = [];
+          if (c > 0)     nbrs.push(pts[c-1][r]);
+          if (c < GCOLS) nbrs.push(pts[c+1][r]);
+          if (r > 0)     nbrs.push(pts[c][r-1]);
+          if (r < GROWS) nbrs.push(pts[c][r+1]);
+          for (const q of nbrs) {
+            const dx = q.x - p.x, dy = q.y - p.y;
+            const dist = Math.hypot(dx, dy);
+            const restDist = Math.hypot(q.rx - p.rx, q.ry - p.ry);
+            if (dist < 0.5) continue;
+            const stretch = (dist - restDist) * SPRING_K;
+            p.vx += (dx / dist) * stretch;
+            p.vy += (dy / dist) * stretch;
+          }
+          p.vx += (p.rx - p.x) * REST_K;
+          p.vy += (p.ry - p.y) * REST_K;
+          p.vx *= MESH_DAMP;
+          p.vy *= MESH_DAMP;
+          p.x += p.vx;
+          p.y += p.vy;
+        }
+      }
+    }
+
+    function drawTriPatch(src, sx0, sy0, sx1, sy1, sx2, sy2, dx0, dy0, dx1, dy1, dx2, dy2) {
+      const a = sx1-sx0, b = sx2-sx0, c = sy1-sy0, d = sy2-sy0;
+      const det = a*d - b*c;
+      if (Math.abs(det) < 0.5) return;
+      const e = dx1-dx0, f = dx2-dx0, g = dy1-dy0, h = dy2-dy0;
+      const ia = d/det, ib = -b/det, ic = -c/det, id2 = a/det;
+      const m11 = e*ia+f*ic, m12 = e*ib+f*id2;
+      const m21 = g*ia+h*ic, m22 = g*ib+h*id2;
+      const tx = dx0 - m11*sx0 - m12*sy0;
+      const ty = dy0 - m21*sx0 - m22*sy0;
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(dx0, dy0); ctx.lineTo(dx1, dy1); ctx.lineTo(dx2, dy2);
+      ctx.closePath(); ctx.clip();
+      ctx.setTransform(m11, m21, m12, m22, tx, ty);
+      ctx.drawImage(src, 0, 0);
+      ctx.restore();
+    }
+
+    function captureAndDrawMesh() {
+      if (!snap || snap.width !== UW || snap.height !== UH) {
+        snap = new OffscreenCanvas(UW, UH);
+        snapCtx = snap.getContext('2d');
+      }
+      // Render HTML element at identity transform into top-left of canvas
+      ctx.save();
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.drawElementImage(theUI, 0, 0);
+      ctx.restore();
+      // Copy rendered HTML region to OffscreenCanvas
+      snapCtx.clearRect(0, 0, UW, UH);
+      snapCtx.drawImage(canvas, 0, 0, UW, UH, 0, 0, UW, UH);
+      // Clear main canvas and draw deformed mesh
+      ctx.clearRect(0, 0, cw, ch);
+      ctx.fillStyle = '#0f0d0b';
+      ctx.fillRect(0, 0, cw, ch);
+      for (let c = 0; c < GCOLS; c++) {
+        for (let r = 0; r < GROWS; r++) {
+          const su = c * (UW / GCOLS), sv = r * (UH / GROWS);
+          const eu = (c+1) * (UW / GCOLS), ev = (r+1) * (UH / GROWS);
+          const tl = pts[c][r], tr2 = pts[c+1][r];
+          const bl = pts[c][r+1], br = pts[c+1][r+1];
+          drawTriPatch(snap, su,sv, eu,sv, su,ev, tl.x,tl.y, tr2.x,tr2.y, bl.x,bl.y);
+          drawTriPatch(snap, eu,sv, eu,ev, su,ev, tr2.x,tr2.y, br.x,br.y, bl.x,bl.y);
+        }
+      }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Fallback draw (canvas 2D replica when API is absent)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    function drawFallback() {
+      const { x: posX, y: posY } = meshCenter();
+      ctx.save();
+      ctx.translate(posX, posY);
+      ctx.translate(-UW / 2, -UH / 2);
+
+      // Card shell
+      ctx.beginPath();
+      ctx.roundRect(0, 0, UW, UH, 16);
+      ctx.fillStyle = '#1e1a16';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(240,237,232,0.08)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // ─ Hero ────────────────────────────────────────────────
+      ctx.fillStyle = '#1e1a16';
+      ctx.fillRect(0, 0, UW, 160);
+
+      // Avatar
+      const avGrad = ctx.createRadialGradient(64, 80, 10, 64, 80, 40);
+      avGrad.addColorStop(0, '#e8824a');
+      avGrad.addColorStop(1, '#c43e1c');
+      ctx.beginPath();
+      ctx.arc(64, 80, 40, 0, Math.PI * 2);
+      ctx.fillStyle = avGrad;
+      ctx.fill();
+
+      ctx.fillStyle = '#fff';
+      ctx.font = '700 17px Inter,sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('NM', 64, 80);
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'alphabetic';
+
+      // Name block
+      ctx.fillStyle = '#f0ede8';
+      ctx.font = '700 25px Georgia,serif';
+      ctx.fillText('Nick McVey', 122, 67);
+      ctx.fillStyle = '#a09890';
+      ctx.font = '500 12px Inter,sans-serif';
+      ctx.fillText('Design Engineer · Microsoft', 122, 87);
+      ctx.fillStyle = '#c8c0b8';
+      ctx.font = '400 11.5px Inter,sans-serif';
+      ctx.fillText('Building at the intersection of design + AI', 122, 107);
+
+      // Follow button
+      ctx.fillStyle = '#c43e1c';
+      ctx.beginPath();
+      ctx.roundRect(122, 120, 76, 24, 6);
+      ctx.fill();
+      ctx.fillStyle = '#fff';
+      ctx.font = '600 11px Inter,sans-serif';
+      ctx.fillText('Follow', 148, 137);
+
+      // Message button
+      ctx.strokeStyle = 'rgba(240,237,232,0.28)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.roundRect(206, 120, 80, 24, 6);
+      ctx.stroke();
+      ctx.fillStyle = '#f0ede8';
+      ctx.font = '500 11px Inter,sans-serif';
+      ctx.fillText('Message', 224, 137);
+
+      // ─ Stats ───────────────────────────────────────────────
+      ctx.fillStyle = '#16130f';
+      ctx.fillRect(0, 160, UW, 80);
+
+      const stats = [['28.4K','Followers'],['342','Projects'],['1.2K','Following'],['94%','AI Rate']];
+      const cellW = (UW - 40) / 4;
+      stats.forEach(([v, l], i) => {
+        const sx = 20 + i * cellW;
+        ctx.strokeStyle = 'rgba(240,237,232,0.1)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.roundRect(sx, 172, cellW - 10, 46, 8);
+        ctx.stroke();
+        ctx.fillStyle = '#f0ede8';
+        ctx.font = '600 15px Inter,sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(v, sx + (cellW - 10) / 2, 194);
+        ctx.fillStyle = '#a09890';
+        ctx.font = '500 9.5px Inter,sans-serif';
+        ctx.fillText(l.toUpperCase(), sx + (cellW - 10) / 2, 209);
+      });
+      ctx.textAlign = 'left';
+
+      // ─ Work ────────────────────────────────────────────────
+      ctx.fillStyle = '#1e1a16';
+      ctx.fillRect(0, 240, UW, 160);
+      ctx.fillStyle = '#a09890';
+      ctx.font = '600 9.5px Inter,sans-serif';
+      ctx.fillText('RECENT WORK', 16, 258);
+
+      const workCards = [
+        { name:'Fluent Design 3.0', sub:'Design system',     band:'#c43e1c' },
+        { name:'Xbox Helix UI',     sub:'Console experience', band:'#15803d' },
+        { name:'Vibe Design Talk',  sub:'Community',          band:'#e2d9cc' },
+      ];
+      const wCW = (UW - 48) / 3;
+      workCards.forEach(({ name, sub, band }, i) => {
+        const wx = 16 + i * (wCW + 8);
+        ctx.fillStyle = '#16130f';
+        ctx.beginPath();
+        ctx.roundRect(wx, 265, wCW, 104, 8);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(240,237,232,0.07)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.fillStyle = band;
+        ctx.fillRect(wx, 265, wCW, 6);
+        ctx.fillStyle = '#f0ede8';
+        ctx.font = '600 11px Inter,sans-serif';
+        ctx.fillText(name, wx + 10, 289);
+        ctx.fillStyle = '#a09890';
+        ctx.font = '400 10px Inter,sans-serif';
+        ctx.fillText(sub, wx + 10, 304);
+      });
+
+      // ─ Skills ──────────────────────────────────────────────
+      ctx.fillStyle = '#16130f';
+      ctx.fillRect(0, 400, UW, 160);
+      ctx.fillStyle = '#a09890';
+      ctx.font = '600 9.5px Inter,sans-serif';
+      ctx.fillText('SKILLS', 16, 418);
+
+      const skills = ['Design Systems','Canvas API','React','Motion','Figma','TypeScript','Xbox'];
+      ctx.font = '500 10px Inter,sans-serif';
+      let px = 16, py = 428;
+      skills.forEach(sk => {
+        const tw = ctx.measureText(sk).width + 24;
+        if (px + tw > UW - 16 && px > 16) { px = 16; py += 28; }
+        ctx.fillStyle = 'rgba(196,62,28,0.15)';
+        ctx.beginPath();
+        ctx.roundRect(px, py, tw, 22, 11);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(196,62,28,0.4)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+        ctx.fillStyle = '#f0ede8';
+        ctx.fillText(sk, px + 12, py + 15);
+        px += tw + 6;
+      });
+
+      // Fallback notice
+      ctx.fillStyle = 'rgba(240,237,232,0.3)';
+      ctx.font = '400 11px Inter,sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Enable chrome://flags/#canvas-draw-element for the real experience.', UW / 2, UH - 12);
+      ctx.textAlign = 'left';
+
+      ctx.restore();
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Animation loop
+    // ─────────────────────────────────────────────────────────────────────────
+
+    function animate(now) {
+      requestAnimationFrame(animate);
+
+      if (!hintStartTime) hintStartTime = now;
+
+      // FPS counter
+      frameCount++;
+      if (frameCount % 30 === 0) {
+        fps = Math.round(30000 / (now - lastFpsTime));
+        lastFpsTime = now;
+      }
+
+      // Clear
+      ctx.clearRect(0, 0, cw, ch);
+      ctx.fillStyle = '#0f0d0b';
+      ctx.fillRect(0, 0, cw, ch);
+
+      // ── Mesh physics ──
+      updateMesh();
+
+      // ── Draw UI ──
+      if (LIVE) {
+        captureAndDrawMesh();
+      } else {
+        drawFallback();
+      }
+
+      // ── Draw shards (after UI so they appear on top) ──
+      for (const sh of shards) {
+        if (sh.alpha <= 0) continue;
+        sh.vy += 0.35;
+        sh.vx *= 0.98; sh.vy *= 0.98;
+        sh.cx += sh.vx; sh.cy += sh.vy;
+        sh.angle += sh.spin;
+        sh.alpha -= 0.012;
+
+        ctx.save();
+        ctx.globalAlpha = Math.max(0, sh.alpha);
+        ctx.translate(sh.cx, sh.cy);
+        ctx.rotate(sh.angle);
+
+        // Clip to triangle (verts are in original canvas space; offset by original centroid)
+        const [v0, v1, v2] = sh.verts;
+        ctx.beginPath();
+        ctx.moveTo(v0[0] - sh.origCx, v0[1] - sh.origCy);
+        ctx.lineTo(v1[0] - sh.origCx, v1[1] - sh.origCy);
+        ctx.lineTo(v2[0] - sh.origCx, v2[1] - sh.origCy);
+        ctx.closePath();
+        ctx.clip();
+
+        // Draw snapshot aligned to original position
+        ctx.drawImage(sh.snap, -sh.origCx, -sh.origCy);
+
+        // Glass edge highlight
+        ctx.strokeStyle = 'rgba(255,255,255,0.6)';
+        ctx.lineWidth = 0.8;
+        ctx.stroke();
+        ctx.restore();
+      }
+      // Remove fully faded shards
+      shards = shards.filter(s => s.alpha > 0);
+
+      // ── FPS overlay (top-right) ──
+      ctx.save();
+      ctx.fillStyle = 'rgba(240,237,232,0.32)';
+      ctx.font = '11px monospace';
+      ctx.textAlign = 'right';
+      ctx.fillText(`FPS: ${fps} | Mode: ${LIVE ? 'LIVE' : 'FALLBACK'}`, cw - 14, 22);
+      ctx.restore();
+
+      // ── Hint text (center-bottom, fades after 5 s) ──
+      const elapsed = (now - hintStartTime) / 1000;
+      if (elapsed < 7) {
+        const hAlpha = elapsed < 5 ? 1 : Math.max(0, 1 - (elapsed - 5) / 2);
+        ctx.save();
+        ctx.globalAlpha = hAlpha * 0.6;
+        ctx.fillStyle = '#a09890';
+        ctx.font = '13px Inter,sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Drag any point to warp · Click a section to shatter · R to reset', cw / 2, ch - 22);
+        ctx.restore();
+      }
+
+      // ── "CLICK TO SHATTER" hint above card (LIVE only, pre-first shatter) ──
+      if (LIVE && !firstShatterDone) {
+        const above = meshUVtoCanvas(0.5, 0);
+        ctx.save();
+        ctx.fillStyle = 'rgba(240,237,232,0.52)';
+        ctx.font = '600 10px Inter,sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('CLICK TO SHATTER', above.x, above.y - 24);
+        ctx.restore();
+      }
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Event listeners
+    // ─────────────────────────────────────────────────────────────────────────
+
+    window.addEventListener('resize', resize);
+    btnReset.addEventListener('click', resetAll);
+    document.addEventListener('keydown', e => {
+      if (e.key === 'r' || e.key === 'R') resetAll();
+    });
+
+    canvas.addEventListener('mousedown', e => {
+      const { cx, cy } = canvasPt(e);
+      dragStartX = cx; dragStartY = cy;
+      const near = nearestPt(cx, cy);
+      if (near) { grabC = near.c; grabR = near.r; }
+    });
+
+    canvas.addEventListener('mousemove', e => {
+      if (grabC < 0) return;
+      const { cx, cy } = canvasPt(e);
+      const p = pts[grabC][grabR];
+      p.vx = cx - p.x;
+      p.vy = cy - p.y;
+      p.x = cx; p.y = cy;
+    });
+
+    canvas.addEventListener('mouseup', e => {
+      const { cx, cy } = canvasPt(e);
+      const dist = Math.hypot(cx - dragStartX, cy - dragStartY);
+      if (dist < 6) {
+        // Pure click → hit-test and shatter
+        const section = hitSectionByCanvas(cx, cy);
+        if (section && !section.dataset.shattered) shatterSection(section, cx, cy);
+      }
+      // Grabbed point keeps its velocity for a natural fling
+      grabC = -1; grabR = -1;
+    });
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // Bootstrap
+    // ─────────────────────────────────────────────────────────────────────────
+    resize();
+    requestAnimationFrame(animate);
+  </script>
+</body>
+</html>

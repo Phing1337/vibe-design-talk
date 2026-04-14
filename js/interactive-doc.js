@@ -134,8 +134,7 @@
 
   function init() {
     var wrapper = document.getElementById('paperWrapper');
-    var flipBtn = document.getElementById('paperFlipBtn');
-    var backBtn = document.getElementById('paperBackBtn');
+    var toggleBtn = document.getElementById('paperToggleBtn');
     var tooltip = document.getElementById('doc-tooltip');
     var tipTitle = document.getElementById('tipTitle');
     var tipContent = document.getElementById('tipContent');
@@ -143,24 +142,94 @@
     if (!wrapper || !tooltip) return;
 
     var animTriggered = false;
+    var isAnimating = false;
+    var isAnalyticsOpen = false;
     var currentWord = null;
+    var panel = document.getElementById('paperAnalytics');
+    var track = document.getElementById('idocScrollTrack');
 
-    /* ── Flip ── */
+    var HALF = 310; /* ms per half of the flip */
+
+    /* ── Card flip — half-flip technique (works with overflow:hidden ancestor) ── */
     function flip(toBack) {
-      wrapper.classList.toggle('flipped', toBack);
-      if (toBack && !animTriggered) {
-        animTriggered = true;
-        setTimeout(animateAnalytics, 380);
+      if (!panel || !track || isAnimating) return;
+      isAnimating = true;
+
+      if (toBack) {
+        /* Phase 1: paper folds away to the right edge */
+        track.style.transition = 'transform ' + HALF + 'ms cubic-bezier(0.55,0,0.9,0.6)';
+        track.style.transform = 'rotateY(90deg)';
+
+        setTimeout(function () {
+          /* Mid-flip: hide paper, prep analytics at left edge */
+          track.style.transition = 'none';
+          track.style.visibility = 'hidden';
+
+          panel.style.transition = 'none';
+          panel.style.transform = 'rotateY(-90deg)';
+          panel.style.opacity = '1';
+          panel.style.pointerEvents = 'auto';
+          panel.setAttribute('aria-hidden', 'false');
+
+          /* Force reflow before animating */
+          panel.offsetWidth; // jshint ignore:line
+
+          /* Phase 2: analytics unfolds from left edge */
+          panel.style.transition = 'transform ' + HALF + 'ms cubic-bezier(0.1,0.4,0.45,1)';
+          panel.style.transform = 'rotateY(0deg)';
+          panel.classList.add('analytics-open');
+
+          if (toggleBtn) { toggleBtn.textContent = '✕'; toggleBtn.title = 'Back to document'; }
+
+          setTimeout(function () {
+            isAnimating = false;
+            if (!animTriggered) {
+              animTriggered = true;
+              animateAnalytics();
+            }
+          }, HALF + 20);
+        }, HALF + 20);
+
+      } else {
+        /* Phase 1: analytics folds away to the right edge */
+        panel.style.transition = 'transform ' + HALF + 'ms cubic-bezier(0.55,0,0.9,0.6)';
+        panel.style.transform = 'rotateY(90deg)';
+
+        setTimeout(function () {
+          /* Mid-flip: hide analytics, prep paper at left edge */
+          panel.style.transition = 'none';
+          panel.style.opacity = '0';
+          panel.style.pointerEvents = 'none';
+          panel.setAttribute('aria-hidden', 'true');
+          panel.classList.remove('analytics-open');
+
+          track.style.transition = 'none';
+          track.style.visibility = 'visible';
+          track.style.transform = 'rotateY(-90deg)';
+
+          track.offsetWidth; // jshint ignore:line
+
+          /* Phase 2: paper unfolds from left edge */
+          track.style.transition = 'transform ' + HALF + 'ms cubic-bezier(0.1,0.4,0.45,1)';
+          track.style.transform = 'rotateY(0deg)';
+
+          if (toggleBtn) { toggleBtn.innerHTML = '&#9783;'; toggleBtn.title = 'View Analytics'; }
+
+          setTimeout(function () {
+            isAnimating = false;
+            animTriggered = false;
+            resetAnalytics();
+          }, HALF + 20);
+        }, HALF + 20);
       }
     }
 
-    flipBtn.addEventListener('click', function () { flip(true); });
-    backBtn.addEventListener('click', function () {
-      flip(false);
-      /* reset bars + donut so they re-animate on next flip */
-      animTriggered = false;
-      resetAnalytics();
-    });
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', function () {
+        isAnalyticsOpen = !isAnalyticsOpen;
+        flip(isAnalyticsOpen);
+      });
+    }
 
     /* ── Analytics animations ── */
     function animateAnalytics() {
@@ -267,6 +336,36 @@
         if (currentWord) positionTip(currentWord);
       });
     }
+
+    /* ── Reader scatter cloud hover ── */
+    var cloudTip = document.getElementById('cloudTip');
+    if (cloudTip) {
+      document.querySelectorAll('.rdr-dot').forEach(function(dot) {
+        dot.addEventListener('mouseenter', function(e) {
+          cloudTip.textContent = dot.dataset.lbl;
+          cloudTip.classList.add('visible');
+          moveTip(e);
+        });
+        dot.addEventListener('mousemove', moveTip);
+        dot.addEventListener('mouseleave', function() {
+          cloudTip.classList.remove('visible');
+        });
+      });
+      function moveTip(e) {
+        var svg = document.getElementById('readerCloud');
+        if (!svg) return;
+        var rect = svg.getBoundingClientRect();
+        cloudTip.style.left = (e.clientX - rect.left) + 'px';
+        cloudTip.style.top  = (e.clientY - rect.top)  + 'px';
+      }
+    }
+
+    /* ── Bubble hover ── */
+    document.querySelectorAll('.bbl').forEach(function(b) {
+      b.style.cursor = 'pointer';
+      b.addEventListener('mouseenter', function() { b.style.opacity = '1'; b.setAttribute('stroke-width', '2.5'); });
+      b.addEventListener('mouseleave', function() { b.style.opacity = '';  b.setAttribute('stroke-width', '1.5'); });
+    });
   }
 
   if (document.readyState === 'loading') {

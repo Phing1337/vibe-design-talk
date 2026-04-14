@@ -22,6 +22,7 @@
     '2': 'The Dynamic Medium',
     '3': 'Design Principles',
     '4': 'Putting It to Practice',
+    'showcase': 'See It in Action',
     '5': 'Wrapping Up'
   };
 

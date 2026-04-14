@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Presence as Input — Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0f0d0b;
+      --text: #f0ede8;
+      --muted: #9a958d;
+      --dim: #524e48;
+      --signal: #c43e1c;
+      --surface: #1e1a16;
+      --border: #222;
+    }
+    html, body {
+      width: 100%; height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      overflow: hidden;
+    }
+    #output {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      display: block;
+    }
+    /* Hidden video for capture */
+    #feed { display: none; }
+
+    .header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 20;
+      padding: 1.25rem 2rem;
+      display: flex; align-items: baseline; gap: 0.75rem;
+      background: linear-gradient(to bottom, rgba(15,13,11,0.92) 60%, transparent);
+      pointer-events: none;
+    }
+    .demo-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--signal);
+      font-weight: 500;
+    }
+    h1 {
+      font-family: 'Young Serif', serif;
+      font-size: 1.6rem;
+      font-weight: 400;
+    }
+    .desc-overlay {
+      position: fixed; top: 5rem; left: 2rem; z-index: 20;
+      max-width: 260px;
+      pointer-events: none;
+    }
+    .desc-overlay p {
+      font-size: 0.8rem;
+      color: var(--muted);
+      line-height: 1.7;
+      text-shadow: 0 1px 8px rgba(0,0,0,0.8);
+    }
+    .desc-overlay p + p { margin-top: 0.75rem; }
+    .desc-overlay strong { color: var(--text); font-weight: 500; }
+
+    .controls {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 20;
+      padding: 1.5rem 2rem;
+      display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;
+      background: linear-gradient(to top, rgba(15,13,11,0.92) 60%, transparent);
+    }
+    button {
+      background: rgba(30,26,22,0.9);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 0.55rem 1.1rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all 0.18s;
+      backdrop-filter: blur(8px);
+    }
+    button:hover, button.active {
+      background: var(--signal);
+      color: #fff;
+      border-color: var(--signal);
+    }
+    #btn-start {
+      background: var(--signal);
+      color: #fff;
+      border-color: var(--signal);
+    }
+    .divider { width: 1px; height: 24px; background: var(--border); }
+    .effect-label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--dim);
+      align-self: center;
+    }
+    #status {
+      font-size: 0.75rem;
+      color: var(--dim);
+      margin-left: auto;
+    }
+    .idle-screen {
+      position: absolute; inset: 0; z-index: 10;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 2rem;
+      background: var(--bg);
+    }
+    .idle-icon {
+      font-size: 3rem;
+      opacity: 0.3;
+    }
+    .idle-msg {
+      font-size: 1rem;
+      color: var(--dim);
+      text-align: center;
+      line-height: 1.8;
+    }
+    .px-btn, .pal-btn {
+      background: rgba(30,26,22,0.9);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.8rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 500;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all 0.18s;
+    }
+    .px-btn.active, .pal-btn.active,
+    .px-btn:hover, .pal-btn:hover {
+      background: var(--signal);
+      color: #fff;
+      border-color: var(--signal);
+    }
+    #pixel-controls {
+      width: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+
+<canvas id="output"></canvas>
+<video id="feed" autoplay muted playsinline></video>
+
+<div class="idle-screen" id="idle-screen">
+  <div class="idle-icon">📷</div>
+  <p class="idle-msg">You are the input.<br>Click <strong style="color: var(--text)">Allow Camera</strong> below to begin.</p>
+</div>
+
+<div class="header">
+  <span class="demo-label">Demo</span>
+  <h1>Presence as Input</h1>
+</div>
+
+<div class="desc-overlay">
+  <p><strong>Every sensor is an input.</strong> Your webcam is a creative surface — not just a tool for video calls.</p>
+  <p>Switch between effects to see how the same camera feed becomes something completely different.</p>
+</div>
+
+<div class="controls">
+  <button id="btn-start">Allow Camera</button>
+  <div class="divider"></div>
+  <span class="effect-label">Effect</span>
+  <button id="mode-ghost" class="active" data-mode="ghost">Ghost Trail</button>
+  <button id="mode-pixel" data-mode="pixel">Pixel Art</button>
+  <button id="mode-crt" data-mode="crt">CRT</button>
+  <button id="mode-glitch" data-mode="glitch">Glitch</button>
+  <div id="pixel-controls" style="display:none">
+    <span class="effect-label">Style</span>
+    <button class="px-btn active" data-style="pixel">Pixel</button>
+    <button class="px-btn" data-style="mosaic">Mosaic</button>
+    <div class="divider"></div>
+    <span class="effect-label">Palette</span>
+    <button class="pal-btn active" data-pal="warm">Warm</button>
+    <button class="pal-btn" data-pal="gameboy">Gameboy</button>
+    <button class="pal-btn" data-pal="cga">CGA</button>
+    <button class="pal-btn" data-pal="grayscale">Gray</button>
+    <button class="pal-btn" data-pal="neon">Neon</button>
+    <div class="divider"></div>
+    <span class="effect-label">Size</span>
+    <input type="range" id="px-size" min="6" max="40" value="18" style="width:80px; accent-color: #c43e1c;">
+  </div>
+  <span id="status">Camera off</span>
+</div>
+
+<script>
+  const canvas = document.getElementById('output');
+  const ctx = canvas.getContext('2d');
+  const video = document.getElementById('feed');
+  const idleScreen = document.getElementById('idle-screen');
+  const statusEl = document.getElementById('status');
+
+  let currentMode = 'ghost';
+  let isRunning = false;
+  let frame = 0;
+  let ghostHue = 0;
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', () => { resize(); });
+
+  // --- Effect Modes ---
+
+  function drawGhost() {
+    const w = canvas.width, h = canvas.height;
+    ghostHue += 0.6;
+
+    // Very slow fade — long persistence
+    ctx.globalAlpha = 0.025;
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = '#0f0d0b';
+    ctx.fillRect(0, 0, w, h);
+    ctx.globalAlpha = 1;
+
+    // Occasional invert flash
+    if (frame % 140 < 4) {
+      ctx.globalCompositeOperation = 'difference';
+      ctx.globalAlpha = 0.6;
+      ctx.fillStyle = 'rgba(240,237,232,1)';
+      ctx.fillRect(0, 0, w, h);
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.globalAlpha = 1;
+    }
+
+    // Multi-scale echo layers
+    const layers = [
+      { scale: 1.04, alpha: 0.08, hueOff: ghostHue - 40 },
+      { scale: 1.0,  alpha: 0.20, hueOff: ghostHue },
+      { scale: 0.96, alpha: 0.12, hueOff: ghostHue + 40 },
+    ];
+    for (const layer of layers) {
+      ctx.save();
+      ctx.globalAlpha = layer.alpha;
+      ctx.filter = `hue-rotate(${layer.hueOff}deg) saturate(1.4)`;
+      ctx.translate(w/2, h/2);
+      ctx.scale(-layer.scale, layer.scale); // mirror + scale
+      ctx.drawImage(video, -w/2, -h/2, w, h);
+      ctx.restore();
+    }
+    ctx.globalAlpha = 1;
+    ctx.filter = 'none';
+  }
+
+  const PALETTES = {
+    warm:      ['#0f0d0b','#1e1a16','#3a2e24','#7a4e2a','#c43e1c','#d4906a','#f0ede8'],
+    gameboy:   ['#0f380f','#306230','#8bac0f','#9bbc0f'],
+    cga:       ['#000000','#555555','#ff55ff','#ffffff'],
+    grayscale: ['#111','#333','#555','#777','#999','#bbb','#ddd','#fff'],
+    neon:      ['#0d0d0d','#1a0a2e','#6b2fa0','#c43e8f','#ff6bc1','#00ffe0','#f0ede8'],
+  };
+
+  let pixelStyle = 'pixel';
+  let pixelPalette = 'warm';
+  let pixelSize = 18;
+
+  function drawPixelArt() {
+    const w = canvas.width, h = canvas.height;
+    const size = pixelSize;
+    const palette = PALETTES[pixelPalette];
+
+    const cols = Math.ceil(w / size), rows = Math.ceil(h / size);
+    const off = new OffscreenCanvas(cols, rows);
+    const offCtx = off.getContext('2d');
+    offCtx.save();
+    offCtx.translate(cols, 0); offCtx.scale(-1, 1);
+    offCtx.drawImage(video, 0, 0, cols, rows);
+    offCtx.restore();
+    const imgData = offCtx.getImageData(0, 0, cols, rows);
+
+    ctx.clearRect(0, 0, w, h);
+    ctx.fillStyle = '#0f0d0b'; ctx.fillRect(0, 0, w, h);
+
+    for (let py = 0; py < rows; py++) {
+      for (let px = 0; px < cols; px++) {
+        const i = (py * cols + px) * 4;
+        const r = imgData.data[i], g = imgData.data[i+1], b = imgData.data[i+2];
+        const lum = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
+        const ci = Math.min(palette.length - 1, Math.floor(lum * palette.length));
+        const color = palette[ci];
+
+        if (pixelStyle === 'mosaic') {
+          const margin = Math.max(1, size * 0.12);
+          const rx = size * 0.25;
+          const bx = px * size + margin, by = py * size + margin;
+          const bw = size - margin * 2;
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          ctx.roundRect(bx, by, bw, bw, rx);
+          ctx.fill();
+        } else {
+          ctx.fillStyle = color;
+          ctx.fillRect(px * size + 1, py * size + 1, size - 2, size - 2);
+        }
+      }
+    }
+  }
+
+  function drawGlitch() {
+    const w = canvas.width, h = canvas.height;
+    ctx.globalAlpha = 1;
+    // Base frame
+    ctx.save();
+    ctx.translate(w, 0);
+    ctx.scale(-1, 1);
+    ctx.drawImage(video, 0, 0, w, h);
+    ctx.restore();
+
+    // Glitch: random horizontal strips displaced, with RGB splits
+    const numSlices = 6 + Math.floor(Math.random() * 8);
+    for (let s = 0; s < numSlices; s++) {
+      if (Math.random() < 0.4) continue;
+      const sy = Math.random() * h;
+      const sh = 2 + Math.random() * 40;
+      const dx = (Math.random() - 0.5) * 80;
+      const dy = (Math.random() - 0.5) * 4;
+
+      // Red channel shift
+      ctx.globalCompositeOperation = 'screen';
+      ctx.globalAlpha = 0.6;
+      ctx.fillStyle = 'rgba(196,62,28,0.5)';
+      ctx.save();
+      const clip = new Path2D(); clip.rect(dx - 30, sy, w, sh);
+      ctx.clip(clip);
+      ctx.translate(dx + 4, dy);
+      ctx.translate(w, 0); ctx.scale(-1, 1);
+      ctx.drawImage(video, 0, 0, w, h);
+      ctx.restore();
+    }
+
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = 1;
+    // Scanlines
+    for (let y = 0; y < h; y += 3) {
+      ctx.fillStyle = 'rgba(0,0,0,0.12)';
+      ctx.fillRect(0, y, w, 1);
+    }
+  }
+
+  function drawCRT() {
+    const w = canvas.width, h = canvas.height;
+
+    // Base frame (center)
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = 0.85;
+    ctx.save();
+    ctx.translate(w, 0); ctx.scale(-1, 1);
+    ctx.drawImage(video, 0, 0, w, h);
+    ctx.restore();
+
+    // Red channel (right shift)
+    ctx.globalCompositeOperation = 'screen';
+    ctx.globalAlpha = 0.5;
+    ctx.filter = 'saturate(0) sepia(1) hue-rotate(-30deg) brightness(1.4)';
+    ctx.save();
+    ctx.translate(w, 0); ctx.scale(-1, 1);
+    ctx.drawImage(video, -4, 0, w, h);
+    ctx.restore();
+
+    // Blue channel (left shift)
+    ctx.filter = 'saturate(0) sepia(1) hue-rotate(200deg) brightness(1.4)';
+    ctx.save();
+    ctx.translate(w, 0); ctx.scale(-1, 1);
+    ctx.drawImage(video, 4, 0, w, h);
+    ctx.restore();
+
+    ctx.filter = 'none';
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalAlpha = 1;
+
+    // Scanlines
+    ctx.globalCompositeOperation = 'multiply';
+    for (let y = 0; y < h; y += 3) {
+      ctx.fillStyle = 'rgba(0,0,0,0.35)';
+      ctx.fillRect(0, y, w, 1);
+    }
+    ctx.globalCompositeOperation = 'source-over';
+
+    // Screen curvature vignette
+    const grad = ctx.createRadialGradient(w/2, h/2, h*0.3, w/2, h/2, h*0.85);
+    grad.addColorStop(0, 'rgba(0,0,0,0)');
+    grad.addColorStop(1, 'rgba(0,0,0,0.7)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+
+    // Phosphor glow tint
+    ctx.fillStyle = 'rgba(0,20,8,0.08)';
+    ctx.fillRect(0, 0, w, h);
+  }
+
+  let glitchTimer = 0;
+  function render(ts) {
+    if (!isRunning || video.readyState < 2) {
+      requestAnimationFrame(render);
+      return;
+    }
+    frame++;
+    if (currentMode === 'ghost') drawGhost();
+    else if (currentMode === 'pixel') drawPixelArt();
+    else if (currentMode === 'crt') drawCRT();
+    else if (currentMode === 'glitch') {
+      // Glitch fires in bursts
+      glitchTimer--;
+      if (glitchTimer <= 0) {
+        drawGlitch();
+        glitchTimer = 4 + Math.floor(Math.random() * 20);
+      } else {
+        // Normal frame with occasional tearing
+        ctx.globalAlpha = 1;
+        ctx.save();
+        ctx.translate(canvas.width, 0); ctx.scale(-1, 1);
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        ctx.restore();
+      }
+    }
+    requestAnimationFrame(render);
+  }
+
+  document.getElementById('btn-start').addEventListener('click', async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: 1280, height: 720 } });
+      video.srcObject = stream;
+      await video.play();
+      idleScreen.style.display = 'none';
+      isRunning = true;
+      statusEl.textContent = '● Camera live';
+      statusEl.style.color = '#c43e1c';
+      requestAnimationFrame(render);
+    } catch {
+      statusEl.textContent = 'Camera denied';
+    }
+  });
+
+  // Mode switcher
+  document.querySelectorAll('[data-mode]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentMode = btn.dataset.mode;
+      document.querySelectorAll('[data-mode]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('pixel-controls').style.display = currentMode === 'pixel' ? 'flex' : 'none';
+      // Clear canvas on mode switch
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#0f0d0b';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    });
+  });
+
+  // Pixel sub-controls
+  document.querySelectorAll('.px-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      pixelStyle = btn.dataset.style;
+      document.querySelectorAll('.px-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+  document.querySelectorAll('.pal-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      pixelPalette = btn.dataset.pal;
+      document.querySelectorAll('.pal-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+  document.getElementById('px-size').addEventListener('input', e => {
+    pixelSize = parseInt(e.target.value);
+  });
+</script>
+</body>
+</html>

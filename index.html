@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Design Is Not Decoration — Vibe Design Talk</title>
+  <title>Vibe Design</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Lora:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -18,7 +18,10 @@
   <link rel="stylesheet" href="css/video.css?v=13">
   <link rel="stylesheet" href="css/game.css?v=13">
   <link rel="stylesheet" href="css/three.css?v=13">
-  <link rel="stylesheet" href="css/interactive-doc.css?v=16">
+  <link rel="stylesheet" href="css/interactive-doc.css?v=23">
+  <link rel="stylesheet" href="css/color-lab.css?v=3">
+  <link rel="stylesheet" href="css/garden.css?v=1">
+  <link rel="stylesheet" href="css/permutations.css?v=1">
 
 
   <!-- Three.js CDN -->
@@ -156,6 +159,18 @@
          BEAT 2 — THE REFRAME
          ======================================================== -->
 
+    <!-- Section Intro: The Reframe -->
+    <section class="slide" data-beat="2" data-title="The Reframe" data-transition="fade" style="background: var(--color-bg-dark) !important;">
+      <div aria-hidden="true" style="position:absolute;right:-24px;bottom:-80px;font-family:var(--font-display);font-size:34rem;font-weight:700;line-height:1;color:rgba(255,255,255,0.022);letter-spacing:-0.06em;pointer-events:none;user-select:none;">02</div>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;padding:calc(var(--header-height) + 40px) 96px 80px;">
+        <div style="max-width:680px;">
+          <p class="label fade-in fade-in-1" style="color:var(--color-signal);">The Reframe</p>
+          <h1 class="heading-1 fade-in fade-in-2" style="margin-top:var(--space-md);line-height:0.9;">Design isn't<br>decoration.</h1>
+          <p class="body fade-in fade-in-3" style="margin-top:var(--space-xl);max-width:500px;line-height:1.75;color:var(--color-text-muted);">It's a language, a medium, a way of thinking. And in the age of AI, understanding it matters more than ever.</p>
+        </div>
+      </div>
+    </section>
+
     <!-- Slide 6: The Problem — interactive generic UI flood -->
     <section class="slide" data-beat="2" data-title="The Problem" data-transition="hard-cut" style="background: var(--color-bg-light-alt) !important; padding: 0 !important;">
       <div id="genericFlood" style="position: absolute; inset: 0; z-index: 3; overflow: hidden; cursor: crosshair;"></div>
@@ -216,446 +231,21 @@
         <p class="video-caption fade-in fade-in-3">Bret Victor — Inventing on Principle</p>
       </div>
     </section>
-
-    <!-- Slide: Weather — Live Data Showcase -->
-    <section class="slide slide-weather" data-id="weather" data-beat="2" data-title="Live Data" data-transition="fade">
-      <!-- Fixed weather background (covers right half) -->
-      <div class="weather-bg" id="weatherBg">
-        <div class="weather-particles" id="weatherParticles"></div>
-      </div>
-
-      <!-- 50/50 split: static content left, scrollable weather right -->
-      <div class="weather-split">
-        <!-- LEFT — Static context -->
-        <div class="weather-left">
-          <p class="label fade-in fade-in-1">What's possible</p>
-          <h2 class="heading-2 fade-in fade-in-2">Your slides can talk to the <span class="accent">real world</span></h2>
-          <p class="body fade-in fade-in-3" style="margin-top: var(--space-lg);">
-            This weather data is live from Seattle right now. When you know how to ask, AI builds things that feel alive.
-          </p>
-
-          <!-- Weather picker -->
-          <div class="weather-picker fade-in fade-in-4">
-            <span class="weather-picker-label">Preview:</span>
-            <button class="weather-pick" data-weather="sunny" title="Sunny">☀️</button>
-            <button class="weather-pick" data-weather="partlyCloudy" title="Partly Cloudy">⛅</button>
-            <button class="weather-pick" data-weather="cloudy" title="Overcast">☁️</button>
-            <button class="weather-pick" data-weather="rain" title="Rain">🌧️</button>
-            <button class="weather-pick" data-weather="storm" title="Storm">⛈️</button>
-            <button class="weather-pick active" data-weather="live" title="Live data">📡</button>
-          </div>
-        </div>
-
-        <!-- RIGHT — Scrollable weather data -->
-        <div class="weather-right" id="weatherRight">
-          <!-- Hero -->
-          <div class="weather-hero">
-            <div class="weather-location">
-              <span class="weather-city">Seattle, WA</span>
-              <span class="weather-timestamp" id="weatherTimestamp"></span>
-            </div>
-            <div class="weather-temp-row">
-              <span class="weather-icon" id="weatherIcon">🌧️</span>
-              <span class="weather-temp" id="weatherTemp">--°</span>
-            </div>
-            <div class="weather-condition">
-              <span class="weather-desc" id="weatherDesc">Loading...</span>
-              <span class="weather-details" id="weatherDetails"></span>
-            </div>
-          </div>
-
-          <!-- Stats -->
-          <div class="weather-stats">
-            <div class="weather-stat">
-              <span class="weather-stat-label">Humidity</span>
-              <span class="weather-stat-value" id="weatherHumidity">--%</span>
-              <div class="weather-stat-bar"><div class="weather-stat-fill" id="humidityBar"></div></div>
-            </div>
-            <div class="weather-stat">
-              <span class="weather-stat-label">Wind</span>
-              <span class="weather-stat-value" id="weatherWind">-- mph</span>
-              <div class="weather-stat-bar"><div class="weather-stat-fill" id="windBar"></div></div>
-            </div>
-            <div class="weather-stat">
-              <span class="weather-stat-label">Visibility</span>
-              <span class="weather-stat-value" id="weatherVisibility">-- mi</span>
-              <div class="weather-stat-bar"><div class="weather-stat-fill" id="visibilityBar"></div></div>
-            </div>
-            <div class="weather-stat">
-              <span class="weather-stat-label">Pressure</span>
-              <span class="weather-stat-value" id="weatherPressure">-- mb</span>
-              <div class="weather-stat-bar"><div class="weather-stat-fill" id="pressureBar"></div></div>
-            </div>
-          </div>
-
-          <!-- Historical -->
-          <div class="weather-history">
-            <p class="weather-history-label">On this day in history</p>
-            <div class="weather-history-chart" id="weatherHistoryChart"></div>
-          </div>
-
-          <!-- Hourly Forecast -->
-          <div class="weather-section">
-            <h3 class="weather-section-title">Hourly Forecast</h3>
-            <div class="weather-hourly" id="weatherHourly"></div>
-          </div>
-
-          <!-- 7-Day Forecast -->
-          <div class="weather-section">
-            <h3 class="weather-section-title">7-Day Forecast</h3>
-            <div class="weather-weekly" id="weatherWeekly"></div>
-          </div>
-
-          <!-- Temperature Sparkline -->
-          <div class="weather-section">
-            <h3 class="weather-section-title">Temperature — Last 24 Hours</h3>
-            <div class="sparkline-container">
-              <canvas id="tempSparkline" width="400" height="150"></canvas>
-            </div>
-          </div>
-
-          <!-- Sunrise/Sunset & UV Index -->
-          <div class="weather-section">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg);">
-              <div class="weather-sun-card">
-                <h3 class="weather-section-title">Sunrise & Sunset</h3>
-                <canvas id="sunArc" width="400" height="200"></canvas>
-                <div class="sun-times">
-                  <span class="sun-time"><span class="sun-label">↑</span> <span id="sunriseTime">6:42 AM</span></span>
-                  <span class="sun-time"><span class="sun-label">↓</span> <span id="sunsetTime">7:28 PM</span></span>
-                </div>
-              </div>
-              <div class="weather-uv-card">
-                <h3 class="weather-section-title">UV Index</h3>
-                <div class="uv-gauge" id="uvGauge">
-                  <div class="uv-gauge-bar">
-                    <div class="uv-gauge-fill" id="uvFill"></div>
-                    <div class="uv-gauge-marker" id="uvMarker"></div>
-                  </div>
-                  <div class="uv-gauge-labels">
-                    <span>Low</span><span>Moderate</span><span>High</span><span>Very High</span>
-                  </div>
-                  <div class="uv-value" id="uvValue">1</div>
-                  <div class="uv-desc" id="uvDesc">Low</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div style="height: var(--space-3xl);"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Interactive 3D Walkthrough -->
-    <section class="slide slide-game" data-id="interactive" data-beat="2" data-title="Interactive Demo" data-transition="fade" data-3d="game">
-      <div class="game-overlay" id="gameOverlay">
-        <div class="game-hud">
-          <div class="game-controls-hint">
-            <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> Move
-            <kbd>Space</kbd> Jump
-            <kbd>F</kbd> Flashlight
-            <kbd>E</kbd> Interact
-            <kbd>→</kbd> Continue
-          </div>
-        </div>
-        <div class="game-tutorial-panel" id="gameTutorial">
-          <p class="game-tutorial-text">Walk around to explore. This voxel apartment was built in MagicaVoxel — and now it's a live, interactive presentation slide.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- Slide 7: Most people just need a dinghy -->
-    <section class="slide" data-beat="3" data-title="Visual Storytelling" data-transition="slide-left" style="background: var(--color-bg-dark) !important;">
-      <!-- Loading indicator -->
-      <div id="splatLoader" style="position: absolute; inset: 0; z-index: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: #666; font-size: 13px;">
-        <div style="width: 40px; height: 40px; border: 2px solid #222; border-top-color: #d4a053; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-        <div>Loading 3D scene...</div>
-      </div>
-      <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
-      <!-- Gaussian splat viewer -->
-      <iframe id="splatViewer" data-src="splat-viewer.html" style="position: absolute; inset: 0; width: 100%; height: 100%; border: none; z-index: 0;"></iframe>
-      <div class="slide-split" style="position: relative; z-index: 1;">
-        <div class="content" style="background: rgba(10,10,10,0.5); backdrop-filter: blur(8px); padding: var(--space-2xl); border-radius: 16px;">
-          <p class="label fade-in fade-in-1">Storytelling with environment</p>
-          <h2 class="heading-2 fade-in fade-in-2">Visual <span class="accent">Storytelling</span></h2>
-          <p class="body fade-in fade-in-3" style="margin-top: var(--space-md);">
-            A scene tells a story through light, space, and arrangement. This AI-generated kitchen uses warm tones, natural light, and deliberate clutter to feel <em>lived in</em>.
-          </p>
-          <p class="body fade-in fade-in-4" style="margin-top: var(--space-md); color: var(--color-text-muted);">
-            The same principles apply to a dashboard, a slide deck, or a prototype. Every visual choice is a narrative choice. Use WASD to explore.
-          </p>
-        </div>
-        <div class="visual"></div>
-      </div>
-    </section>
-
-    <!-- ========================================================
-         DESIGN EDUCATION — Foundations every builder should know
-         ======================================================== -->
-
-    <!-- Rule of Thirds / Composition Rules — interactive dial -->
-    <section class="slide slide-idoc" data-beat="2" data-title="Interactive Documents" data-transition="fade" style="background: var(--color-bg-dark) !important;">
-      <!-- Left: description -->
-      <div class="idoc-left fade-in fade-in-1">
-        <p class="label">The Living Document</p>
-        <h2 class="heading-2 fade-in fade-in-2" style="margin-top: var(--space-md); color: var(--color-text);">
-          Documents that <span class="accent">respond.</span>
-        </h2>
-        <p class="body fade-in fade-in-3" style="margin-top: var(--space-lg); max-width: 320px; color: rgba(255,255,255,0.65);">
-          Hover a word for inline context. Scroll to the end. Flip it over to see how it performed. Intelligent, responsive, and built to support the reader.
-        </p>
-        <p class="body fade-in fade-in-4" style="margin-top: var(--space-md); max-width: 320px; color: rgba(255,255,255,0.38);">
-          A document. But also a small interface.
-        </p>
-      </div>
-
-      <!-- Right: paper card demo -->
-      <div class="idoc-right">
-
-        <!-- Animated palm leaf shadows — multiply blend, z-index above paper -->
-        <div class="idoc-palm-shadows" aria-hidden="true">
-          <svg viewBox="0 0 1000 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <filter id="pblur1" x="-35%" y="-35%" width="170%" height="170%">
-                <feGaussianBlur stdDeviation="26"/>
-              </filter>
-              <filter id="pblur2" x="-35%" y="-35%" width="170%" height="170%">
-                <feGaussianBlur stdDeviation="22"/>
-              </filter>
-              <filter id="pblur3" x="-45%" y="-45%" width="190%" height="190%">
-                <feGaussianBlur stdDeviation="34"/>
-              </filter>
-            </defs>
-
-            <!-- LEFT cluster — top-left origin, fronds drooping right and down -->
-            <g class="palm-sway-l" filter="url(#pblur1)">
-              <path d="M-80,-60 C-10,110 120,280  60,480" stroke="#0d0500" stroke-width="80" fill="none" stroke-linecap="round"/>
-              <path d="M-80,-60 C 70, 60 200,190 230,360" stroke="#0d0500" stroke-width="74" fill="none" stroke-linecap="round"/>
-              <path d="M-80,-60 C 20, 30 130,100 290,175" stroke="#0d0500" stroke-width="68" fill="none" stroke-linecap="round"/>
-              <path d="M-80,-60 C-160, 70 -130,220 -70,400" stroke="#0d0500" stroke-width="72" fill="none" stroke-linecap="round"/>
-              <path d="M-80,-60 C -50,  0  30, 50 160,110" stroke="#0d0500" stroke-width="63" fill="none" stroke-linecap="round"/>
-              <path d="M-80,-60 C  10, 80  80,200 140,350" stroke="#0d0500" stroke-width="65" fill="none" stroke-linecap="round"/>
-            </g>
-
-            <!-- RIGHT cluster — top-right origin, fronds drooping left and down -->
-            <g class="palm-sway-r" filter="url(#pblur2)">
-              <path d="M1080,-80 C 990, 90  840,230  910,430" stroke="#0d0500" stroke-width="77" fill="none" stroke-linecap="round"/>
-              <path d="M1080,-80 C 940, 55  800,170  760,330" stroke="#0d0500" stroke-width="72" fill="none" stroke-linecap="round"/>
-              <path d="M1080,-80 C1000, 20  890, 90  730,180" stroke="#0d0500" stroke-width="67" fill="none" stroke-linecap="round"/>
-              <path d="M1080,-80 C1160, 65 1200,210 1130,400" stroke="#0d0500" stroke-width="70" fill="none" stroke-linecap="round"/>
-              <path d="M1080,-80 C1010, 10  910, 55  780,120" stroke="#0d0500" stroke-width="60" fill="none" stroke-linecap="round"/>
-              <path d="M1080,-80 C1020, 90  950,220  880,380" stroke="#0d0500" stroke-width="63" fill="none" stroke-linecap="round"/>
-            </g>
-
-            <!-- CENTER top — wider, softer, most heavily blurred for depth -->
-            <g class="palm-sway-c" filter="url(#pblur3)" opacity="0.6">
-              <path d="M 520,-220 C 400, 40  300,260  360,510" stroke="#080300" stroke-width="98" fill="none" stroke-linecap="round"/>
-              <path d="M 520,-220 C 640, 20  740,220  700,450" stroke="#080300" stroke-width="92" fill="none" stroke-linecap="round"/>
-              <path d="M 520,-220 C 470,-50  360, 50  200,115" stroke="#080300" stroke-width="80" fill="none" stroke-linecap="round"/>
-              <path d="M 520,-220 C 560,-40  650, 80  820,155" stroke="#080300" stroke-width="76" fill="none" stroke-linecap="round"/>
-            </g>
-          </svg>
-        </div>
-
-        <div class="paper-scene">
-          <div class="paper-wrapper" id="paperWrapper">
-
-            <!-- FRONT: the article -->
-            <div class="paper-face paper-front">
-              <div class="paper-header">
-                <h3 class="paper-title">The Invisible Grammar<br>of Visual Design</h3>
-                <p class="paper-byline">by the design team</p>
-              </div>
-              <div class="paper-front-inner">
-                <div class="paper-scroll" id="paperScroll">
-                  <span class="paper-section-label">The Breath</span>
-                  <p class="paper-text">When a designer talks about <span class="doc-word" data-tip="whitespace">whitespace</span>, they're not describing empty space. They're describing breathing room — the silence between notes that makes music meaningful. Apple's product pages famously use whitespace to force your eye to rest, then look, then linger.</p>
-                  <p class="paper-text">Negative space doesn't just separate — it defines. The white around a headline is as responsible for that headline's power as the type itself. Remove the breathing room and the words become wallpaper. Protect it, and the word becomes an event.</p>
-
-                  <span class="paper-section-label">The Weight</span>
-                  <p class="paper-text">Every element on a screen has visual mass. <span class="doc-word" data-tip="typography">Typography</span> is the densest of all — it carries meaning twice: once in what it says, once in how it looks. A headline set in a heavy serif commands attention before you've read a word. A body set in a light serif whispers.</p>
-                  <p class="paper-text">Visual <span class="doc-word" data-tip="hierarchy">hierarchy</span> is the invisible instruction set that tells your eye what to look at first, second, and third. Without it, every element screams at equal volume — and when everything demands attention, nothing gets it.</p>
-
-                  <span class="paper-section-label">The Beat</span>
-                  <p class="paper-text">There's a <span class="doc-word" data-tip="rhythm">rhythm</span> to good design, as steady as a heartbeat. It comes from repeating spacing values, mirrored proportions, and the cadence of consistent sizing. When rhythm breaks — a card that's 2px taller, a gap that doesn't match the grid — something feels wrong even if a viewer can't say why.</p>
-                  <p class="paper-text"><span class="doc-word" data-tip="contrast">Contrast</span> is the mechanism that makes rhythm visible. Not just light vs. dark — but large vs. small, quiet vs. loud. Without contrast, there is no hierarchy. Without hierarchy, there is no story.</p>
-
-                  <span class="paper-section-label">The Space</span>
-                  <p class="paper-text">Every layout rests on a grid — an invisible scaffold of columns, rows, and gutters that most viewers will never consciously notice. The grid doesn't constrain. It liberates. When you know where the walls are, you can decide which ones to push through.</p>
-                  <p class="paper-text" style="font-style: italic; color: #4a3420; text-shadow: 0 0.4px 0 rgba(255,245,225,0.18);">The final act of any composition is restraint. It's the decision not to add the element that seemed necessary — the whitespace you protect, the color you leave out. Good design isn't about what's present. It's about what you had the discipline to leave behind.</p>
-
-                  <button class="paper-flip-btn" id="paperFlipBtn">↺ View Analytics</button>
-                </div>
-              </div><!-- /.paper-front-inner -->
-            </div><!-- /.paper-front -->
-
-            <!-- BACK: analytics dashboard -->
-            <div class="paper-face paper-back">
-              <div class="analytics-header">
-                <span class="analytics-title">Document Analytics</span>
-                <span class="analytics-badge">Live Demo</span>
-              </div>
-
-              <!-- Bubble cluster: word hover activity -->
-              <div class="av-section">
-                <span class="av-label">Word Hover Activity</span>
-                <svg class="bubble-chart" viewBox="0 0 480 148" width="100%" height="auto" style="display:block;">
-                  <!-- connection network -->
-                  <g stroke="rgba(139,115,85,0.09)" stroke-width="1" fill="none">
-                    <line x1="75" y1="82" x2="195" y2="55"/>
-                    <line x1="75" y1="82" x2="305" y2="88"/>
-                    <line x1="75" y1="82" x2="388" y2="116"/>
-                    <line x1="75" y1="82" x2="436" y2="58"/>
-                    <line x1="195" y1="55" x2="305" y2="88"/>
-                    <line x1="195" y1="55" x2="388" y2="116"/>
-                    <line x1="195" y1="55" x2="436" y2="58"/>
-                    <line x1="305" y1="88" x2="388" y2="116"/>
-                    <line x1="305" y1="88" x2="436" y2="58"/>
-                    <line x1="388" y1="116" x2="436" y2="58"/>
-                  </g>
-                  <!-- whitespace -->
-                  <circle cx="75" cy="82" r="58" fill="rgba(139,115,85,0.13)" stroke="rgba(120,90,55,0.28)" stroke-width="1.5"/>
-                  <text x="75" y="79" text-anchor="middle" fill="#5c3d1e" font-size="8" font-family="Inter,sans-serif" font-weight="700">whitespace</text>
-                  <text x="75" y="92" text-anchor="middle" fill="#8b7355" font-size="14" font-family="Georgia,serif" font-weight="700">147</text>
-                  <!-- typography -->
-                  <circle cx="195" cy="55" r="46" fill="rgba(160,125,75,0.13)" stroke="rgba(140,105,60,0.28)" stroke-width="1.5"/>
-                  <text x="195" y="52" text-anchor="middle" fill="#5c3d1e" font-size="7.5" font-family="Inter,sans-serif" font-weight="700">typography</text>
-                  <text x="195" y="64" text-anchor="middle" fill="#8b7355" font-size="12" font-family="Georgia,serif" font-weight="700">112</text>
-                  <!-- hierarchy -->
-                  <circle cx="305" cy="88" r="38" fill="rgba(185,145,90,0.13)" stroke="rgba(160,120,70,0.28)" stroke-width="1.5"/>
-                  <text x="305" y="85" text-anchor="middle" fill="#5c3d1e" font-size="7" font-family="Inter,sans-serif" font-weight="700">hierarchy</text>
-                  <text x="305" y="96" text-anchor="middle" fill="#8b7355" font-size="11" font-family="Georgia,serif" font-weight="700">89</text>
-                  <!-- rhythm -->
-                  <circle cx="388" cy="116" r="28" fill="rgba(205,165,100,0.12)" stroke="rgba(180,140,80,0.26)" stroke-width="1.5"/>
-                  <text x="388" y="113" text-anchor="middle" fill="#5c3d1e" font-size="6.5" font-family="Inter,sans-serif" font-weight="700">rhythm</text>
-                  <text x="388" y="123" text-anchor="middle" fill="#8b7355" font-size="10" font-family="Georgia,serif" font-weight="700">67</text>
-                  <!-- contrast -->
-                  <circle cx="436" cy="58" r="21" fill="rgba(220,180,110,0.11)" stroke="rgba(195,155,85,0.24)" stroke-width="1.5"/>
-                  <text x="436" y="55" text-anchor="middle" fill="#5c3d1e" font-size="6" font-family="Inter,sans-serif" font-weight="700">contrast</text>
-                  <text x="436" y="64" text-anchor="middle" fill="#8b7355" font-size="9" font-family="Georgia,serif" font-weight="700">54</text>
-                </svg>
-              </div>
-
-              <!-- Reading journey area chart -->
-              <div class="av-section">
-                <span class="av-label">Reading Journey</span>
-                <svg viewBox="0 0 480 72" width="100%" height="auto" style="display:block;">
-                  <defs>
-                    <linearGradient id="journeyGrad" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stop-color="rgba(139,115,85,0.42)"/>
-                      <stop offset="100%" stop-color="rgba(139,115,85,0.03)"/>
-                    </linearGradient>
-                  </defs>
-                  <!-- Section dividers -->
-                  <line x1="120" y1="0" x2="120" y2="62" stroke="rgba(139,115,85,0.13)" stroke-width="0.8" stroke-dasharray="3,3"/>
-                  <line x1="240" y1="0" x2="240" y2="62" stroke="rgba(139,115,85,0.13)" stroke-width="0.8" stroke-dasharray="3,3"/>
-                  <line x1="360" y1="0" x2="360" y2="62" stroke="rgba(139,115,85,0.13)" stroke-width="0.8" stroke-dasharray="3,3"/>
-                  <!-- Filled area -->
-                  <path d="M0,50 C20,42 50,24 120,22 C160,21 175,40 240,37 C280,35 300,14 360,18 C400,21 440,46 480,52 L480,64 L0,64 Z" fill="url(#journeyGrad)"/>
-                  <!-- Curve line -->
-                  <path d="M0,50 C20,42 50,24 120,22 C160,21 175,40 240,37 C280,35 300,14 360,18 C400,21 440,46 480,52" fill="none" stroke="rgba(139,115,85,0.65)" stroke-width="1.8" stroke-linecap="round"/>
-                  <!-- Peak dots -->
-                  <circle cx="120" cy="22" r="3" fill="rgba(139,115,85,0.7)"/>
-                  <circle cx="360" cy="18" r="3.5" fill="rgba(180,130,65,0.85)"/>
-                  <!-- Section labels -->
-                  <text x="60"  y="71" text-anchor="middle" fill="rgba(139,115,85,0.65)" font-size="7" font-family="Inter,sans-serif">Breath</text>
-                  <text x="180" y="71" text-anchor="middle" fill="rgba(139,115,85,0.65)" font-size="7" font-family="Inter,sans-serif">Weight</text>
-                  <text x="300" y="71" text-anchor="middle" fill="rgba(180,130,65,0.8)" font-size="7" font-family="Inter,sans-serif" font-weight="700">★ Beat</text>
-                  <text x="420" y="71" text-anchor="middle" fill="rgba(139,115,85,0.65)" font-size="7" font-family="Inter,sans-serif">Space</text>
-                </svg>
-              </div>
-
-              <!-- Two-column: section bars + cohort dots -->
-              <div class="av-row">
-                <div class="av-card av-card-wide">
-                  <span class="av-label">Section Engagement</span>
-                  <div class="eng-bar-wrap" style="margin-top:4px;">
-                    <div class="eng-bar-row">
-                      <span class="eng-bar-name">The Breath</span>
-                      <div class="eng-bar-track"><div class="eng-bar-fill" data-pct="0.88"></div></div>
-                      <span class="eng-bar-pct">88%</span>
-                    </div>
-                    <div class="eng-bar-row">
-                      <span class="eng-bar-name">The Weight</span>
-                      <div class="eng-bar-track"><div class="eng-bar-fill" data-pct="0.62"></div></div>
-                      <span class="eng-bar-pct">62%</span>
-                    </div>
-                    <div class="eng-bar-row">
-                      <span class="eng-bar-name">The Beat</span>
-                      <span class="eng-hot-badge">★</span>
-                      <div class="eng-bar-track"><div class="eng-bar-fill hot" data-pct="0.94"></div></div>
-                      <span class="eng-bar-pct">94%</span>
-                    </div>
-                    <div class="eng-bar-row">
-                      <span class="eng-bar-name">The Space</span>
-                      <div class="eng-bar-track"><div class="eng-bar-fill" data-pct="0.45"></div></div>
-                      <span class="eng-bar-pct">45%</span>
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Reader cohort dot grid -->
-                <div class="av-card av-card-cohort">
-                  <span class="av-label">Readers</span>
-                  <svg viewBox="0 0 72 80" width="72" height="80" style="margin-top:4px;">
-                    <circle cx="12" cy="12" r="7" fill="#3d2710" opacity="0.9"/>
-                    <circle cx="28" cy="12" r="7" fill="#3d2710" opacity="0.9"/>
-                    <circle cx="44" cy="12" r="7" fill="#5c3d1e" opacity="0.85"/>
-                    <circle cx="60" cy="12" r="7" fill="#5c3d1e" opacity="0.8"/>
-                    <circle cx="12" cy="30" r="7" fill="#5c3d1e" opacity="0.75"/>
-                    <circle cx="28" cy="30" r="7" fill="#8b7355" opacity="0.65"/>
-                    <circle cx="44" cy="30" r="7" fill="#8b7355" opacity="0.6"/>
-                    <circle cx="60" cy="30" r="7" fill="#8b7355" opacity="0.5"/>
-                    <circle cx="12" cy="48" r="7" fill="#b89a75" opacity="0.4"/>
-                    <circle cx="28" cy="48" r="7" fill="#b89a75" opacity="0.3"/>
-                    <circle cx="44" cy="48" r="7" fill="#d4bc9e" opacity="0.25"/>
-                    <circle cx="60" cy="48" r="7" fill="#d4bc9e" opacity="0.18"/>
-                    <text x="36" y="68" text-anchor="middle" fill="rgba(139,115,85,0.7)" font-size="6.5" font-family="Inter,sans-serif">12 readers</text>
-                    <text x="36" y="77" text-anchor="middle" fill="rgba(139,115,85,0.5)" font-size="5.5" font-family="Inter,sans-serif">↓ completion</text>
-                  </svg>
-                </div>
-              </div>
-
-              <!-- Stats strip -->
-              <div class="av-stats-strip">
-                <div class="av-stat">
-                  <div class="av-stat-num">2m 47s</div>
-                  <div class="av-stat-lbl">avg read</div>
-                </div>
-                <div class="av-stat">
-                  <svg width="40" height="40" viewBox="0 0 58 58" style="display:block;margin:0 auto;">
-                    <circle cx="29" cy="29" r="22" fill="none" stroke="rgba(139,115,85,0.14)" stroke-width="6"/>
-                    <circle cx="29" cy="29" r="22" fill="none" stroke="#8b7355" stroke-width="6"
-                      stroke-dasharray="138.23" stroke-dashoffset="138.23"
-                      stroke-linecap="round" transform="rotate(-90 29 29)" id="donutArc"/>
-                  </svg>
-                  <div class="av-stat-lbl">73% read</div>
-                </div>
-                <div class="av-stat">
-                  <div class="av-stat-num">68%</div>
-                  <div class="av-stat-lbl">finished</div>
-                </div>
-                <div class="av-stat">
-                  <div class="av-stat-num">12</div>
-                  <div class="av-stat-lbl">today</div>
-                </div>
-              </div>
-
-              <div class="analytics-footer">
-                <span class="analytics-disclaimer">this data would be real in a live document</span>
-                <button class="paper-back-btn" id="paperBackBtn">↺ Back</button>
-              </div>
-            </div>
-
-          </div><!-- /paper-wrapper -->
-        </div><!-- /paper-scene -->
-      </div><!-- /idoc-right -->
-    </section>
-
     <!-- ========================================================
          BEAT 3 — THE VOCABULARY
          ======================================================== -->
+
+    <!-- Section Intro: The Vocabulary -->
+    <section class="slide" data-beat="3" data-title="The Vocabulary" data-transition="fade" style="background: var(--color-bg-dark) !important;">
+      <div aria-hidden="true" style="position:absolute;right:-24px;bottom:-80px;font-family:var(--font-display);font-size:34rem;font-weight:700;line-height:1;color:rgba(255,255,255,0.022);letter-spacing:-0.06em;pointer-events:none;user-select:none;">03</div>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;padding:calc(var(--header-height) + 40px) 96px 80px;">
+        <div style="max-width:680px;">
+          <p class="label fade-in fade-in-1" style="color:var(--color-signal);">The Vocabulary</p>
+          <h1 class="heading-1 fade-in fade-in-2" style="margin-top:var(--space-md);line-height:0.9;">You have to speak<br>the language.</h1>
+          <p class="body fade-in fade-in-3" style="margin-top:var(--space-xl);max-width:500px;line-height:1.75;color:var(--color-text-muted);">Designers have a shared vocabulary built over decades. Before you can direct AI well, you need to know what good looks like.</p>
+        </div>
+      </div>
+    </section>
 
     <!-- Slide 9: You need to speak the language -->
     <section class="slide slide-space" data-id="vocabulary" data-beat="3" data-title="Design Principles" data-transition="zoom" data-3d="space" style="background: var(--color-bg-dark) !important;">
@@ -699,15 +289,15 @@
     <!-- STORYTELLING TOPIC 2: Animation, Motion & Simulation -->
     <section class="slide slide-primitives" data-beat="3" data-title="The Arc" data-transition="fade" data-3d="space-fall" style="background: transparent !important;">
       <div class="slide-center" style="position: relative; z-index: 1;">
-        <p class="label fade-in fade-in-1" style="color: var(--color-signal);">Simulation &amp; transitions</p>
+        <p class="label fade-in fade-in-1" style="color: var(--color-signal);">Narrative direction</p>
         <h1 class="heading-1 fade-in fade-in-2" style="margin-top: var(--space-md); color: var(--color-text-on-light);">
           Design the <span style="color: var(--color-signal);">Arc</span>
         </h1>
         <p class="body-large fade-in fade-in-3" style="margin-top: var(--space-xl); max-width: 700px; margin-left: auto; margin-right: auto; color: var(--color-text-on-light);">
-          Every screen lives between two states. The transition from one to the next isn't animation — it's <strong>simulation</strong>. It communicates continuity, confirms intent, and moves the story forward.
+          Every screen lives between two states. But great design isn't about perfecting each one in isolation — it's about the arc between them. Where the user arrives from. What they're ready for. Where they need to go next.
         </p>
         <p class="body fade-in fade-in-4" style="margin-top: var(--space-md); max-width: 600px; margin-left: auto; margin-right: auto; color: var(--color-text-on-light);">
-          When you describe what something <em>came from</em> and where it's <em>going</em>, you give AI the arc. Not just an endpoint.
+          Think like a film director — not frame by frame, but <em>beat by beat</em>. Give AI the arc: the context, the momentum, the destination. You stop generating screens. You start directing experiences.
         </p>
       </div>
     </section>
@@ -937,6 +527,333 @@
         if (next) next.addEventListener('click', function() { cur = (cur + 1) % N; update(true); });
 
         // Init
+        update(false);
+      })();
+      </script>
+    </section>
+
+
+    <!-- ── Page Layouts & Navigation ── -->
+    <section class="slide" data-beat="3" data-title="Page Layouts" data-transition="fade" style="background: var(--color-bg-light) !important; padding: 0 !important;">
+      <div style="position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 0;">
+
+        <!-- Left: text + dial -->
+        <div style="display: flex; flex-direction: column; justify-content: center; padding: calc(var(--header-height) + 40px) 7% 40px 7%;">
+          <p class="label fade-in fade-in-1" style="color: var(--color-signal);">Layout &amp; Navigation</p>
+          <h2 id="pl-name" class="heading-2 fade-in fade-in-2" style="color: var(--color-text-on-light); margin-top: var(--space-sm); transition: opacity 0.25s;">Single Column</h2>
+          <p id="pl-desc" class="body fade-in fade-in-3" style="margin-top: var(--space-lg); color: var(--color-text-on-light); transition: opacity 0.25s; min-height: 5em;">Stack everything in one centered column. The reader has one path — every element gets full attention before the next appears.</p>
+          <p id="pl-sub" class="body fade-in fade-in-4" style="margin-top: var(--space-md); color: var(--color-text-on-light); font-family: var(--font-display); font-size: 1rem; transition: opacity 0.25s;">The default for long-form reading, newsletters, and mobile-first design.</p>
+
+          <!-- Dial -->
+          <div style="margin-top: var(--space-xl); display: flex; align-items: center; gap: 20px;">
+            <button id="pl-prev" style="background:none;border:1px solid rgba(42,26,14,0.25);border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:14px;color:var(--color-text-on-light);display:flex;align-items:center;justify-content:center;transition:border-color 0.2s,color 0.2s;flex-shrink:0;" onmouseenter="this.style.borderColor='rgba(42,26,14,0.6)';this.style.color='#2a1a0e'" onmouseleave="this.style.borderColor='rgba(42,26,14,0.25)';this.style.color='var(--color-text-on-light)'">&#9664;</button>
+
+            <div style="position:relative;width:80px;height:80px;flex-shrink:0;">
+              <div style="position:absolute;top:-5px;left:50%;transform:translateX(-50%);width:6px;height:6px;background:#d4a053;border-radius:50%;z-index:2;"></div>
+              <svg id="pl-dial" viewBox="-50 -50 100 100" style="width:80px;height:80px;overflow:visible;transition:transform 0.55s cubic-bezier(0.4,0,0,1);">
+                <circle r="46" fill="none" stroke="#e8e8e8" stroke-width="1.5"/>
+                <circle r="28" fill="#1a1a1a"/>
+                <g id="pl-ticks"></g>
+                <line x1="0" y1="-28" x2="0" y2="-20" stroke="#d4a053" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+
+            <button id="pl-next" style="background:none;border:1px solid rgba(42,26,14,0.25);border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:14px;color:var(--color-text-on-light);display:flex;align-items:center;justify-content:center;transition:border-color 0.2s,color 0.2s;flex-shrink:0;" onmouseenter="this.style.borderColor='rgba(42,26,14,0.6)';this.style.color='#2a1a0e'" onmouseleave="this.style.borderColor='rgba(42,26,14,0.25)';this.style.color='var(--color-text-on-light)'">&#9654;</button>
+
+            <div id="pl-badge" style="font-size:1.4rem;font-weight:800;color:#d4a053;letter-spacing:-0.02em;min-width:2em;transition:opacity 0.25s;"></div>
+          </div>
+        </div>
+
+        <!-- Right: SVG wireframe visualization -->
+        <div style="display:flex;align-items:center;justify-content:center;background:var(--color-bg-light);overflow:hidden;">
+          <svg id="pl-viz" viewBox="0 0 320 200" style="width:85%;border-radius:6px;transition:opacity 0.3s ease;" preserveAspectRatio="xMidYMid meet"></svg>
+        </div>
+      </div>
+
+      <script>
+      (function() {
+        var W = 320, H = 200;
+        var cur = 0;
+
+        // ── SVG helpers ──────────────────────────────────────────
+        function bg() { return '<rect width="'+W+'" height="'+H+'" fill="#1a1a1a" rx="4"/>'; }
+        function r(x,y,w,h,c,op,radius) {
+          return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+c+'" opacity="'+(op||0.2)+'" rx="'+(radius||2)+'"/>';
+        }
+        function navBar(c) {
+          return r(0,0,W,14,c,0.14,0)
+            + r(8,3,22,8,c,0.5)
+            + r(150,3,20,8,c,0.28) + r(176,3,20,8,c,0.22) + r(202,3,20,8,c,0.22)
+            + r(254,3,50,8,c,0.18) + r(268,3,24,8,c,0.35,3);
+        }
+        function textLines(x,y,w,c,op) {
+          return r(x,y,w,4,c,op||0.22)
+            + r(x,y+7,w*0.9,4,c,(op||0.22)*0.8)
+            + r(x,y+14,w*0.65,4,c,(op||0.22)*0.6);
+        }
+        function sline(x1,y1,x2,y2,c,op) {
+          return '<line x1="'+x1+'" y1="'+y1+'" x2="'+x2+'" y2="'+y2+'" stroke="'+c+'" stroke-width="0.7" opacity="'+(op||0.4)+'"/>';
+        }
+
+        // ── Layout definitions ───────────────────────────────────
+        var LAYOUTS = [
+          {
+            name: 'Single Column',
+            badge: '↕',
+            color: '#d4a053',
+            desc: 'Stack everything in one centered column. The reader has a single path — every block gets full horizontal attention before the next appears.',
+            sub: 'Long-form articles, newsletters, documentation, mobile-first design.',
+            draw: function() {
+              var c = this.color, cx = 80, cw = 160;
+              return bg() + navBar(c)
+                + r(cx,18,cw,36,c,0.16)
+                + r(cx+10,24,cw-20,8,c,0.5)
+                + r(cx+20,35,cw-40,4,c,0.25)
+                + r(cx,60,cw,4,c,0.38) + r(cx,68,cw,3,c,0.2) + r(cx,74,cw,3,c,0.2) + r(cx,80,cw*0.7,3,c,0.2)
+                + r(cx,90,cw,26,c,0.12)
+                + r(cx,122,cw,4,c,0.38) + r(cx,130,cw,3,c,0.2) + r(cx,136,cw,3,c,0.2) + r(cx,142,cw*0.55,3,c,0.2)
+                + r(cx,152,cw,24,c,0.12)
+                + r(cx,180,cw*0.4,10,c,0.4,3);
+            }
+          },
+          {
+            name: 'Sidebar + Main',
+            badge: '☰',
+            color: '#5b8aaf',
+            desc: 'A fixed sidebar anchors navigation. Users always know where they are and where they can go — the menu never disappears.',
+            sub: 'Web apps, admin panels, documentation sites, settings interfaces.',
+            draw: function() {
+              var c = this.color;
+              return bg()
+                + r(0,0,70,H,c,0.1,0)
+                + r(6,4,58,10,c,0.3)
+                + r(10,20,42,5,c,0.28) + r(10,29,50,5,c,0.5) + r(10,38,36,5,c,0.25)
+                + r(10,47,46,5,c,0.25) + r(10,56,40,5,c,0.25)
+                + '<rect x="0" y="26" width="3" height="11" fill="'+c+'" rx="1.5" opacity="0.9"/>'
+                + r(10,72,50,5,c,0.18) + r(10,81,42,5,c,0.28) + r(10,90,36,5,c,0.22)
+                + r(10,99,46,5,c,0.22) + r(10,108,40,5,c,0.18)
+                + sline(70,0,70,H,c,0.2)
+                + r(80,6,230,14,c,0.2) + r(84,9,100,8,c,0.35)
+                + r(80,26,230,58,c,0.09) + r(88,32,180,8,c,0.4) + textLines(88,44,200,c,0.2)
+                + r(80,90,110,42,c,0.09) + r(88,96,80,6,c,0.35) + textLines(88,106,90,c)
+                + r(198,90,112,42,c,0.09) + r(206,96,80,6,c,0.35) + textLines(206,106,90,c)
+                + r(80,138,110,42,c,0.09) + r(88,144,80,6,c,0.35) + textLines(88,154,90,c)
+                + r(198,138,112,42,c,0.09) + r(206,144,80,6,c,0.35);
+            }
+          },
+          {
+            name: 'Card Grid',
+            badge: '⊞',
+            color: '#2dd4bf',
+            desc: 'Equal-weight items in a repeating grid. No single item dominates — users scan freely and self-direct. The layout says: everything is worth your time.',
+            sub: 'E-commerce, media libraries, app stores, news feeds.',
+            draw: function() {
+              var c = this.color, cols = 3, rows = 2;
+              var gutter = 8, padX = 10;
+              var cw = (W - padX*2 - gutter*(cols-1)) / cols;
+              var ch = (H - 22 - 12 - gutter*(rows-1)) / rows;
+              var s = bg() + navBar(c);
+              for (var row = 0; row < rows; row++) {
+                for (var col = 0; col < cols; col++) {
+                  var cx = padX + col * (cw + gutter);
+                  var cy = 20 + row * (ch + gutter);
+                  s += '<rect x="'+cx+'" y="'+cy+'" width="'+cw+'" height="'+ch+'" fill="'+c+'" opacity="0.07" rx="3" stroke="'+c+'" stroke-width="0.5" stroke-opacity="0.35"/>';
+                  s += r(cx+4,cy+4,cw-8,ch*0.5,c,0.2);
+                  s += r(cx+4,cy+ch*0.5+8,cw*0.75,5,c,0.4);
+                  s += r(cx+4,cy+ch*0.5+16,cw-8,3,c,0.18);
+                  s += r(cx+4,cy+ch*0.5+22,cw*0.55,3,c,0.18);
+                }
+              }
+              return s;
+            }
+          },
+          {
+            name: 'Hero + Content',
+            badge: '▬',
+            color: '#e85d3a',
+            desc: 'One powerful above-the-fold moment earns the user\'s attention for everything that follows. The hero sets tone, identity, and intent in a single frame.',
+            sub: 'Landing pages, product pages, brand sites, editorial features.',
+            draw: function() {
+              var c = this.color, heroH = H * 0.45;
+              return bg()
+                + r(0,0,W,heroH,c,0.14,0)
+                + r(40,14,240,10,c,0.55) + r(80,28,160,5,c,0.3)
+                + r(120,38,80,12,c,0.45,4)
+                + sline(0,heroH,W,heroH,c,0.3)
+                + r(10,heroH+8,92,H-heroH-18,c,0.1)
+                + r(10,heroH+8,92,22,c,0.18) + r(16,heroH+14,70,6,c,0.4)
+                + textLines(16,heroH+34,72,c)
+                + r(114,heroH+8,92,H-heroH-18,c,0.1)
+                + r(114,heroH+8,92,22,c,0.18) + r(120,heroH+14,70,6,c,0.4)
+                + textLines(120,heroH+34,72,c)
+                + r(218,heroH+8,92,H-heroH-18,c,0.1)
+                + r(218,heroH+8,92,22,c,0.18) + r(224,heroH+14,70,6,c,0.4)
+                + textLines(224,heroH+34,72,c);
+            }
+          },
+          {
+            name: 'Split Layout',
+            badge: '◧',
+            color: '#9b59b6',
+            desc: 'Two equal halves in tension with each other. One side provides context; the other delivers action. Forces visual balance and prevents any single story from dominating.',
+            sub: 'Sign-up / log-in flows, comparisons, storytelling landing pages.',
+            draw: function() {
+              var c = this.color, c2 = '#5b8aaf', mid = W/2;
+              return bg()
+                + r(0,0,mid,H,c,0.1,0) + r(mid,0,mid,H,c2,0.07,0)
+                + '<line x1="'+mid+'" y1="0" x2="'+mid+'" y2="'+H+'" stroke="'+c+'" stroke-width="0.7" opacity="0.35"/>'
+                + r(12,16,mid-24,34,c,0.22)
+                + r(12,55,mid-24,7,c,0.45) + textLines(12,67,mid-28,c,0.2)
+                + r(12,96,58,12,c,0.38,3)
+                + r(12,116,mid-24,30,c,0.12) + r(16,120,mid-32,12,c,0.2)
+                + r(mid+12,16,mid-24,12,c2,0.4) + r(mid+12,16,mid-24,12,c2,0.15)
+                + r(mid+12,33,100,5,c2,0.35) + r(mid+12,42,mid-24,5,c2,0.2) + r(mid+12,51,mid-24,5,c2,0.2)
+                + r(mid+12,60,mid-24,5,c2,0.2) + r(mid+12,69,mid-40,5,c2,0.2)
+                + r(mid+12,82,mid-24,24,c2,0.12)
+                + r(mid+12,82,mid-24,10,c2,0.2) + r(mid+16,86,80,5,c2,0.35)
+                + r(mid+12,112,mid-24,12,c2,0.25,3) + r(mid+12,130,mid-24,12,c2,0.15,3)
+                + r(mid+12,150,mid-24,30,c2,0.1);
+            }
+          },
+          {
+            name: 'Magazine Layout',
+            badge: '▤',
+            color: '#c4956a',
+            desc: 'One large feature anchors the page. Supporting stories orbit it at different scales. Visual hierarchy does the editing — your eye knows what matters before you read a word.',
+            sub: 'Editorial sites, portfolios, feature-driven publications.',
+            draw: function() {
+              var c = this.color;
+              return bg() + navBar(c)
+                + r(8,18,172,86,c,0.1) + r(8,18,172,54,c,0.16)
+                + r(12,76,140,7,c,0.5) + textLines(12,88,140,c,0.22)
+                + r(188,18,124,40,c,0.1) + r(188,18,124,22,c,0.18)
+                + r(192,44,90,6,c,0.42) + textLines(192,54,110,c)
+                + r(188,62,124,42,c,0.1) + r(188,62,124,22,c,0.16)
+                + r(192,88,90,6,c,0.42) + textLines(192,98,110,c)
+                + r(8,110,74,50,c,0.1) + r(8,110,74,24,c,0.16) + r(12,138,58,5,c,0.4) + textLines(12,147,58,c)
+                + r(90,110,74,50,c,0.1) + r(90,110,74,24,c,0.16) + r(94,138,58,5,c,0.4) + textLines(94,147,58,c)
+                + r(172,110,74,50,c,0.1) + r(172,110,74,24,c,0.16) + r(176,138,58,5,c,0.4) + textLines(176,147,58,c)
+                + r(254,110,58,50,c,0.1) + r(254,110,58,24,c,0.16) + r(258,138,44,5,c,0.4) + textLines(258,147,44,c);
+            }
+          },
+          {
+            name: 'Dashboard',
+            badge: '⊟',
+            color: '#2dd4bf',
+            desc: 'Density by design. Multiple panels in conversation — hierarchy comes from size, color, and placement, not separation. Glanceable at a distance, deep on interaction.',
+            sub: 'Analytics tools, admin panels, monitoring systems, data-heavy UIs.',
+            draw: function() {
+              var c = this.color, kw = (W-20)/4;
+              var s = bg() + navBar(c);
+              for (var i = 0; i < 4; i++) {
+                s += r(10+i*(kw+2),18,kw,22,c,0.1);
+                s += r(10+i*(kw+2)+6,22,kw-12,5,c,0.2);
+                s += r(10+i*(kw+2)+6,30,kw*0.6,7,c,0.45);
+              }
+              s += r(10,46,176,68,c,0.09);
+              var pts = [[16,110],[36,88],[58,98],[80,72],[102,80],[124,56],[146,66],[172,44]];
+              var d = 'M'+pts.map(function(p){return p[0]+','+p[1];}).join(' L');
+              s += '<path d="'+d+'" fill="none" stroke="'+c+'" stroke-width="1.5" opacity="0.75" stroke-linejoin="round" stroke-linecap="round"/>';
+              s += '<path d="'+d+' L172,114 L16,114Z" fill="'+c+'" opacity="0.07"/>';
+              s += r(194,46,58,32,c,0.1);
+              s += '<circle cx="223" cy="62" r="12" fill="none" stroke="'+c+'" stroke-width="6" opacity="0.3"/>';
+              s += '<circle cx="223" cy="62" r="12" fill="none" stroke="'+c+'" stroke-width="6" stroke-dasharray="38 76" opacity="0.8"/>';
+              s += r(260,46,50,32,c,0.1);
+              var bars = [18,11,22,14,9,20];
+              for (var j = 0; j < bars.length; j++) {
+                s += '<rect x="'+(262+j*8)+'" y="'+(75-bars[j])+'" width="6" height="'+bars[j]+'" fill="'+c+'" opacity="'+[0.5,0.25,0.65,0.35,0.2,0.55][j]+'"/>';
+              }
+              s += r(194,84,116,30,c,0.09) + r(200,89,100,4,c,0.2) + r(200,96,80,4,c,0.2) + r(200,103,55,4,c,0.18);
+              s += r(10,120,96,40,c,0.09) + r(16,126,78,6,c,0.35) + textLines(16,136,78,c);
+              s += r(114,120,96,40,c,0.09) + r(120,126,78,6,c,0.35) + textLines(120,136,78,c);
+              s += r(218,120,92,40,c,0.09) + r(224,126,70,6,c,0.35) + textLines(224,136,70,c);
+              return s;
+            }
+          },
+          {
+            name: 'Sticky Navigation',
+            badge: '⊤',
+            color: '#e85d3a',
+            desc: 'The nav bar anchors to the top while content flows beneath. Users always know where they are — they can jump sections at any depth without losing their bearings.',
+            sub: 'Every multi-section page. Arguably the single most impactful layout decision you can make.',
+            draw: function() {
+              var c = this.color;
+              var s = bg();
+              s += '<rect x="0" y="0" width="'+W+'" height="18" fill="'+c+'" opacity="0.2" rx="0"/>';
+              s += r(8,4,22,10,c,0.55) + r(70,4,24,10,c,0.5,3) + r(100,4,22,10,c,0.28) + r(128,4,22,10,c,0.22) + r(156,4,22,10,c,0.22) + r(244,4,60,10,c,0.18,3);
+              s += '<line x1="0" y1="18" x2="'+W+'" y2="18" stroke="'+c+'" stroke-width="1.2" opacity="0.6"/>';
+              s += '<text x="'+(W-4)+'" y="13" text-anchor="end" fill="'+c+'" font-size="7" font-family="monospace" opacity="0.55">pinned</text>';
+              var sections = [
+                {y:22, label:'Overview', h:44, op:0.12},
+                {y:70, label:'Features', h:44, op:0.09},
+                {y:118, label:'Pricing', h:40, op:0.08},
+                {y:162, label:'Contact', h:34, op:0.07}
+              ];
+              sections.forEach(function(sec, idx) {
+                s += r(10, sec.y, W-20, sec.h, c, sec.op);
+                s += r(10, sec.y, W-20, 12, c, sec.op*1.5);
+                s += r(18, sec.y+4, 80, 5, c, 0.38);
+                if (idx < 3) s += textLines(18, sec.y+18, W-50, c, 0.18);
+                s += '<text x="'+(W-14)+'" y="'+(sec.y+sec.h*0.55)+'" text-anchor="middle" fill="'+c+'" font-size="9" opacity="'+(0.18+idx*0.04)+'">↓</text>';
+              });
+              s += '<rect x="0" y="0" width="'+W+'" height="18" fill="none" stroke="'+c+'" stroke-width="0.6" opacity="0.4"/>';
+              return s;
+            }
+          }
+        ];
+
+        var N = LAYOUTS.length;
+
+        // ── Build dial ticks ─────────────────────────────────────
+        var tickEl = document.getElementById('pl-ticks');
+        if (tickEl) {
+          var html = '';
+          for (var i = 0; i < N; i++) {
+            var angle = (i / N) * 2 * Math.PI;
+            var tx = Math.sin(angle)*38, ty = -Math.cos(angle)*38;
+            var lx = Math.sin(angle)*52, ly = -Math.cos(angle)*52;
+            var deg = (i / N) * 360;
+            html += '<line x1="'+tx+'" y1="'+ty+'" x2="'+(Math.sin(angle)*44)+'" y2="'+(-Math.cos(angle)*44)+'" stroke="#3d2010" stroke-width="1.5" stroke-linecap="round"/>';
+            html += '<text x="'+lx+'" y="'+ly+'" text-anchor="middle" dominant-baseline="middle" font-size="6" fill="#3d2010" transform="rotate('+deg+','+lx+','+ly+')">'+LAYOUTS[i].badge+'</text>';
+          }
+          tickEl.innerHTML = html;
+        }
+
+        // ── Update display ───────────────────────────────────────
+        function update(animate) {
+          var layout = LAYOUTS[cur];
+          ['pl-name','pl-desc','pl-sub','pl-badge'].forEach(function(id) {
+            var el = document.getElementById(id); if (el) el.style.opacity = '0';
+          });
+          setTimeout(function() {
+            var n=document.getElementById('pl-name'), d=document.getElementById('pl-desc'),
+                s=document.getElementById('pl-sub'), b=document.getElementById('pl-badge');
+            if (n) n.textContent = layout.name;
+            if (d) d.textContent = layout.desc;
+            if (s) s.textContent = layout.sub;
+            if (b) { b.textContent = layout.badge; b.style.color = layout.color; }
+            ['pl-name','pl-desc','pl-sub','pl-badge'].forEach(function(id) {
+              var el = document.getElementById(id); if (el) el.style.opacity = '1';
+            });
+          }, animate ? 200 : 0);
+
+          var dial = document.getElementById('pl-dial');
+          if (dial) dial.style.transform = 'rotate('+(-(cur/N)*360)+'deg)';
+
+          var viz = document.getElementById('pl-viz');
+          if (viz) {
+            viz.style.opacity = '0';
+            setTimeout(function() {
+              viz.innerHTML = layout.draw();
+              viz.style.opacity = '1';
+            }, animate ? 250 : 0);
+          }
+        }
+
+        var prevBtn = document.getElementById('pl-prev'), nextBtn = document.getElementById('pl-next');
+        if (prevBtn) prevBtn.addEventListener('click', function(e) { e.stopPropagation(); cur=(cur-1+N)%N; update(true); });
+        if (nextBtn) nextBtn.addEventListener('click', function(e) { e.stopPropagation(); cur=(cur+1)%N; update(true); });
+
         update(false);
       })();
       </script>
@@ -1629,17 +1546,16 @@
       </div>
     </section>
 
-    <!-- Color Theory -->
-    <section class="slide" data-beat="3" data-title="Color Theory" data-transition="fade" style="background: var(--color-bg-light) !important;">
+    <!-- Color Theory — Why Color Matters -->
+    <section class="slide" data-beat="3" data-title="Color Theory" data-transition="fade" style="background:var(--color-bg-light)!important;">
       <div class="slide-center" style="max-width:1100px;padding:0 var(--space-2xl);">
         <p class="label fade-in fade-in-1" style="color:var(--color-signal);">Color</p>
-        <h2 class="heading-2 fade-in fade-in-2" style="color:var(--color-text-on-light);margin-top:var(--space-sm);">Color communicates before words do.</h2>
+        <h2 class="heading-2 fade-in fade-in-2" style="color:var(--color-text-on-light);margin-top:var(--space-sm);">Color communicates<br>before words do.</h2>
         <p class="body fade-in fade-in-3" style="margin-top:var(--space-md);color:var(--color-text-on-light);max-width:640px;margin-left:auto;margin-right:auto;line-height:1.6;">
           Contrast creates focus. Semantic color creates meaning. A limited palette creates cohesion.
         </p>
         <div class="fade-in fade-in-4" style="display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-2xl);margin-top:var(--space-2xl);">
 
-          <!-- Contrast -->
           <div style="text-align:center;">
             <div style="display:flex;gap:12px;justify-content:center;align-items:center;margin-bottom:var(--space-lg);">
               <div style="width:120px;height:120px;background:#2a1a0e;border-radius:14px;display:flex;align-items:center;justify-content:center;color:#eeeee4;font-weight:800;font-size:2.8rem;">Aa</div>
@@ -1649,19 +1565,17 @@
             <div style="font-size:0.85rem;color:var(--color-text-on-light);margin-top:6px;line-height:1.5;opacity:0.75;">4.5:1 minimum for readable text.<br>High contrast = high priority.</div>
           </div>
 
-          <!-- Semantic -->
           <div style="text-align:center;">
             <div style="display:flex;gap:10px;justify-content:center;margin-bottom:var(--space-lg);flex-wrap:wrap;">
-              <div style="width:80px;height:80px;background:#d93025;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;" title="Error/Danger">⛔</div>
-              <div style="width:80px;height:80px;background:#f59e0b;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;" title="Warning">⚠️</div>
-              <div style="width:80px;height:80px;background:#16a34a;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;" title="Success">✅</div>
-              <div style="width:80px;height:80px;background:#2563eb;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;" title="Info">ℹ️</div>
+              <div style="width:80px;height:80px;background:#d93025;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;">⛔</div>
+              <div style="width:80px;height:80px;background:#f59e0b;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;">⚠️</div>
+              <div style="width:80px;height:80px;background:#16a34a;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;">✅</div>
+              <div style="width:80px;height:80px;background:#2563eb;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;">ℹ️</div>
             </div>
             <div style="font-size:1rem;font-weight:700;color:var(--color-text-on-light);">Semantic Color</div>
             <div style="font-size:0.85rem;color:var(--color-text-on-light);margin-top:6px;line-height:1.5;opacity:0.75;">Red = danger, green = success.<br>Color carries meaning before reading.</div>
           </div>
 
-          <!-- Limited palette — actual presentation palette -->
           <div style="text-align:center;">
             <div style="display:flex;gap:8px;justify-content:center;margin-bottom:var(--space-lg);align-items:flex-end;">
               <div style="width:52px;height:100px;background:#0f0d0b;border-radius:10px;border:1px solid rgba(0,0,0,0.1);"></div>
@@ -1678,49 +1592,32 @@
       </div>
     </section>
 
+    <!-- Color Applied — Interactive Lab -->
+    <section class="slide slide-colorlab" data-beat="3" data-title="Color Applied" data-transition="fade">
+
+      <!-- LEFT: Context -->
+      <div class="cl-left">
+        <p class="label fade-in fade-in-1" style="color:var(--color-signal);">Color</p>
+        <h2 class="fade-in fade-in-2">The wheel is<br>a calculator.</h2>
+        <p class="cl-body fade-in fade-in-3">Pick any hue you love. Complementary is +180°. Triadic is +120°. Analogous is ±30°. Every harmony type is pure arithmetic on a circle.</p>
+        <p class="cl-body fade-in fade-in-4" style="margin-top: 0.75rem;">You don't need to study color theory. You just need to pick a color.</p>
+      </div>
+
+      <!-- RIGHT: Interactive -->
+      <div class="cl-right">
+        <div class="cl-palette-grid" id="cl-palette-grid"></div>
+        <div class="cl-viz">
+          <canvas id="cl-wheel" width="160" height="160"></canvas>
+          <div class="cl-swatches" id="cl-swatches"></div>
+        </div>
+        <div class="cl-preview" id="cl-preview"></div>
+      </div>
+
+    </section>
+
     <!-- ========================================================
          BEAT 4 — THE WORKFLOW
          ======================================================== -->
-
-    <!-- Slide 13: Here's how it actually works -->
-    <section class="slide" data-id="workflow" data-beat="4" data-title="The Proof" data-transition="zoom" data-3d="float">
-      <div class="slide-center">
-        <p class="label fade-in fade-in-1">The proof</p>
-        <h1 class="heading-1 fade-in fade-in-2" style="margin-top: var(--space-md);">
-          Same AI. Same task.<br><span class="accent">Different words.</span>
-        </h1>
-        <p class="body-large fade-in fade-in-3" style="margin-top: var(--space-xl); max-width: 650px; margin-left: auto; margin-right: auto;">
-          Watch what happens when you swap vague descriptions for design vocabulary.
-        </p>
-      </div>
-    </section>
-
-    <!-- Slide 14: Before/After -->
-    <section class="slide" data-beat="4" data-title="Before / After" data-transition="zoom" data-3d="earth">
-      <div style="width: 100%; max-width: 1200px; padding: 0 var(--space-2xl);">
-        <h2 class="heading-3 fade-in fade-in-1" style="margin-bottom: var(--space-xl); text-align: center;">The power of vocabulary</h2>
-        <div class="before-after fade-in fade-in-2">
-          <div class="panel">
-            <div class="panel-label bad">✕ Without vocabulary</div>
-            <p class="prompt-text">
-              "Make me a dashboard that looks good. It should show user stats and have some charts. Make it modern and clean."
-            </p>
-            <div class="panel-screenshot" id="screenshot-without">
-              <img src="assets/bad%20design%20example.png" alt="Bad design example — without vocabulary" />
-            </div>
-          </div>
-          <div class="panel">
-            <div class="panel-label good">✦ With vocabulary</div>
-            <p class="prompt-text">
-              "Create a dashboard with a clear visual hierarchy: primary metric cards at the top with large type, secondary charts below. Use 24px spacing rhythm, muted backgrounds for data containers, and a single accent color for CTAs. Left sidebar navigation, content area uses a 12-column grid."
-            </p>
-            <div class="panel-screenshot" id="screenshot-with">
-              <img src="assets/good%20design%20example.png" alt="Good design example — with vocabulary" />
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
 
     <!-- Visual Debugging Tools -->
     <section class="slide slide-boat" data-beat="2" data-title="Right-Sized Tools" data-transition="fade-up">
@@ -1745,6 +1642,18 @@
     <!-- ========================================================
          BEAT 2 (cont.) — INTERACTIVE DOCUMENTS
          ======================================================== -->
+
+    <!-- Section Intro: The Workflow -->
+    <section class="slide" data-beat="4" data-title="The Workflow" data-transition="fade" style="background: var(--color-bg-dark) !important;">
+      <div aria-hidden="true" style="position:absolute;right:-24px;bottom:-80px;font-family:var(--font-display);font-size:34rem;font-weight:700;line-height:1;color:rgba(255,255,255,0.022);letter-spacing:-0.06em;pointer-events:none;user-select:none;">04</div>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;padding:calc(var(--header-height) + 40px) 96px 80px;">
+        <div style="max-width:680px;">
+          <p class="label fade-in fade-in-1" style="color:var(--color-signal);">The Workflow</p>
+          <h1 class="heading-1 fade-in fade-in-2" style="margin-top:var(--space-md);line-height:0.9;">Now let's build<br>something.</h1>
+          <p class="body fade-in fade-in-3" style="margin-top:var(--space-xl);max-width:500px;line-height:1.75;color:var(--color-text-muted);">Tools, jigs, methodologies. Here's how to actually put all of this into practice — and make it yours.</p>
+        </div>
+      </div>
+    </section>
 
     <!-- Slide 12: Interactive Documents -->
     <section class="slide" data-beat="4" data-title="Visual Debugging Tools" data-transition="fade" style="background: var(--color-bg-dark) !important; padding: 0 !important;">
@@ -1871,6 +1780,51 @@
           </div>
 
         </div>
+      </div>
+    </section>
+
+    <!-- Slide: Wide & Deep — AI Methodology -->
+    <section class="slide slide-permutations" data-beat="4" data-title="Wide &amp; Deep" data-transition="fade" style="background: var(--color-bg-dark) !important;">
+      <div class="perm-layout">
+
+        <!-- Left: copy -->
+        <div class="perm-left">
+          <p class="perm-beat-label fade-in fade-in-1">AI × Art Direction</p>
+          <h2 class="perm-headline fade-in fade-in-2">Wide,<br>then deep.</h2>
+          <p class="perm-body fade-in fade-in-3">
+            Use AI to generate a lot. Then use your judgment to pick the one worth pursuing. Then use AI to go all the way in.
+          </p>
+          <ol class="perm-steps fade-in fade-in-3">
+            <li class="perm-step">
+              <span class="perm-step-num">01</span>
+              <div class="perm-step-text">
+                <strong>Generate wide</strong>
+                <span>Ask for 15 versions. Push the model for real variety — different directions, not variations on the same idea.</span>
+              </div>
+            </li>
+            <li class="perm-step">
+              <span class="perm-step-num">02</span>
+              <div class="perm-step-text">
+                <strong>Make a call</strong>
+                <span>That's art direction. Not picking the best one — picking the most interesting one to develop.</span>
+              </div>
+            </li>
+            <li class="perm-step">
+              <span class="perm-step-num">03</span>
+              <div class="perm-step-text">
+                <strong>Go deep</strong>
+                <span>Now generate 20 more within that direction. Refine, pressure-test, iterate. The AI is the print shop. You're the editor.</span>
+              </div>
+            </li>
+          </ol>
+          <p class="perm-callout fade-in fade-in-4">
+            The skill isn't prompting. It's knowing which direction is worth going deeper on.
+          </p>
+        </div>
+
+        <!-- Right: interactive card cascade -->
+        <div id="permStage" class="perm-stage fade-in fade-in-4"></div>
+
       </div>
     </section>
 
@@ -2027,11 +1981,809 @@
       </div>
     </section>
 
+    <!-- DESIGN.md — the new standard for AI-first design systems -->
+    <section class="slide" data-beat="4" data-title="DESIGN.md" data-transition="fade" style="background: var(--color-bg-dark) !important;">
+      <div class="slide-split" style="align-items: center;">
+        <div class="content fade-in fade-in-1" style="padding-right: var(--space-2xl);">
+          <p class="label" style="color: var(--color-signal);">The new standard</p>
+          <h1 class="heading-1" style="margin-top: var(--space-md); color: var(--color-text); line-height: 0.95;">
+            DESIGN<span style="color: var(--color-signal);">.md</span>
+          </h1>
+          <p class="body-large" style="margin-top: var(--space-xl); color: var(--color-text-muted); line-height: 1.7; max-width: 480px;">
+            A single markdown file that encodes your entire design system — colors, typography, spacing, components — in a format every AI agent can read and apply consistently.
+          </p>
+          <p class="body" style="margin-top: var(--space-lg); color: var(--color-text-muted); max-width: 480px;">
+            Originated with <strong style="color: var(--color-text);">Google Stitch</strong>. Now the de facto standard for AI-first design documentation. Lives in your repo, versioned like code, readable by any LLM.
+          </p>
+          <div style="margin-top: var(--space-xl); display: flex; gap: var(--space-md); flex-wrap: wrap;">
+            <a href="https://github.com/google-labs-code/stitch-skills/tree/main/skills/design-md" target="_blank" style="color: var(--color-signal); text-decoration: underline; font-size: var(--font-size-sm);">📎 Google Stitch</a>
+            <a href="https://designmd.ai" target="_blank" style="color: var(--color-signal); text-decoration: underline; font-size: var(--font-size-sm);">📎 designmd.ai</a>
+            <a href="https://github.com/VoltAgent/awesome-design-md" target="_blank" style="color: var(--color-signal); text-decoration: underline; font-size: var(--font-size-sm);">📎 awesome-design-md</a>
+          </div>
+        </div>
+        <div class="visual fade-in fade-in-2" style="display: flex; align-items: flex-start; justify-content: flex-start; padding-top: var(--space-lg);">
+          <div style="background: #0d1117; border: 1px solid #30363d; border-radius: 12px; padding: 28px 32px; font-family: var(--font-mono, 'Fira Code', monospace); font-size: 0.78rem; line-height: 1.75; color: #c9d1d9; width: 100%; max-width: 460px;">
+            <div style="color: #58a6ff; margin-bottom: 12px; font-size: 0.72rem; letter-spacing: 0.05em; opacity: 0.7;">DESIGN.md</div>
+            <div><span style="color: #ff7b72;"># Visual Theme</span></div>
+            <div style="color: #8b949e;">Dark, precise. Dense information at rest.</div>
+            <br>
+            <div><span style="color: #ff7b72;">## Colors</span></div>
+            <div><span style="color: #79c0ff;">- Primary:</span> <span style="color: #a5d6ff;">#C43E1C</span></div>
+            <div><span style="color: #79c0ff;">- Surface:</span> <span style="color: #a5d6ff;">#0E0E10</span></div>
+            <div><span style="color: #79c0ff;">- Text:</span> <span style="color: #a5d6ff;">#EEEEE4</span></div>
+            <br>
+            <div><span style="color: #ff7b72;">## Typography</span></div>
+            <div><span style="color: #79c0ff;">- Display:</span> <span style="color: #a5d6ff;">Canela, 400</span></div>
+            <div><span style="color: #79c0ff;">- Body:</span> <span style="color: #a5d6ff;">Inter, 16px / 1.6</span></div>
+            <br>
+            <div><span style="color: #ff7b72;">## Spacing</span></div>
+            <div style="color: #8b949e;">Base unit: 8px · Scale: 4 8 16 24 40 64</div>
+            <br>
+            <div><span style="color: #ff7b72;">## Agent Prompt Guide</span></div>
+            <div style="color: #8b949e;">Signal color = #C43E1C. Use for<br>accents only. Never on body text.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Design Partner — AI-powered design collaboration -->
+    <section class="slide" data-beat="4" data-title="Design Partner" data-transition="fade" style="background: var(--color-bg-light-alt) !important;">
+      <div class="slide-center" style="max-width: 900px;">
+        <p class="label fade-in fade-in-1" style="color: var(--color-signal);">Your AI design collaborator</p>
+        <h1 class="heading-1 fade-in fade-in-2" style="margin-top: var(--space-md); color: var(--color-text-on-light); line-height: 0.95;">
+          Design <span style="color: var(--color-signal);">Partner</span>
+        </h1>
+        <p class="body-large fade-in fade-in-3" style="margin-top: var(--space-xl); max-width: 640px; margin-left: auto; margin-right: auto; color: var(--color-text-muted-on-light, #555); line-height: 1.7;">
+          A Copilot skill that acts as the design team's AI representative. It helps engineers and PMs make better design decisions, reviews specs, coaches on UX patterns, and connects you with the right designer.
+        </p>
+        <div class="fade-in fade-in-4" style="margin-top: var(--space-2xl); display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-lg); max-width: 780px; margin-left: auto; margin-right: auto;">
+          <div style="background: #fff; border-radius: 12px; padding: 24px 20px; border: 1px solid rgba(42,26,14,0.1); text-align: left;">
+            <div style="font-size: 1.6rem; margin-bottom: 12px;">🎨</div>
+            <div style="font-weight: 700; font-size: 0.88rem; color: #1a1a1a; margin-bottom: 6px;">Design Decisions</div>
+            <p style="font-size: 0.78rem; color: #666; line-height: 1.5; margin: 0;">Review specs and UI choices against real design principles. Get feedback before it goes to a designer.</p>
+          </div>
+          <div style="background: #fff; border-radius: 12px; padding: 24px 20px; border: 1px solid rgba(42,26,14,0.1); text-align: left;">
+            <div style="font-size: 1.6rem; margin-bottom: 12px;">📐</div>
+            <div style="font-weight: 700; font-size: 0.88rem; color: #1a1a1a; margin-bottom: 6px;">UX Coaching</div>
+            <p style="font-size: 0.78rem; color: #666; line-height: 1.5; margin: 0;">Understand the why behind patterns. Ask questions about hierarchy, flow, or accessibility in plain language.</p>
+          </div>
+          <div style="background: #fff; border-radius: 12px; padding: 24px 20px; border: 1px solid rgba(42,26,14,0.1); text-align: left;">
+            <div style="font-size: 1.6rem; margin-bottom: 12px;">🤝</div>
+            <div style="font-weight: 700; font-size: 0.88rem; color: #1a1a1a; margin-bottom: 6px;">Find Your Designer</div>
+            <p style="font-size: 0.78rem; color: #666; line-height: 1.5; margin: 0;">When you need a human, Design Partner helps you frame the ask and connect with the right person on your team.</p>
+          </div>
+        </div>
+        <p class="fade-in fade-in-4" style="margin-top: var(--space-xl); font-size: var(--font-size-sm); color: #888;">
+          Say <code style="background: rgba(196,62,28,0.1); color: var(--color-signal); padding: 2px 8px; border-radius: 4px;">/design-partner</code> in GitHub Copilot to invoke it.
+        </p>
+      </div>
+    </section>
+
+
     <!-- ========================================================
-         BEAT 5 — THE TAKEAWAY
+         BEAT DEMO — THE SHOWCASE
          ======================================================== -->
 
+
+    <!-- Section Intro: In Practice -->
+    <section class="slide" data-beat="showcase" data-title="In Practice" data-transition="fade" style="background: var(--color-bg-dark) !important;">
+      <div aria-hidden="true" style="position:absolute;right:-24px;bottom:-80px;font-family:var(--font-display);font-size:34rem;font-weight:700;line-height:1;color:rgba(255,255,255,0.022);letter-spacing:-0.06em;pointer-events:none;user-select:none;">05</div>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;padding:calc(var(--header-height) + 40px) 96px 80px;">
+        <div style="max-width:680px;">
+          <p class="label fade-in fade-in-1" style="color:var(--color-signal);">See It in Action</p>
+          <h1 class="heading-1 fade-in fade-in-2" style="margin-top:var(--space-md);line-height:0.9;">Here's what it<br>actually looks like.</h1>
+          <p class="body fade-in fade-in-3" style="margin-top:var(--space-xl);max-width:500px;line-height:1.75;color:var(--color-text-muted);">Everything we've covered — live. These are real things built with the techniques from this talk. You can build all of this.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide: Weather — Live Data Showcase -->
+    <section class="slide slide-weather" data-id="weather" data-beat="showcase" data-title="Live Data" data-transition="fade">
+      <!-- Fixed weather background (covers right half) -->
+      <div class="weather-bg" id="weatherBg">
+        <div class="weather-particles" id="weatherParticles"></div>
+      </div>
+
+      <!-- 50/50 split: static content left, scrollable weather right -->
+      <div class="weather-split">
+        <!-- LEFT — Static context -->
+        <div class="weather-left">
+          <p class="label fade-in fade-in-1">What's possible</p>
+          <h2 class="heading-2 fade-in fade-in-2">Your slides can talk to the <span class="accent">real world</span></h2>
+          <p class="body fade-in fade-in-3" style="margin-top: var(--space-lg);">
+            This weather data is live from Seattle right now. When you know how to ask, AI builds things that feel alive.
+          </p>
+
+          <!-- Weather picker -->
+          <div class="weather-picker fade-in fade-in-4">
+            <span class="weather-picker-label">Preview:</span>
+            <button class="weather-pick" data-weather="sunny" title="Sunny">☀️</button>
+            <button class="weather-pick" data-weather="partlyCloudy" title="Partly Cloudy">⛅</button>
+            <button class="weather-pick" data-weather="cloudy" title="Overcast">☁️</button>
+            <button class="weather-pick" data-weather="rain" title="Rain">🌧️</button>
+            <button class="weather-pick" data-weather="storm" title="Storm">⛈️</button>
+            <button class="weather-pick active" data-weather="live" title="Live data">📡</button>
+          </div>
+        </div>
+
+        <!-- RIGHT — Scrollable weather data -->
+        <div class="weather-right" id="weatherRight">
+          <!-- Hero -->
+          <div class="weather-hero">
+            <div class="weather-location">
+              <span class="weather-city">Seattle, WA</span>
+              <span class="weather-timestamp" id="weatherTimestamp"></span>
+            </div>
+            <div class="weather-temp-row">
+              <span class="weather-icon" id="weatherIcon">🌧️</span>
+              <span class="weather-temp" id="weatherTemp">--°</span>
+            </div>
+            <div class="weather-condition">
+              <span class="weather-desc" id="weatherDesc">Loading...</span>
+              <span class="weather-details" id="weatherDetails"></span>
+            </div>
+          </div>
+
+          <!-- Stats -->
+          <div class="weather-stats">
+            <div class="weather-stat">
+              <span class="weather-stat-label">Humidity</span>
+              <span class="weather-stat-value" id="weatherHumidity">--%</span>
+              <div class="weather-stat-bar"><div class="weather-stat-fill" id="humidityBar"></div></div>
+            </div>
+            <div class="weather-stat">
+              <span class="weather-stat-label">Wind</span>
+              <span class="weather-stat-value" id="weatherWind">-- mph</span>
+              <div class="weather-stat-bar"><div class="weather-stat-fill" id="windBar"></div></div>
+            </div>
+            <div class="weather-stat">
+              <span class="weather-stat-label">Visibility</span>
+              <span class="weather-stat-value" id="weatherVisibility">-- mi</span>
+              <div class="weather-stat-bar"><div class="weather-stat-fill" id="visibilityBar"></div></div>
+            </div>
+            <div class="weather-stat">
+              <span class="weather-stat-label">Pressure</span>
+              <span class="weather-stat-value" id="weatherPressure">-- mb</span>
+              <div class="weather-stat-bar"><div class="weather-stat-fill" id="pressureBar"></div></div>
+            </div>
+          </div>
+
+          <!-- Historical -->
+          <div class="weather-history">
+            <p class="weather-history-label">On this day in history</p>
+            <div class="weather-history-chart" id="weatherHistoryChart"></div>
+          </div>
+
+          <!-- Hourly Forecast -->
+          <div class="weather-section">
+            <h3 class="weather-section-title">Hourly Forecast</h3>
+            <div class="weather-hourly" id="weatherHourly"></div>
+          </div>
+
+          <!-- 7-Day Forecast -->
+          <div class="weather-section">
+            <h3 class="weather-section-title">7-Day Forecast</h3>
+            <div class="weather-weekly" id="weatherWeekly"></div>
+          </div>
+
+          <!-- Temperature Sparkline -->
+          <div class="weather-section">
+            <h3 class="weather-section-title">Temperature — Last 24 Hours</h3>
+            <div class="sparkline-container">
+              <canvas id="tempSparkline" width="400" height="150"></canvas>
+            </div>
+          </div>
+
+          <!-- Sunrise/Sunset & UV Index -->
+          <div class="weather-section">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-lg);">
+              <div class="weather-sun-card">
+                <h3 class="weather-section-title">Sunrise & Sunset</h3>
+                <canvas id="sunArc" width="400" height="200"></canvas>
+                <div class="sun-times">
+                  <span class="sun-time"><span class="sun-label">↑</span> <span id="sunriseTime">6:42 AM</span></span>
+                  <span class="sun-time"><span class="sun-label">↓</span> <span id="sunsetTime">7:28 PM</span></span>
+                </div>
+              </div>
+              <div class="weather-uv-card">
+                <h3 class="weather-section-title">UV Index</h3>
+                <div class="uv-gauge" id="uvGauge">
+                  <div class="uv-gauge-bar">
+                    <div class="uv-gauge-fill" id="uvFill"></div>
+                    <div class="uv-gauge-marker" id="uvMarker"></div>
+                  </div>
+                  <div class="uv-gauge-labels">
+                    <span>Low</span><span>Moderate</span><span>High</span><span>Very High</span>
+                  </div>
+                  <div class="uv-value" id="uvValue">1</div>
+                  <div class="uv-desc" id="uvDesc">Low</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="height: var(--space-3xl);"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive 3D Walkthrough -->
+    <section class="slide slide-game" data-id="interactive" data-beat="showcase" data-title="Interactive Demo" data-transition="fade" data-3d="game">
+      <div class="game-overlay" id="gameOverlay">
+        <div class="game-hud">
+          <div class="game-controls-hint">
+            <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> Move
+            <kbd>Space</kbd> Jump
+            <kbd>F</kbd> Flashlight
+            <kbd>E</kbd> Interact
+            <kbd>→</kbd> Continue
+          </div>
+        </div>
+        <div class="game-tutorial-panel" id="gameTutorial">
+          <p class="game-tutorial-text">Walk around to explore. This voxel apartment was built in MagicaVoxel — and now it's a live, interactive presentation slide.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Slide 7: Most people just need a dinghy -->
+    <section class="slide" data-beat="showcase" data-title="Visual Storytelling" data-transition="slide-left" style="background: var(--color-bg-dark) !important;">
+      <!-- Loading indicator -->
+      <div id="splatLoader" style="position: absolute; inset: 0; z-index: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; color: #666; font-size: 13px;">
+        <div style="width: 40px; height: 40px; border: 2px solid #222; border-top-color: #d4a053; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+        <div>Loading 3D scene...</div>
+      </div>
+      <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+      <!-- Gaussian splat viewer -->
+      <iframe id="splatViewer" data-src="splat-viewer.html" style="position: absolute; inset: 0; width: 100%; height: 100%; border: none; z-index: 0;"></iframe>
+      <div class="slide-split" style="position: relative; z-index: 1;">
+        <div class="content" style="background: rgba(10,10,10,0.5); backdrop-filter: blur(8px); padding: var(--space-2xl); border-radius: 16px;">
+          <p class="label fade-in fade-in-1">Storytelling with environment</p>
+          <h2 class="heading-2 fade-in fade-in-2">Visual <span class="accent">Storytelling</span></h2>
+          <p class="body fade-in fade-in-3" style="margin-top: var(--space-md);">
+            A scene tells a story through light, space, and arrangement. This AI-generated kitchen uses warm tones, natural light, and deliberate clutter to feel <em>lived in</em>.
+          </p>
+          <p class="body fade-in fade-in-4" style="margin-top: var(--space-md); color: var(--color-text-muted);">
+            The same principles apply to a dashboard, a slide deck, or a prototype. Every visual choice is a narrative choice. Use WASD to explore.
+          </p>
+        </div>
+        <div class="visual"></div>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         DESIGN EDUCATION — Foundations every builder should know
+         ======================================================== -->
+
+    <!-- Rule of Thirds / Composition Rules — interactive dial -->
+    <section class="slide slide-idoc" data-beat="showcase" data-title="Interactive Documents" data-transition="fade" style="background: var(--color-bg-dark) !important;">
+      <!-- Left: description -->
+      <div class="idoc-left fade-in fade-in-1">
+        <p class="label">The Living Document</p>
+        <h2 class="heading-2 fade-in fade-in-2" style="margin-top: var(--space-md); color: var(--color-text);">
+          Documents that <span class="accent">respond.</span>
+        </h2>
+        <p class="body fade-in fade-in-3" style="margin-top: var(--space-lg); max-width: 320px; color: rgba(255,255,255,0.65);">
+          Hover a word for inline context. Scroll to the end. Flip it over to see how it performed. Intelligent, responsive, and built to support the reader.
+        </p>
+        <p class="body fade-in fade-in-4" style="margin-top: var(--space-md); max-width: 320px; color: rgba(255,255,255,0.38);">
+          A document. But also a small interface.
+        </p>
+
+        <p class="body fade-in fade-in-5" style="margin-top: var(--space-xl); max-width: 300px; color: rgba(255,255,255,0.22); font-style: italic; font-size: 0.82rem;">
+          Even bad news looks better when it&#8217;s well designed.
+        </p>
+      </div>
+
+      <!-- Right: paper card demo -->
+      <div class="idoc-right">
+
+        <!-- Persistent toggle button — always visible, z-index 15 -->
+        <button class="paper-toggle-btn" id="paperToggleBtn" title="View Analytics">&#9783;</button>
+
+        <!-- Fixed layer: palm leaf shadows (don't scroll) -->
+        <div class="idoc-palm-shadows" aria-hidden="true">
+          <svg viewBox="0 0 1000 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <filter id="pblur1" x="-35%" y="-35%" width="170%" height="170%">
+                <feGaussianBlur stdDeviation="26"/>
+              </filter>
+              <filter id="pblur2" x="-35%" y="-35%" width="170%" height="170%">
+                <feGaussianBlur stdDeviation="22"/>
+              </filter>
+              <filter id="pblur3" x="-45%" y="-45%" width="190%" height="190%">
+                <feGaussianBlur stdDeviation="34"/>
+              </filter>
+            </defs>
+            <g class="palm-sway-l" filter="url(#pblur1)">
+              <path d="M-80,-60 C-10,110 120,280  60,480" stroke="#0d0500" stroke-width="80" fill="none" stroke-linecap="round"/>
+              <path d="M-80,-60 C 70, 60 200,190 230,360" stroke="#0d0500" stroke-width="74" fill="none" stroke-linecap="round"/>
+              <path d="M-80,-60 C 20, 30 130,100 290,175" stroke="#0d0500" stroke-width="68" fill="none" stroke-linecap="round"/>
+              <path d="M-80,-60 C-160, 70 -130,220 -70,400" stroke="#0d0500" stroke-width="72" fill="none" stroke-linecap="round"/>
+              <path d="M-80,-60 C -50,  0  30, 50 160,110" stroke="#0d0500" stroke-width="63" fill="none" stroke-linecap="round"/>
+              <path d="M-80,-60 C  10, 80  80,200 140,350" stroke="#0d0500" stroke-width="65" fill="none" stroke-linecap="round"/>
+            </g>
+            <g class="palm-sway-r" filter="url(#pblur2)">
+              <path d="M1080,-80 C 990, 90  840,230  910,430" stroke="#0d0500" stroke-width="77" fill="none" stroke-linecap="round"/>
+              <path d="M1080,-80 C 940, 55  800,170  760,330" stroke="#0d0500" stroke-width="72" fill="none" stroke-linecap="round"/>
+              <path d="M1080,-80 C1000, 20  890, 90  730,180" stroke="#0d0500" stroke-width="67" fill="none" stroke-linecap="round"/>
+              <path d="M1080,-80 C1160, 65 1200,210 1130,400" stroke="#0d0500" stroke-width="70" fill="none" stroke-linecap="round"/>
+              <path d="M1080,-80 C1010, 10  910, 55  780,120" stroke="#0d0500" stroke-width="60" fill="none" stroke-linecap="round"/>
+              <path d="M1080,-80 C1020, 90  950,220  880,380" stroke="#0d0500" stroke-width="63" fill="none" stroke-linecap="round"/>
+            </g>
+            <g class="palm-sway-c" filter="url(#pblur3)" opacity="0.6">
+              <path d="M 520,-220 C 400, 40  300,260  360,510" stroke="#080300" stroke-width="98" fill="none" stroke-linecap="round"/>
+              <path d="M 520,-220 C 640, 20  740,220  700,450" stroke="#080300" stroke-width="92" fill="none" stroke-linecap="round"/>
+              <path d="M 520,-220 C 470,-50  360, 50  200,115" stroke="#080300" stroke-width="80" fill="none" stroke-linecap="round"/>
+              <path d="M 520,-220 C 560,-40  650, 80  820,155" stroke="#080300" stroke-width="76" fill="none" stroke-linecap="round"/>
+            </g>
+          </svg>
+        </div>
+
+        <!-- Fixed: scattered vacation Polaroids — below scroll track so paper slides over them -->
+        <div class="idoc-polaroids" aria-hidden="true">
+          <div class="idoc-pol pol-1">
+            <img class="pol-photo" src="assets/polaroid-1-sunset-palm.jpg" alt="">
+            <p class="pol-caption">Marrakech, &#8217;24</p>
+          </div>
+          <div class="idoc-pol pol-2">
+            <img class="pol-photo" src="assets/polaroid-3-dunes.jpg" alt="">
+            <p class="pol-caption">Sahara</p>
+          </div>
+          <div class="idoc-pol pol-3">
+            <img class="pol-photo" src="assets/polaroid-5-oasis.jpg" alt="">
+            <p class="pol-caption">Merzouga</p>
+          </div>
+          <div class="idoc-pol pol-4">
+            <img class="pol-photo" src="assets/polaroid-2-mosaic-pool.jpg" alt="">
+            <p class="pol-caption">Riad, F&#232;s</p>
+          </div>
+          <div class="idoc-pol pol-5">
+            <img class="pol-photo" src="assets/polaroid-4-archway.jpg" alt="">
+            <p class="pol-caption">Medina, &#8217;24</p>
+          </div>
+        </div>
+
+        <!-- Scrollable track — whole paper slides up through the shadows -->
+        <div class="idoc-scroll-track" id="idocScrollTrack">
+
+          <!-- Paper stack: two rotated sheets behind the main -->
+          <div class="paper-stack-container">
+            <div class="paper-stack-b"></div>
+            <div class="paper-stack-m"></div>
+
+            <div class="paper-scene">
+              <div class="paper-wrapper" id="paperWrapper">
+
+                <!-- FRONT: the letter -->
+                <div class="paper-face paper-front">
+
+                  <div class="paper-header">
+                    <p class="paper-monogram">&#10022;</p>
+                    <h3 class="paper-title">The Invisible Grammar<br>of Visual Design</h3>
+                    <p class="paper-byline">by the design team</p>
+                  </div>
+                  <div class="paper-rule"></div>
+
+                  <div class="paper-body">
+                    <span class="paper-section-label">The Breath</span>
+                    <p class="paper-text">When a designer talks about <span class="doc-word" data-tip="whitespace">whitespace</span>, they&#8217;re not describing empty space. They&#8217;re describing breathing room &#8212; the silence between notes that makes music meaningful. Apple&#8217;s product pages famously use whitespace to force your eye to rest, then look, then linger.</p>
+                    <p class="paper-text">Negative space doesn&#8217;t just separate &#8212; it defines. The white around a headline is as responsible for that headline&#8217;s power as the type itself. Remove the breathing room and the words become wallpaper. Protect it, and the word becomes an event.</p>
+
+                    <span class="paper-section-label">The Weight</span>
+                    <p class="paper-text">Every element on a screen has visual mass. <span class="doc-word" data-tip="typography">Typography</span> is the densest of all &#8212; it carries meaning twice: once in what it says, once in how it looks. A headline set in a heavy serif commands attention before you&#8217;ve read a word. A body set in a light serif whispers.</p>
+                    <p class="paper-text">Visual <span class="doc-word" data-tip="hierarchy">hierarchy</span> is the invisible instruction set that tells your eye what to look at first, second, and third. Without it, every element screams at equal volume &#8212; and when everything demands attention, nothing gets it.</p>
+
+                    <span class="paper-section-label">The Beat</span>
+                    <p class="paper-text">There&#8217;s a <span class="doc-word" data-tip="rhythm">rhythm</span> to good design, as steady as a heartbeat. It comes from repeating spacing values, mirrored proportions, and the cadence of consistent sizing. When rhythm breaks &#8212; a card that&#8217;s 2px taller, a gap that doesn&#8217;t match the grid &#8212; something feels wrong even if a viewer can&#8217;t say why.</p>
+                    <p class="paper-text"><span class="doc-word" data-tip="contrast">Contrast</span> is the mechanism that makes rhythm visible. Not just light vs. dark &#8212; but large vs. small, quiet vs. loud. Without contrast, there is no hierarchy. Without hierarchy, there is no story.</p>
+
+                    <span class="paper-section-label">The Space</span>
+                    <p class="paper-text">Every layout rests on a grid &#8212; an invisible scaffold of columns, rows, and gutters that most viewers will never consciously notice. The grid doesn&#8217;t constrain. It liberates. When you know where the walls are, you can decide which ones to push through.</p>
+                    <p class="paper-text" style="font-style: italic; color: #4a3420;">The final act of any composition is restraint. It&#8217;s the decision not to add the element that seemed necessary &#8212; the whitespace you protect, the color you leave out. Good design isn&#8217;t about what&#8217;s present. It&#8217;s about what you had the discipline to leave behind.</p>
+                  </div>
+
+                  <div class="paper-closing">
+                    <p class="paper-close-word">With warm regards,</p>
+                    <p class="paper-signature">The Design Team</p>
+                    <p class="paper-close-role">Design Systems &amp; Practice</p>
+                  </div>
+                </div><!-- /.paper-front -->
+
+              </div><!-- /paper-wrapper -->
+            </div><!-- /paper-scene -->
+          </div><!-- /paper-stack-container -->
+
+        </div><!-- /idoc-scroll-track -->
+
+        <!-- Analytics overlay — shown via JS; lives outside scroll container to avoid 3D/overflow conflicts -->
+        <div class="paper-analytics-panel" id="paperAnalytics" aria-hidden="true">
+          <div class="analytics-header">
+            <span class="analytics-title">Document Analytics</span>
+          </div>
+
+          <!-- Word hover bubbles -->
+          <div class="av-section">
+            <span class="av-label">Word Hover Activity</span>
+            <svg viewBox="0 0 480 130" width="100%" height="auto" style="display:block;">
+              <circle class="bbl" cx="75"  cy="72" r="52" fill="rgba(139,115,85,0.14)" stroke="rgba(120,90,55,0.3)"  stroke-width="1.5" data-lbl="whitespace · 147 hovers"/>
+              <text x="75"  y="69" text-anchor="middle" fill="#5c3d1e" font-size="7.5" font-family="Inter,sans-serif" font-weight="700">whitespace</text>
+              <text x="75"  y="81" text-anchor="middle" fill="#8b7355" font-size="13"  font-family="Georgia,serif"    font-weight="700">147</text>
+              <circle class="bbl" cx="200" cy="60" r="41" fill="rgba(160,125,75,0.14)" stroke="rgba(140,105,60,0.3)"  stroke-width="1.5" data-lbl="typography · 112 hovers"/>
+              <text x="200" y="57" text-anchor="middle" fill="#5c3d1e" font-size="7"   font-family="Inter,sans-serif" font-weight="700">typography</text>
+              <text x="200" y="68" text-anchor="middle" fill="#8b7355" font-size="11"  font-family="Georgia,serif"    font-weight="700">112</text>
+              <circle class="bbl" cx="316" cy="76" r="32" fill="rgba(185,145,90,0.14)" stroke="rgba(160,120,70,0.3)"  stroke-width="1.5" data-lbl="hierarchy · 89 hovers"/>
+              <text x="316" y="73" text-anchor="middle" fill="#5c3d1e" font-size="6.5" font-family="Inter,sans-serif" font-weight="700">hierarchy</text>
+              <text x="316" y="83" text-anchor="middle" fill="#8b7355" font-size="10"  font-family="Georgia,serif"    font-weight="700">89</text>
+              <circle class="bbl" cx="402" cy="96" r="24" fill="rgba(205,165,100,0.13)" stroke="rgba(180,140,80,0.28)" stroke-width="1.5" data-lbl="rhythm · 67 hovers"/>
+              <text x="402" y="93" text-anchor="middle" fill="#5c3d1e" font-size="6"   font-family="Inter,sans-serif" font-weight="700">rhythm</text>
+              <text x="402" y="102" text-anchor="middle" fill="#8b7355" font-size="9"  font-family="Georgia,serif"    font-weight="700">67</text>
+              <circle class="bbl" cx="453" cy="52" r="17" fill="rgba(220,180,110,0.11)" stroke="rgba(195,155,85,0.24)" stroke-width="1.5" data-lbl="contrast · 54 hovers"/>
+              <text x="453" y="49" text-anchor="middle" fill="#5c3d1e" font-size="5.5" font-family="Inter,sans-serif" font-weight="700">contrast</text>
+              <text x="453" y="58" text-anchor="middle" fill="#8b7355" font-size="8"   font-family="Georgia,serif"    font-weight="700">54</text>
+            </svg>
+          </div>
+
+          <!-- Reader point cloud (scatter) -->
+          <div class="av-section" style="flex:1;min-height:0;position:relative;">
+            <span class="av-label">Reader Map — depth vs. time</span>
+            <svg id="readerCloud" viewBox="0 0 460 148" width="100%" height="auto" style="display:block;overflow:visible;">
+              <line x1="38" y1="10"  x2="38"  y2="128" stroke="rgba(139,115,85,0.15)" stroke-width="0.8"/>
+              <line x1="38" y1="128" x2="452" y2="128" stroke="rgba(139,115,85,0.15)" stroke-width="0.8"/>
+              <line x1="38" y1="10"  x2="452" y2="10"  stroke="rgba(139,115,85,0.07)" stroke-width="0.6" stroke-dasharray="3,4"/>
+              <line x1="38" y1="69"  x2="452" y2="69"  stroke="rgba(139,115,85,0.07)" stroke-width="0.6" stroke-dasharray="3,4"/>
+              <line x1="245" y1="10" x2="245" y2="128" stroke="rgba(139,115,85,0.07)" stroke-width="0.6" stroke-dasharray="3,4"/>
+              <text x="38"  y="141" text-anchor="middle" fill="rgba(139,115,85,0.6)" font-size="6" font-family="Inter,sans-serif">0%</text>
+              <text x="245" y="141" text-anchor="middle" fill="rgba(139,115,85,0.6)" font-size="6" font-family="Inter,sans-serif">50%</text>
+              <text x="452" y="141" text-anchor="middle" fill="rgba(139,115,85,0.6)" font-size="6" font-family="Inter,sans-serif">100%</text>
+              <text x="148" y="147" text-anchor="middle" fill="rgba(139,115,85,0.5)" font-size="5.5" font-family="Inter,sans-serif">reading depth →</text>
+              <text x="22" y="128" text-anchor="middle" fill="rgba(139,115,85,0.6)" font-size="6" font-family="Inter,sans-serif">0m</text>
+              <text x="22" y="69"  text-anchor="middle" fill="rgba(139,115,85,0.6)" font-size="6" font-family="Inter,sans-serif">2m</text>
+              <text x="22" y="10"  text-anchor="middle" fill="rgba(139,115,85,0.6)" font-size="6" font-family="Inter,sans-serif">4m</text>
+              <circle class="rdr-dot" cx="452" cy="19"  r="5.5" fill="#3d2710" data-lbl="3m 42s · finished"/>
+              <circle class="rdr-dot" cx="452" cy="42"  r="5.5" fill="#3d2710" data-lbl="2m 54s · finished"/>
+              <circle class="rdr-dot" cx="443" cy="31"  r="5.5" fill="#3d2710" data-lbl="3m 12s · finished"/>
+              <circle class="rdr-dot" cx="436" cy="49"  r="5.5" fill="#3d2710" data-lbl="2m 48s · finished"/>
+              <circle class="rdr-dot" cx="439" cy="22"  r="5.5" fill="#3d2710" data-lbl="3m 30s · finished"/>
+              <circle class="rdr-dot" cx="452" cy="63"  r="5.5" fill="#3d2710" data-lbl="2m 24s · finished"/>
+              <circle class="rdr-dot" cx="432" cy="72"  r="5.5" fill="#3d2710" data-lbl="2m 6s · finished"/>
+              <circle class="rdr-dot" cx="397" cy="39"  r="5.5" fill="#6b4a2a" data-lbl="3m 6s · 87% read"/>
+              <circle class="rdr-dot" cx="372" cy="58"  r="5.5" fill="#6b4a2a" data-lbl="2m 36s · 82% read"/>
+              <circle class="rdr-dot" cx="358" cy="79"  r="5.5" fill="#6b4a2a" data-lbl="1m 54s · 79% read"/>
+              <circle class="rdr-dot" cx="402" cy="64"  r="5.5" fill="#6b4a2a" data-lbl="2m 24s · 88% read"/>
+              <circle class="rdr-dot" cx="342" cy="42"  r="5.5" fill="#6b4a2a" data-lbl="3m 0s · 76% read"/>
+              <circle class="rdr-dot" cx="385" cy="87"  r="5.5" fill="#6b4a2a" data-lbl="1m 42s · 85% read"/>
+              <circle class="rdr-dot" cx="300" cy="101" r="5.5" fill="#9e7a4f" data-lbl="1m 12s · 65% read"/>
+              <circle class="rdr-dot" cx="270" cy="112" r="5.5" fill="#b89a75" data-lbl="0m 54s · 58% read"/>
+              <circle class="rdr-dot" cx="196" cy="119" r="5.5" fill="#c4a882" data-lbl="0m 42s · 42% read"/>
+              <circle class="rdr-dot" cx="168" cy="107" r="5.5" fill="#c4a882" data-lbl="1m 6s · 35% read"/>
+              <circle class="rdr-dot" cx="140" cy="124" r="5.5" fill="#c4a882" data-lbl="0m 30s · 28% read"/>
+              <circle class="rdr-dot" cx="439" cy="119" r="5.5" fill="#8b7355" data-lbl="0m 36s · skimmed"/>
+              <circle class="rdr-dot" cx="452" cy="114" r="5.5" fill="#6b4a2a" data-lbl="0m 48s · skimmed"/>
+              <circle class="rdr-dot" cx="402" cy="117" r="5.5" fill="#8b7355" data-lbl="0m 42s · skimmed"/>
+              <circle class="rdr-dot" cx="326" cy="97"  r="5.5" fill="#9e7a4f" data-lbl="1m 24s · 72% read"/>
+              <circle class="rdr-dot" cx="291" cy="70"  r="5.5" fill="#9e7a4f" data-lbl="2m 12s · 63% read"/>
+            </svg>
+            <div id="cloudTip"></div>
+          </div>
+
+          <!-- Stats strip -->
+          <div class="av-stats-strip" style="margin-top:8px;">
+            <div class="av-stat">
+              <div class="av-stat-num">2m 47s</div>
+              <div class="av-stat-lbl">avg read</div>
+            </div>
+            <div class="av-stat">
+              <div class="av-stat-num">73%</div>
+              <div class="av-stat-lbl">completed</div>
+            </div>
+            <div class="av-stat">
+              <div class="av-stat-num">147</div>
+              <div class="av-stat-lbl">total reads</div>
+            </div>
+            <div class="av-stat">
+              <div class="av-stat-num">12</div>
+              <div class="av-stat-lbl">today</div>
+            </div>
+          </div>
+        </div><!-- /paper-analytics-panel -->
+
+      </div><!-- /idoc-right -->
+    </section>
+
+    <!-- ======================================================
+         SHOWCASE: Work Digital Garden
+         ====================================================== -->
+    <section class="slide slide-garden" data-beat="showcase" data-title="Work Digital Garden" data-transition="fade" style="background: var(--color-bg-dark) !important;">
+
+      <!-- Left: concept pitch -->
+      <div class="garden-left fade-in fade-in-1">
+        <p class="label">Your Digital Space</p>
+        <h2 class="heading-2 fade-in fade-in-2" style="margin-top: var(--space-md); color: var(--color-text);">
+          Your corner<br>of the office.
+        </h2>
+        <p class="body fade-in fade-in-3" style="margin-top: var(--space-lg); max-width: 300px; color: rgba(255,255,255,0.65);">
+          Spec papers, ideas, explorations, shipped work. What you&rsquo;re into. How to reach you. Docs you&rsquo;ve shared.
+        </p>
+        <p class="body fade-in fade-in-4" style="margin-top: var(--space-md); max-width: 300px; color: rgba(255,255,255,0.35); font-style: italic;">
+          Make intranets cool again.
+        </p>
+      </div>
+
+      <!-- Right: full-bleed scrapbook garden -->
+      <div class="garden-right">
+
+        <!-- Identity line -->
+        <div class="gd-identity-bar">
+          <span class="gd-identity-name">Nick McVey</span>
+          <span class="gd-identity-sep">&middot;</span>
+          <span class="gd-identity-role">Product Design &middot; Xbox</span>
+        </div>
+
+        <!-- Horizontal-scroll card deck -->
+        <div class="gd-deck-area">
+          <div class="gd-deck-scroll">
+
+            <article class="gd-card">
+              <div class="gd-card-stripe"></div>
+              <div class="gd-card-body">
+                <h3 class="gd-card-title">Xbox Mode Transitions</h3>
+                <p class="gd-card-desc">PC-to-Xbox switching prototype for Helix. Boot sequence, overlay nav, session handoff.</p>
+              </div>
+              <div class="gd-card-foot">
+                <span class="gd-card-year">2025</span>
+                <span class="gd-card-arrow">&#8594;</span>
+              </div>
+              <div class="gd-card-exp">
+                <button class="gd-exp-close" aria-label="Close">&times;</button>
+                <div class="gd-exp-hero">
+                  <div class="gd-exp-hero-bg"></div>
+                  <div class="gd-exp-hero-overlay"></div>
+                  <div class="gd-exp-hero-text">
+                    <span class="gd-exp-kicker"></span>
+                    <h3 class="gd-exp-title"></h3>
+                  </div>
+                </div>
+                <div class="gd-exp-body">
+                  <p class="gd-exp-desc"></p>
+                  <div class="gd-exp-meta">
+                    <span class="gd-exp-date"></span>
+                    <span class="gd-exp-collabs"></span>
+                  </div>
+                  <div class="gd-exp-links"></div>
+                </div>
+              </div>
+            </article>
+
+            <article class="gd-card">
+              <div class="gd-card-stripe"></div>
+              <div class="gd-card-body">
+                <h3 class="gd-card-title">XDS Token Extraction</h3>
+                <p class="gd-card-desc">847 semantic tokens from the Xbox design system, formatted for AI tooling.</p>
+              </div>
+              <div class="gd-card-foot">
+                <span class="gd-card-year">2025</span>
+                <span class="gd-card-arrow">&#8594;</span>
+              </div>
+              <div class="gd-card-exp">
+                <button class="gd-exp-close" aria-label="Close">&times;</button>
+                <div class="gd-exp-hero">
+                  <div class="gd-exp-hero-bg"></div>
+                  <div class="gd-exp-hero-overlay"></div>
+                  <div class="gd-exp-hero-text">
+                    <span class="gd-exp-kicker"></span>
+                    <h3 class="gd-exp-title"></h3>
+                  </div>
+                </div>
+                <div class="gd-exp-body">
+                  <p class="gd-exp-desc"></p>
+                  <div class="gd-exp-meta">
+                    <span class="gd-exp-date"></span>
+                    <span class="gd-exp-collabs"></span>
+                  </div>
+                  <div class="gd-exp-links"></div>
+                </div>
+              </div>
+            </article>
+
+            <article class="gd-card">
+              <div class="gd-card-stripe"></div>
+              <div class="gd-card-body">
+                <h3 class="gd-card-title">QS Overlay Redesign</h3>
+                <p class="gd-card-desc">Quick Settings rethought for keyboard-first gaming PCs. Unified underlay &amp; panel system.</p>
+              </div>
+              <div class="gd-card-foot">
+                <span class="gd-card-year">2025</span>
+                <span class="gd-card-arrow">&#8594;</span>
+              </div>
+              <div class="gd-card-exp">
+                <button class="gd-exp-close" aria-label="Close">&times;</button>
+                <div class="gd-exp-hero">
+                  <div class="gd-exp-hero-bg"></div>
+                  <div class="gd-exp-hero-overlay"></div>
+                  <div class="gd-exp-hero-text">
+                    <span class="gd-exp-kicker"></span>
+                    <h3 class="gd-exp-title"></h3>
+                  </div>
+                </div>
+                <div class="gd-exp-body">
+                  <p class="gd-exp-desc"></p>
+                  <div class="gd-exp-meta">
+                    <span class="gd-exp-date"></span>
+                    <span class="gd-exp-collabs"></span>
+                  </div>
+                  <div class="gd-exp-links"></div>
+                </div>
+              </div>
+            </article>
+
+            <article class="gd-card">
+              <div class="gd-card-stripe"></div>
+              <div class="gd-card-body">
+                <h3 class="gd-card-title">Digital Garden Concept</h3>
+                <p class="gd-card-desc">What if every PM and designer had a browsable work identity? You&#8217;re looking at it.</p>
+              </div>
+              <div class="gd-card-foot">
+                <span class="gd-card-year">2025</span>
+                <span class="gd-card-arrow">&#8594;</span>
+              </div>
+              <div class="gd-card-exp">
+                <button class="gd-exp-close" aria-label="Close">&times;</button>
+                <div class="gd-exp-hero">
+                  <div class="gd-exp-hero-bg"></div>
+                  <div class="gd-exp-hero-overlay"></div>
+                  <div class="gd-exp-hero-text">
+                    <span class="gd-exp-kicker"></span>
+                    <h3 class="gd-exp-title"></h3>
+                  </div>
+                </div>
+                <div class="gd-exp-body">
+                  <p class="gd-exp-desc"></p>
+                  <div class="gd-exp-meta">
+                    <span class="gd-exp-date"></span>
+                    <span class="gd-exp-collabs"></span>
+                  </div>
+                  <div class="gd-exp-links"></div>
+                </div>
+              </div>
+            </article>
+
+            <article class="gd-card">
+              <div class="gd-card-stripe"></div>
+              <div class="gd-card-body">
+                <h3 class="gd-card-title">Dashboard Nav Research</h3>
+                <p class="gd-card-desc">Navigation patterns for the Xbox dashboard. 10-foot UI at the center.</p>
+              </div>
+              <div class="gd-card-foot">
+                <span class="gd-card-year">2024</span>
+                <span class="gd-card-arrow">&#8594;</span>
+              </div>
+              <div class="gd-card-exp">
+                <button class="gd-exp-close" aria-label="Close">&times;</button>
+                <div class="gd-exp-hero">
+                  <div class="gd-exp-hero-bg"></div>
+                  <div class="gd-exp-hero-overlay"></div>
+                  <div class="gd-exp-hero-text">
+                    <span class="gd-exp-kicker"></span>
+                    <h3 class="gd-exp-title"></h3>
+                  </div>
+                </div>
+                <div class="gd-exp-body">
+                  <p class="gd-exp-desc"></p>
+                  <div class="gd-exp-meta">
+                    <span class="gd-exp-date"></span>
+                    <span class="gd-exp-collabs"></span>
+                  </div>
+                  <div class="gd-exp-links"></div>
+                </div>
+              </div>
+            </article>
+
+            <article class="gd-card">
+              <div class="gd-card-stripe"></div>
+              <div class="gd-card-body">
+                <h3 class="gd-card-title">Notification Design System</h3>
+                <p class="gd-card-desc">A systematic approach to in-game and OS-level notifications on Xbox.</p>
+              </div>
+              <div class="gd-card-foot">
+                <span class="gd-card-year">2023</span>
+                <span class="gd-card-arrow">&#8594;</span>
+              </div>
+              <div class="gd-card-exp">
+                <button class="gd-exp-close" aria-label="Close">&times;</button>
+                <div class="gd-exp-hero">
+                  <div class="gd-exp-hero-bg"></div>
+                  <div class="gd-exp-hero-overlay"></div>
+                  <div class="gd-exp-hero-text">
+                    <span class="gd-exp-kicker"></span>
+                    <h3 class="gd-exp-title"></h3>
+                  </div>
+                </div>
+                <div class="gd-exp-body">
+                  <p class="gd-exp-desc"></p>
+                  <div class="gd-exp-meta">
+                    <span class="gd-exp-date"></span>
+                    <span class="gd-exp-collabs"></span>
+                  </div>
+                  <div class="gd-exp-links"></div>
+                </div>
+              </div>
+            </article>
+
+          </div><!-- /gd-deck-scroll -->
+
+          <!-- Backdrop: dims cards when one is picked up -->
+          <div class="gd-deck-backdrop" id="gdDeckBackdrop"></div>
+
+
+        </div><!-- /gd-deck-area -->
+
+        <!-- Bottom three-column strip -->
+        <div class="gd-bottom-strip">
+
+          <!-- Work Playlist -->
+          <div class="gd-strip-col">
+            <span class="gd-strip-label">&#127925; Work Playlist</span>
+            <div class="gd-playlist-row">
+              <div class="gd-vinyl" aria-hidden="true"></div>
+              <div>
+                <p class="gd-np-track">Eversince</p>
+                <p class="gd-np-artist">Bladee &middot; deep focus</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Helpful Links -->
+          <div class="gd-strip-col">
+            <span class="gd-strip-label">&#128279; Helpful Links</span>
+            <div class="gd-links-chips">
+              <span class="gd-link-chip">&#127807; maggieappleton</span>
+              <span class="gd-link-chip">&#128208; CSS Tricks</span>
+              <span class="gd-link-chip">&#127775; Figma MCP</span>
+              <span class="gd-link-chip">&#129302; Copilot Docs</span>
+            </div>
+          </div>
+
+          <!-- Recently Shared -->
+          <div class="gd-strip-col">
+            <span class="gd-strip-label">&#128196; Recently Shared</span>
+            <ul class="gd-dl-list">
+              <li class="gd-dl-item">
+                <span class="gd-dl-icon">&#128196;</span>
+                <span class="gd-dl-name">Xbox Mode Spec v3</span>
+                <span class="gd-dl-desc">2d ago</span>
+              </li>
+              <li class="gd-dl-item">
+                <span class="gd-dl-icon">&#128203;</span>
+                <span class="gd-dl-name">QS Design Brief</span>
+                <span class="gd-dl-desc">1w ago</span>
+              </li>
+              <li class="gd-dl-item">
+                <span class="gd-dl-icon">&#128202;</span>
+                <span class="gd-dl-name">Token Extraction Notes</span>
+                <span class="gd-dl-desc">3d ago</span>
+              </li>
+            </ul>
+          </div>
+
+        </div><!-- /gd-bottom-strip -->
+
+      </div><!-- /garden-right -->
+
+    </section><!-- /slide-garden -->
+
     <!-- Slide 16: What you're leaving with -->
+    <!-- Section Intro: Wrapping Up -->
+    <section class="slide" data-beat="5" data-title="Wrapping Up" data-transition="fade" style="background: var(--color-bg-dark) !important;">
+      <div aria-hidden="true" style="position:absolute;right:-24px;bottom:-80px;font-family:var(--font-display);font-size:34rem;font-weight:700;line-height:1;color:rgba(255,255,255,0.022);letter-spacing:-0.06em;pointer-events:none;user-select:none;">06</div>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;padding:calc(var(--header-height) + 40px) 96px 80px;">
+        <div style="max-width:680px;">
+          <p class="label fade-in fade-in-1" style="color:var(--color-signal);">Wrapping Up</p>
+          <h1 class="heading-1 fade-in fade-in-2" style="margin-top:var(--space-md);line-height:0.9;">So where do we<br>go from here?</h1>
+          <p class="body fade-in fade-in-3" style="margin-top:var(--space-xl);max-width:500px;line-height:1.75;color:var(--color-text-muted);">What to take away, what to try first, and how to keep building.</p>
+        </div>
+      </div>
+    </section>
+
     <section class="slide" data-beat="5" data-title="Next Steps" data-transition="rise" style="background: var(--color-bg-light-alt) !important;">
       <div class="slide-split">
         <div class="content" style="position: relative; z-index: 1; width: calc(100% + 80px); padding-right: 80px; background: radial-gradient(ellipse 72% 82% at 25% 50%, rgba(238,238,228,0.88) 40%, rgba(238,238,228,0) 85%);">
@@ -2554,6 +3306,9 @@
   <script src="js/layout-compose.js"></script>
   <script src="js/fly.js"></script>
   <script src="js/interactive-doc.js"></script>
+  <script src="js/color-lab.js"></script>
+  <script src="js/garden.js?v=4"></script>
+  <script src="js/permutations.js?v=1"></script>
 
   <!-- Tooltip card for interactive doc (lives outside slides container, fixed positioning) -->
   <div id="doc-tooltip" role="tooltip" aria-hidden="true">

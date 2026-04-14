@@ -1,0 +1,308 @@
+/* ── Wide & Deep — AI Permutations slide ─────────────────────── */
+
+/* Override slide defaults — same pattern as .slide-garden */
+.slide-permutations {
+  display: flex !important;
+  align-items: stretch !important;
+  padding: 0 !important;
+}
+
+.perm-layout {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 640px 1fr;
+}
+
+/* ── Left column ── */
+.perm-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: calc(var(--header-height) + 52px) 64px 52px 96px;
+  position: relative;
+  z-index: 1;
+}
+
+.perm-beat-label {
+  font-family: var(--font-body);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-signal);
+  margin-bottom: 20px;
+}
+
+.perm-headline {
+  font-family: var(--font-display);
+  font-size: 4.2rem;
+  font-weight: 400;
+  line-height: 0.91;
+  letter-spacing: -0.022em;
+  color: var(--color-text);
+  margin: 0 0 28px;
+}
+
+.perm-body {
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  line-height: 1.72;
+  color: var(--color-text-muted);
+  margin: 0 0 36px;
+  max-width: 400px;
+}
+
+.perm-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.perm-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 14px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.perm-step:last-child {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.perm-step-num {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  color: var(--color-signal);
+  opacity: 0.55;
+  flex-shrink: 0;
+  width: 24px;
+  padding-top: 3px;
+  text-align: right;
+}
+
+.perm-step-text strong {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 2px;
+}
+
+.perm-step-text span {
+  font-family: var(--font-body);
+  font-size: 0.74rem;
+  color: var(--color-text-muted);
+  line-height: 1.5;
+}
+
+.perm-callout {
+  margin-top: 32px;
+  padding: 14px 18px;
+  border-left: 2px solid var(--color-signal);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 0 6px 6px 0;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.55);
+  font-style: italic;
+  max-width: 400px;
+}
+
+/* ── Right stage ── */
+.perm-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: calc(var(--header-height) + 40px) 80px 52px 48px;
+  gap: 28px;
+  overflow: hidden;
+}
+
+/* Phase label */
+.perm-phase-label {
+  font-family: var(--font-body);
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.25);
+  margin-bottom: 10px;
+}
+
+/* Wide/deep section wrappers */
+.perm-wide-section,
+.perm-deep-section {
+  flex-shrink: 0;
+}
+
+/* Card rows */
+.perm-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+/* Individual card */
+.perm-card {
+  width: 108px;
+  height: 68px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  cursor: pointer;
+  position: relative;
+  opacity: 0;
+  transform: translateY(16px) scale(0.86);
+  transition:
+    opacity 0.26s ease,
+    transform 0.26s cubic-bezier(0.22, 0, 0, 1),
+    box-shadow 0.22s ease;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.28),
+    0 6px 14px rgba(0, 0, 0, 0.22),
+    0 16px 32px rgba(0, 0, 0, 0.14);
+  will-change: transform, opacity;
+}
+
+/* Sheen overlay */
+.perm-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    138deg,
+    rgba(255, 255, 255, 0.2) 0%,
+    rgba(255, 255, 255, 0.04) 40%,
+    transparent 65%
+  );
+  pointer-events: none;
+}
+
+/* Cascade in */
+.perm-card.perm-card--in {
+  opacity: 1;
+  transform: rotate(var(--rot, 0deg)) scale(1);
+}
+
+/* Hover */
+.perm-card.perm-card--in:hover:not(.perm-card--dim) {
+  transform: rotate(0deg) scale(1.07) translateY(-5px);
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.32),
+    0 10px 24px rgba(0, 0, 0, 0.26),
+    0 24px 48px rgba(0, 0, 0, 0.18);
+  z-index: 5;
+}
+
+/* Selected */
+.perm-card.perm-card--selected {
+  transform: rotate(0deg) scale(1.1) translateY(-5px) !important;
+  box-shadow:
+    0 0 0 2.5px rgba(255, 255, 255, 0.8),
+    0 0 0 5px rgba(255, 255, 255, 0.12),
+    0 8px 20px rgba(0, 0, 0, 0.36),
+    0 22px 44px rgba(0, 0, 0, 0.24) !important;
+  z-index: 10;
+  cursor: default;
+}
+
+/* Dimmed */
+.perm-card.perm-card--dim {
+  opacity: 0.15;
+  transform: rotate(var(--rot, 0deg)) scale(0.95);
+  pointer-events: none;
+}
+
+/* ── Deep section ── */
+.perm-deep-section {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.32s ease, transform 0.32s cubic-bezier(0.22, 0, 0, 1);
+  pointer-events: none;
+}
+
+.perm-deep-section.perm-deep--visible {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+
+/* Connector line between wide and deep */
+.perm-connector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  transition: opacity 0.24s ease 0.1s;
+}
+
+.perm-connector.perm-connector--visible {
+  opacity: 1;
+}
+
+.perm-connector-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.18),
+    transparent
+  );
+}
+
+.perm-connector-label {
+  font-family: var(--font-body);
+  font-size: 0.54rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-signal);
+  opacity: 0.7;
+  white-space: nowrap;
+}
+
+/* Hint */
+.perm-hint {
+  font-family: var(--font-body);
+  font-size: 0.56rem;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.18);
+  margin-top: 4px;
+  transition: opacity 0.2s ease;
+}
+
+.perm-hint.perm-hint--hidden {
+  opacity: 0;
+}
+
+/* Reset */
+.perm-reset {
+  font-family: var(--font-body);
+  font-size: 0.56rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--color-signal);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.22s ease;
+  text-transform: uppercase;
+  align-self: flex-start;
+}
+
+.perm-reset.perm-reset--visible {
+  opacity: 0.6;
+}
+
+.perm-reset:hover {
+  opacity: 1 !important;
+}

@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Type Beyond CSS — Demo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body { width: 100%; height: 100%; overflow: hidden; }
+
+    canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: default; }
+    canvas.dragging { cursor: grabbing; }
+    canvas.hovering  { cursor: grab; }
+
+    .header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 20;
+      padding: 1rem 2rem;
+      display: flex; align-items: center; gap: 1rem;
+      pointer-events: none;
+    }
+    .header.light { background: linear-gradient(to bottom, rgba(238,238,228,0.96) 60%, transparent); }
+    .header.dark  { background: linear-gradient(to bottom, rgba(15,13,11,0.92) 60%, transparent); }
+
+    .demo-label { font-family: 'Inter', sans-serif; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.14em; color: #c43e1c; font-weight: 500; white-space: nowrap; }
+    h1 { font-family: 'Young Serif', Georgia, serif; font-size: 1.4rem; font-weight: 400; white-space: nowrap; }
+    .header.light h1 { color: #2a1a0e; }
+    .header.dark  h1 { color: #f0ede8; }
+
+    .mode-switcher { margin-left: auto; display: flex; gap: 0.35rem; pointer-events: all; }
+    .mode-btn {
+      font-family: 'Inter', sans-serif; font-size: 0.72rem; font-weight: 500; letter-spacing: 0.04em;
+      padding: 0.35rem 0.85rem; border: 1px solid transparent; background: none; cursor: pointer; border-radius: 2px;
+      transition: all 0.2s;
+    }
+    .header.light .mode-btn { color: #7a6e60; border-color: #b0a898; }
+    .header.light .mode-btn:hover { background: rgba(42,26,14,0.07); }
+    .header.light .mode-btn.active { background: #2a1a0e; color: #eeeee4; border-color: #2a1a0e; }
+    .header.dark  .mode-btn { color: #9a958d; border-color: #333; }
+    .header.dark  .mode-btn:hover { background: rgba(240,237,232,0.07); }
+    .header.dark  .mode-btn.active { background: #c43e1c; color: #f0ede8; border-color: #c43e1c; }
+
+    .info-panel {
+      position: fixed; bottom: 2rem; right: 2rem; z-index: 20;
+      max-width: 280px; padding: 1.25rem 1.4rem;
+      border-radius: 2px; transition: background 0.3s, color 0.3s, border-color 0.3s;
+    }
+    .info-panel.light { background: rgba(238,238,228,0.88); color: #2a1a0e; border: 1px solid #ccc8be; }
+    .info-panel.dark  { background: rgba(30,26,22,0.88); color: #f0ede8; border: 1px solid #333; }
+    .info-panel h3 { font-family: 'Young Serif', serif; font-size: 1rem; font-weight: 400; margin-bottom: 0.6rem; }
+    .info-panel p { font-size: 0.78rem; line-height: 1.7; margin-bottom: 0.55rem; }
+    .info-panel.light p { color: #7a6e60; }
+    .info-panel.dark  p { color: #9a958d; }
+    .info-panel p:last-child { margin-bottom: 0; }
+    .info-panel code { font-size: 0.8em; padding: 0.1em 0.3em; border-radius: 2px; }
+    .info-panel.light code { background: #ddddd4; color: #2a1a0e; }
+    .info-panel.dark  code { background: #2a2420; color: #f0ede8; }
+    .info-panel strong { color: inherit; opacity: 1; }
+
+    .hint {
+      position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      font-family: 'Inter', sans-serif; font-size: 0.78rem; letter-spacing: 0.06em;
+      padding: 0.5rem 1.2rem; border-radius: 30px; z-index: 20;
+      opacity: 1; transition: opacity 0.6s;
+    }
+    .hint.light { background: rgba(42,26,14,0.08); color: #7a6e60; }
+    .hint.dark  { background: rgba(240,237,232,0.08); color: #9a958d; }
+    .hint.hidden { opacity: 0; pointer-events: none; }
+  </style>
+</head>
+<body>
+
+<canvas id="canvas"></canvas>
+
+<div class="header light" id="header">
+  <span class="demo-label">Demo</span>
+  <h1>Type Beyond CSS</h1>
+  <div class="mode-switcher">
+    <button class="mode-btn active" data-mode="flow">Shape Flow</button>
+    <button class="mode-btn" data-mode="rain">Letter Rain</button>
+    <button class="mode-btn" data-mode="scatter">Word Scatter</button>
+  </div>
+</div>
+
+<div class="hint light" id="hint">Drag a ball — watch the text reflow around it</div>
+
+<div class="info-panel light" id="info">
+  <h3 id="info-title">Text geometry, not CSS float</h3>
+  <p id="info-body">Drag the circle. Text recalculates every frame using <code>ctx.measureText()</code> — no DOM, no reflow, no limits. CSS <code>float</code> only works with rectangles. This works around any shape.</p>
+  <p>A library called <strong>Pretext</strong> by Cheng Lou does this properly at any scale.</p>
+</div>
+
+<script>
+const canvas = document.getElementById('canvas');
+const ctx    = canvas.getContext('2d');
+const hint   = document.getElementById('hint');
+const header = document.getElementById('header');
+const info   = document.getElementById('info');
+const infoTitle = document.getElementById('info-title');
+const infoBody  = document.getElementById('info-body');
+
+const PAD = 80, LINE_H = 30, FONT_SZ = 16, BODY_FONT = `${FONT_SZ}px Inter`;
+const WARM_PALETTE = ['#c43e1c','#d4906a','#f0ede8','#9a958d','#7a4e2a','#3a2e24','#e8b88a'];
+
+const ARTICLE = `Good design is as little design as possible. Less, but better — because it concentrates on the essential aspects, and the products are not burdened with non-essentials. Back to purity, back to simplicity.
+
+Innovation does not mean that you have to change a product's appearance. Form follows function. A product is bought to be used. It has to satisfy certain criteria, not only functional, but also psychological and aesthetic. Honest design does not make a product more innovative, powerful, or valuable than it really is. It does not attempt to manipulate the consumer with promises that cannot be kept.
+
+Good design is thorough down to the last detail. Nothing must be arbitrary or left to chance. Care and accuracy in the design process show respect towards the consumer. Sustainable design avoids being fashionable and therefore never appears antiquated. Unlike fashionable design, it lasts many years — even in today's throwaway society.
+
+As little design as possible. Less, but better.`;
+
+let mode = 'flow';
+function getPos(e) { const r = canvas.getBoundingClientRect(), s = e.touches ? e.touches[0] : e; return { x: s.clientX - r.left, y: s.clientY - r.top }; }
+
+function resize() {
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  if (mode === 'flow')    initFlow();
+  if (mode === 'rain')    initRain();
+  if (mode === 'scatter') initScatter();
+}
+window.addEventListener('resize', resize);
+
+// ─────────────────────────────────────────────────────────────────
+// MODE: SHAPE FLOW — multiple bouncy balls, text wraps around all
+// ─────────────────────────────────────────────────────────────────
+
+let balls = [], dragBallIdx = -1, dragOffX = 0, dragOffY = 0;
+let hinted = false;
+
+const BALL_DEFS = [
+  { rFrac: 0.13, color: '#d4cfc4', label: 'drag me' },
+  { rFrac: 0.09, color: '#c8c1b5', label: '' },
+  { rFrac: 0.07, color: '#ccc5b8', label: '' },
+  { rFrac: 0.11, color: '#bfb9ae', label: '' },
+  { rFrac: 0.06, color: '#d9d4c8', label: '' },
+  { rFrac: 0.08, color: '#c5beb2', label: '' },
+];
+
+function initFlow() {
+  const w = canvas.width, h = canvas.height;
+  balls = BALL_DEFS.map((def, i) => ({
+    r: Math.min(w, h) * def.rFrac,
+    color: def.color,
+    label: def.label,
+    x: w * (0.22 + (i % 3) * 0.28) + (Math.random() - 0.5) * 80,
+    y: h * (0.32 + Math.floor(i / 3) * 0.28) + (Math.random() - 0.5) * 60,
+    vx: (Math.random() - 0.5) * 3.2,
+    vy: (Math.random() - 0.5) * 3.2,
+  }));
+}
+
+function getLineSegments(lineTop) {
+  const w = canvas.width;
+  let segs = [{ x: PAD, w: w - PAD * 2 }];
+  for (const b of balls) {
+    const dy = (lineTop + LINE_H / 2) - b.y;
+    const clearR = b.r + 18;
+    if (Math.abs(dy) > clearR) continue;
+    const hc = Math.sqrt(Math.max(0, clearR * clearR - dy * dy));
+    const next = [];
+    for (const seg of segs) {
+      const excL = b.x - hc, excR = b.x + hc;
+      if (excR < seg.x || excL > seg.x + seg.w) { next.push(seg); continue; }
+      const left  = { x: seg.x,    w: excL - seg.x - 10 };
+      const right = { x: excR + 10, w: (seg.x + seg.w) - excR - 10 };
+      if (left.w  > 50) next.push(left);
+      if (right.w > 50) next.push(right);
+    }
+    segs = next;
+  }
+  return segs;
+}
+
+function drawFlowText() {
+  ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left';
+  let y = 88;
+  for (const para of ARTICLE.split('\n\n')) {
+    const words = para.trim().split(/\s+/);
+    let wi = 0;
+    while (wi < words.length && y < canvas.height - PAD) {
+      const segs = getLineSegments(y);
+      if (!segs.length) { y += LINE_H; continue; }
+      for (const seg of segs) {
+        if (wi >= words.length) break;
+        ctx.font = BODY_FONT;
+        let line = '';
+        while (wi < words.length) {
+          const trial = line ? line + ' ' + words[wi] : words[wi];
+          if (ctx.measureText(trial).width > seg.w && line) break;
+          line = trial; wi++;
+        }
+        if (line) { ctx.fillStyle = 'rgba(42,26,14,0.85)'; ctx.fillText(line, seg.x, y + LINE_H * 0.78); }
+      }
+      y += LINE_H;
+    }
+    y += LINE_H * 0.6;
+  }
+}
+
+function drawFlowBalls() {
+  for (const b of balls) {
+    ctx.shadowColor = 'rgba(42,26,14,0.14)'; ctx.shadowBlur = 28; ctx.shadowOffsetY = 7;
+    ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+    ctx.fillStyle = b.color; ctx.fill();
+    ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+    ctx.strokeStyle = 'rgba(42,26,14,0.10)'; ctx.lineWidth = 1.5; ctx.stroke();
+    if (b.label) {
+      ctx.font = `300 ${Math.round(b.r * 0.18)}px Inter`;
+      ctx.fillStyle = 'rgba(42,26,14,0.35)';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillText(b.label, b.x, b.y);
+      ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+    }
+  }
+}
+
+let flowRaf = null;
+function startFlow() {
+  if (flowRaf) cancelAnimationFrame(flowRaf);
+  function tick() {
+    const w = canvas.width, h = canvas.height;
+    for (let i = 0; i < balls.length; i++) {
+      if (i === dragBallIdx) continue;
+      const b = balls[i];
+      b.x += b.vx; b.y += b.vy;
+      if (b.x - b.r < PAD * 0.4)     { b.x = PAD * 0.4 + b.r;   b.vx =  Math.abs(b.vx); }
+      if (b.x + b.r > w - PAD * 0.4) { b.x = w - PAD * 0.4 - b.r; b.vx = -Math.abs(b.vx); }
+      if (b.y - b.r < 78)             { b.y = 78 + b.r;           b.vy =  Math.abs(b.vy); }
+      if (b.y + b.r > h - 36)         { b.y = h - 36 - b.r;      b.vy = -Math.abs(b.vy); }
+      // Soft ball-ball separation
+      for (let j = i + 1; j < balls.length; j++) {
+        const b2 = balls[j]; if (j === dragBallIdx) continue;
+        const dx = b2.x - b.x, dy = b2.y - b.y;
+        const dist = Math.hypot(dx, dy);
+        const minDist = b.r + b2.r + 4;
+        if (dist < minDist && dist > 0.5) {
+          const push = (minDist - dist) / 2;
+          const nx = dx / dist, ny = dy / dist;
+          b.x  -= nx * push; b.y  -= ny * push;
+          b2.x += nx * push; b2.y += ny * push;
+          const dot = (b.vx - b2.vx) * nx + (b.vy - b2.vy) * ny;
+          if (dot > 0) {
+            b.vx  -= dot * nx * 0.9; b.vy  -= dot * ny * 0.9;
+            b2.vx += dot * nx * 0.9; b2.vy += dot * ny * 0.9;
+          }
+        }
+      }
+    }
+    ctx.fillStyle = '#eeeee4'; ctx.fillRect(0, 0, w, h);
+    ctx.strokeStyle = 'rgba(42,26,14,0.04)'; ctx.lineWidth = 1;
+    for (let x = PAD; x < w - PAD; x += 80) { ctx.beginPath(); ctx.moveTo(x, 72); ctx.lineTo(x, h - PAD); ctx.stroke(); }
+    ctx.strokeStyle = 'rgba(196,62,28,0.3)'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(PAD - 24, 88); ctx.lineTo(PAD - 24, h - PAD); ctx.stroke();
+    drawFlowBalls();
+    drawFlowText();
+    flowRaf = requestAnimationFrame(tick);
+  }
+  flowRaf = requestAnimationFrame(tick);
+}
+function stopFlow() { if (flowRaf) { cancelAnimationFrame(flowRaf); flowRaf = null; } }
+
+function nearestBall(p) {
+  for (let i = 0; i < balls.length; i++) {
+    const dx = p.x - balls[i].x, dy = p.y - balls[i].y;
+    if (dx*dx + dy*dy <= balls[i].r * balls[i].r) return i;
+  }
+  return -1;
+}
+function onFlowDown(e) {
+  const p = getPos(e);
+  dragBallIdx = nearestBall(p);
+  if (dragBallIdx >= 0) {
+    dragOffX = balls[dragBallIdx].x - p.x; dragOffY = balls[dragBallIdx].y - p.y;
+    canvas.classList.add('dragging');
+    if (!hinted) { hinted = true; hint.classList.add('hidden'); }
+  }
+}
+function onFlowMove(e) {
+  if (mode !== 'flow') return;
+  const p = getPos(e);
+  if (dragBallIdx >= 0) {
+    const b = balls[dragBallIdx];
+    const nx = p.x + dragOffX, ny = p.y + dragOffY;
+    b.vx = nx - b.x; b.vy = ny - b.y;
+    b.x = nx; b.y = ny;
+  } else {
+    canvas.classList.toggle('hovering', nearestBall(p) >= 0);
+  }
+}
+function onFlowUp() { dragBallIdx = -1; canvas.classList.remove('dragging'); }
+
+// ─────────────────────────────────────────────────────────────────
+// MODE: LETTER RAIN — mouse attract on hold, burst repel on release
+// ─────────────────────────────────────────────────────────────────
+
+let rainParticles = [];
+let rainMX = 0, rainMY = 0, rainDown = false;
+
+function initRain() {
+  const chars = ARTICLE.replace(/\s+/g, '').split('');
+  rainParticles = chars.map(ch => ({
+    ch,
+    x: Math.random() * canvas.width,
+    y: -40 - Math.random() * canvas.height,
+    vx: (Math.random() - 0.5) * 0.5,
+    vy: 1.2 + Math.random() * 2.8,
+    baseVy: 1.2 + Math.random() * 2.8,
+    size: 11 + Math.random() * 14,
+    color: WARM_PALETTE[Math.floor(Math.random() * WARM_PALETTE.length)],
+    alpha: 0.4 + Math.random() * 0.6,
+    drift: (Math.random() - 0.5) * 0.4,
+  }));
+}
+
+let rainRaf = null;
+function startRain() {
+  if (rainRaf) cancelAnimationFrame(rainRaf);
+  ctx.fillStyle = '#0f0d0b'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+  function tick() {
+    ctx.fillStyle = 'rgba(15,13,11,0.07)'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    for (const p of rainParticles) {
+      if (rainDown) {
+        // Attract toward mouse
+        const dx = rainMX - p.x, dy = rainMY - p.y;
+        const dist = Math.max(1, Math.hypot(dx, dy));
+        if (dist < 350) {
+          const f = Math.min(1.5, 9000 / (dist * dist));
+          p.vx += (dx / dist) * f;
+          p.vy += (dy / dist) * f;
+        }
+        p.vx *= 0.90; p.vy *= 0.90;
+      } else {
+        // Natural fall — restore drift
+        p.vy += 0.018;
+        p.vx += (p.drift - p.vx) * 0.04;
+        p.vx *= 0.97; p.vy *= 0.99;
+      }
+      p.x += p.vx; p.y += p.vy;
+      if (p.y > canvas.height + 30 || p.y < -canvas.height * 1.2) {
+        p.y  = rainDown ? (Math.random() * canvas.height) : (-30 - Math.random() * 60);
+        p.x  = Math.random() * canvas.width;
+        p.vx = (Math.random() - 0.5) * 0.5;
+        p.vy = p.baseVy = 1.2 + Math.random() * 2.8;
+        p.size  = 11 + Math.random() * 14;
+        p.color = WARM_PALETTE[Math.floor(Math.random() * WARM_PALETTE.length)];
+        p.alpha = 0.4 + Math.random() * 0.6;
+        p.drift = (Math.random() - 0.5) * 0.4;
+      }
+      ctx.font = `${Math.round(p.size)}px Inter`;
+      ctx.fillStyle = p.color;
+      ctx.globalAlpha = p.alpha;
+      ctx.textBaseline = 'top'; ctx.textAlign = 'left';
+      ctx.fillText(p.ch, p.x, p.y);
+    }
+    ctx.globalAlpha = 1;
+    rainRaf = requestAnimationFrame(tick);
+  }
+  rainRaf = requestAnimationFrame(tick);
+}
+function stopRain() { if (rainRaf) { cancelAnimationFrame(rainRaf); rainRaf = null; } }
+
+// ─────────────────────────────────────────────────────────────────
+// MODE: WORD SCATTER — explosion, gravity, no spring back, R resets
+// ─────────────────────────────────────────────────────────────────
+
+let scatterParticles = [];
+const SCATTER_DAMP = 0.96, SCATTER_GRAVITY = 0.11;
+
+function computeWordLayout() {
+  const w = canvas.width;
+  const positions = [];
+  let y = 88;
+  ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left';
+  for (const para of ARTICLE.split('\n\n')) {
+    const words = para.trim().split(/\s+/);
+    let wi = 0;
+    while (wi < words.length && y < canvas.height - PAD) {
+      const segW = w - PAD * 2;
+      ctx.font = BODY_FONT;
+      let line = '', lineWords = [];
+      while (wi < words.length) {
+        const trial = line ? line + ' ' + words[wi] : words[wi];
+        if (ctx.measureText(trial).width > segW && line) break;
+        line = trial; lineWords.push(words[wi]); wi++;
+      }
+      let wx = PAD;
+      for (const word of lineWords) {
+        positions.push({ text: word, tx: wx, ty: y + LINE_H * 0.78 });
+        wx += ctx.measureText(word).width + ctx.measureText(' ').width;
+      }
+      y += LINE_H;
+    }
+    y += LINE_H * 0.6;
+  }
+  return positions;
+}
+
+function initScatter() {
+  const layout = computeWordLayout();
+  scatterParticles = layout.map(p => ({
+    ...p,
+    x: p.tx + (Math.random() - 0.5) * 16,
+    y: p.ty + (Math.random() - 0.5) * 16,
+    vx: (Math.random() - 0.5) * 0.4,
+    vy: (Math.random() - 0.5) * 0.4,
+  }));
+}
+
+let scatterRaf = null;
+function startScatter() {
+  if (scatterRaf) cancelAnimationFrame(scatterRaf);
+  function tick() {
+    ctx.fillStyle = '#0f0d0b'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.font = BODY_FONT; ctx.textBaseline = 'alphabetic'; ctx.textAlign = 'left';
+    for (const p of scatterParticles) {
+      p.vy += SCATTER_GRAVITY;
+      p.vx *= SCATTER_DAMP;
+      p.vy *= SCATTER_DAMP;
+      p.x += p.vx; p.y += p.vy;
+      // Fade as it falls off screen
+      const fadeBottom = Math.max(0, Math.min(1, (canvas.height + 80 - p.y) / 100));
+      if (fadeBottom <= 0) continue;
+      const speed = Math.hypot(p.vx, p.vy);
+      const heat = Math.min(1, speed / 14);
+      // Hot = signal red, cool = muted warm
+      const r = Math.round(154 + (196 - 154) * heat);
+      const g = Math.round(149 + ( 62 - 149) * heat);
+      const b = Math.round(141 + ( 28 - 141) * heat);
+      ctx.fillStyle = `rgb(${r},${g},${b})`;
+      ctx.globalAlpha = (0.35 + 0.65 * (1 - heat * 0.5)) * fadeBottom;
+      ctx.fillText(p.text, p.x, p.y);
+    }
+    ctx.globalAlpha = 1;
+    scatterRaf = requestAnimationFrame(tick);
+  }
+  scatterRaf = requestAnimationFrame(tick);
+}
+function stopScatter() { if (scatterRaf) { cancelAnimationFrame(scatterRaf); scatterRaf = null; } }
+
+// ─────────────────────────────────────────────────────────────────
+// Shared event listeners
+// ─────────────────────────────────────────────────────────────────
+
+canvas.addEventListener('mousemove', e => {
+  const p = getPos(e);
+  rainMX = p.x; rainMY = p.y;
+  if (mode === 'flow') onFlowMove(e);
+});
+canvas.addEventListener('mousedown', e => {
+  if (mode === 'flow') onFlowDown(e);
+  if (mode === 'rain') { const p = getPos(e); rainMX = p.x; rainMY = p.y; rainDown = true; }
+});
+canvas.addEventListener('mouseup', e => {
+  if (mode === 'flow') onFlowUp();
+  if (mode === 'rain') {
+    // Release burst — repel all particles from held position
+    for (const sp of rainParticles) {
+      const dx = sp.x - rainMX, dy = sp.y - rainMY;
+      const dist = Math.max(8, Math.hypot(dx, dy));
+      if (dist < 450) {
+        const f = Math.min(10, 4000 / dist);
+        sp.vx += (dx / dist) * f;
+        sp.vy += (dy / dist) * f;
+      }
+    }
+    rainDown = false;
+  }
+  if (mode === 'scatter') {
+    const p = getPos(e);
+    for (const sp of scatterParticles) {
+      const dx = sp.x - p.x, dy = sp.y - p.y;
+      const dist = Math.max(8, Math.hypot(dx, dy));
+      const f = Math.min(100, 7000 / dist);
+      sp.vx += (dx / dist) * f;
+      sp.vy += (dy / dist) * f - 6; // slight upward kick
+    }
+  }
+});
+canvas.addEventListener('mouseleave', () => { onFlowUp(); rainDown = false; });
+
+canvas.addEventListener('touchstart', e => { e.preventDefault(); if (mode === 'flow') onFlowDown(e); if (mode === 'rain') { const p = getPos(e); rainMX = p.x; rainMY = p.y; rainDown = true; } }, { passive: false });
+canvas.addEventListener('touchmove',  e => { e.preventDefault(); const p = getPos(e); rainMX = p.x; rainMY = p.y; if (mode === 'flow') onFlowMove(e); }, { passive: false });
+canvas.addEventListener('touchend',   e => { onFlowUp(); rainDown = false; });
+
+// R key to reset scatter
+window.addEventListener('keydown', e => {
+  if ((e.key === 'r' || e.key === 'R') && mode === 'scatter') {
+    stopScatter(); initScatter(); startScatter();
+    hint.textContent = 'Reset — click to explode again';
+    hint.classList.remove('hidden');
+    setTimeout(() => hint.classList.add('hidden'), 2000);
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────
+// Mode switching
+// ─────────────────────────────────────────────────────────────────
+
+const INFO_TEXT = {
+  flow: {
+    title: 'Text geometry, not CSS float',
+    body:  'Drag any ball — text recalculates every frame around all of them using <code>ctx.measureText()</code>. CSS <code>float</code> only works with rectangles. This works around any shape.',
+    body2: 'A library called <strong>Pretext</strong> by Cheng Lou does this properly at any scale.'
+  },
+  rain: {
+    title: 'Letters as particles',
+    body:  '<strong>Hold the mouse</strong> to pull letters toward it — release for a burst outward. Each character falls with gravity, drifts on a breeze, and trails behind it.',
+    body2: 'The content and the motion are the same object.'
+  },
+  scatter: {
+    title: 'Words as debris',
+    body:  '<strong>Click anywhere</strong> to explode the text outward. Gravity pulls everything down. Words fall and never come back.',
+    body2: 'Press <strong>R</strong> to reset the layout.'
+  }
+};
+
+const HINTS = {
+  flow:    'Drag any ball — text reflows around all of them',
+  rain:    'Hold to attract · release to repel',
+  scatter: 'Click to explode · R to reset'
+};
+
+function switchMode(newMode) {
+  stopFlow(); stopRain(); stopScatter();
+  mode = newMode;
+  const dark = newMode !== 'flow';
+  header.className = `header ${dark ? 'dark' : 'light'}`;
+  info.className   = `info-panel ${dark ? 'dark' : 'light'}`;
+  hint.className   = `hint ${dark ? 'dark' : 'light'}`;
+  hint.textContent = HINTS[newMode];
+  hint.classList.remove('hidden');
+  setTimeout(() => hint.classList.add('hidden'), 3500);
+  const t = INFO_TEXT[newMode];
+  infoTitle.textContent = t.title;
+  infoBody.innerHTML    = t.body;
+  const p2 = info.querySelector('p:last-of-type');
+  if (p2 && p2 !== infoBody) p2.innerHTML = t.body2;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === newMode));
+  canvas.classList.remove('dragging', 'hovering');
+  if (newMode === 'flow')    { initFlow();    startFlow(); }
+  if (newMode === 'rain')    { initRain();    startRain(); }
+  if (newMode === 'scatter') { initScatter(); startScatter(); }
+}
+
+document.querySelectorAll('.mode-btn').forEach(b => b.addEventListener('click', () => switchMode(b.dataset.mode)));
+
+canvas.width  = window.innerWidth;
+canvas.height = window.innerHeight;
+switchMode('flow');
+</script>
+</body>
+</html>
