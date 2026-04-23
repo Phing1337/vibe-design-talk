@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lorem Ipsum · Designer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script>(function(){try{var d=document.documentElement.dataset,g=function(k){return localStorage.getItem(k)},M={compact:['sm','compact'],normal:['md','normal'],airy:['lg','airy']};var t=g('res.theme');if(t)d.theme=t;var s=g('res.size')||'airy';if(M[s]){d.size=s;d.text=M[s][0];d.density=M[s][1];}}catch(e){}})();</script>
+<link rel="stylesheet" href="./_lib/shell.css">
+</head>
+<body class="page-intro">
+<div class="shell">
+
+  <aside class="rail">
+    <nav class="crumbs" aria-label="breadcrumb"><a href="../../">studio</a><span class="sep">/</span><span class="here">resident</span></nav>
+    <div class="brand"><a href="./"><span class="dot"></span> lorem ipsum</a></div>
+    <div class="brand-sub">designer<br>at studio</div>
+    <nav class="primary">
+      <a href="./" class="active"><span class="idx">00</span> intro</a>
+      <a href="./work/"><span class="idx">01</span> work &amp; knowledge</a>
+      <a href="./art/"><span class="idx">02</span> art</a>
+      <a href="./about/"><span class="idx">03</span> about</a>
+    </nav>
+    <div class="rail-foot">
+      <div class="rail-blurb"><a href="../../">site</a>. lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+      <div class="display-menu" id="displayMenu">
+        <button class="display-trigger" type="button" aria-haspopup="true" aria-expanded="false">
+          <span class="dot"></span> display
+          <span class="chev" aria-hidden="true">^</span>
+        </button>
+        <div class="display-flyout" role="dialog" aria-label="Display settings">
+          <div class="dm-section">
+            <div class="dm-label">color</div>
+            <div class="dm-row colors">
+              <button class="theme-opt" type="button" data-theme="amber-dark"     style="--swatch: #d98a3d" title="amber dark"><span class="swatch"></span></button>
+              <button class="theme-opt" type="button" data-theme="cool-dark"      style="--swatch: #6db4ff" title="cool dark"><span class="swatch"></span></button>
+              <button class="theme-opt" type="button" data-theme="paper-light"    style="--swatch: #b86621" title="paper light"><span class="swatch"></span></button>
+              <button class="theme-opt" type="button" data-theme="terminal-green" style="--swatch: #4cff8a" title="terminal green"><span class="swatch"></span></button>
+            </div>
+          </div>
+          <div class="dm-section">
+            <div class="dm-label">size</div>
+            <div class="seg size">
+              <button type="button" data-value="compact" aria-label="compact">A</button>
+              <button type="button" data-value="normal"  aria-label="normal">A</button>
+              <button type="button" data-value="airy"    aria-label="airy">A</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main>
+    <section class="intro">
+      <div class="intro-body">
+        <h2>
+          <span data-reveal data-text="Lorem ipsum dolor sit amet, ">Lorem ipsum dolor sit amet, </span><em data-reveal data-text="consectetur adipiscing">consectetur adipiscing</em><span data-reveal data-text=" elit sed do eiusmod tempor."> elit sed do eiusmod tempor.</span>
+        </h2>
+        <div class="meta"><span data-reveal data-text="role · designer at studio"><b>role</b> · designer at studio</span><span data-reveal data-text="focus · lorem ipsum, dolor sit amet, consectetur"><b>focus</b> · lorem ipsum, dolor sit amet, consectetur</span><span data-reveal data-text="based · a coastal city"><b>based</b> · a coastal city</span></div>
+        <p data-reveal>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        <p data-reveal>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+
+        <div class="links">
+          <a href="./work/" data-reveal data-text="→ work & knowledge">→ work &amp; knowledge</a>
+          <a href="./art/" data-reveal data-text="→ art">→ art</a>
+          <a href="./about/" data-reveal data-text="→ about">→ about</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+</div>
+<script src="./_lib/reveal.js"></script>
+<script src="./_lib/theme.js"></script>
+</body>
+</html>
