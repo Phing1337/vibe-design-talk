@@ -34,6 +34,11 @@
     var outgoing = slides[currentIndex];
     var incoming = slides[newIndex];
 
+    // Let GSAP cover the screen before anything changes (prevents flash)
+    if (window.PRES && PRES.onSlideTransitionStart) {
+      PRES.onSlideTransitionStart(outgoing, incoming);
+    }
+
     // Update 3D immediately so the scene is ready
     if (PRES.update3DVisibility) {
       PRES.update3DVisibility(newIndex);

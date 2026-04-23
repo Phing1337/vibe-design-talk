@@ -313,12 +313,17 @@
     } else if (mode === 'space') {
       canvasVisible = true;
       PRES.canvasVisible = true;
-      canvas.classList.add('visible');
       var isPrimitives = slide.classList.contains('slide-primitives');
       if (isPrimitives) {
         canvas.classList.remove('space-mode');
-        renderer.setClearColor(0xf5f5f5, 1);
+        canvas.style.transition = 'none';
+        canvas.classList.add('visible');
+        requestAnimationFrame(function() { canvas.style.transition = ''; });
+        if (!PRES._irisActive) {
+          renderer.setClearColor(slide.dataset.bg || '#2a2f38', 1);
+        }
       } else {
+        canvas.classList.add('visible');
         canvas.classList.add('space-mode');
         renderer.setClearColor(0x000000, 0);
       }
@@ -343,14 +348,19 @@
       camera.lookAt(0, 0, 0);
 
     } else if (mode === 'space-fall') {
-      canvas.classList.add('visible');
-      canvas.classList.remove('space-mode');
       canvasVisible = true;
       PRES.canvasVisible = true;
+      canvas.classList.remove('space-mode');
       var isFallPrim = slide.classList.contains('slide-primitives');
       if (isFallPrim) {
-        renderer.setClearColor(0xf5f5f5, 1);
+        canvas.style.transition = 'none';
+        canvas.classList.add('visible');
+        requestAnimationFrame(function() { canvas.style.transition = ''; });
+        if (!PRES._irisActive) {
+          renderer.setClearColor(slide.dataset.bg || '#eeeee4', 1);
+        }
       } else {
+        canvas.classList.add('visible');
         renderer.setClearColor(0x000000, 0);
       }
       if (controls) {

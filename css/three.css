@@ -7,7 +7,7 @@
   inset: 0;
   z-index: 0;
   opacity: 0;
-  transition: opacity 1s ease;
+  transition: opacity 0.2s ease;
   pointer-events: none;
 }
 #three-canvas.visible {

@@ -217,37 +217,53 @@
         var newChildren = Array.prototype.slice.call(el.children);
 
         // Tile 0 visible immediately (the "winner" that arrived)
-        // Tiles 1-4 start hidden, will stagger in
-        newChildren.forEach(function(t, i) {
-          if (i > 0) {
-            t.style.opacity = '0';
-            t.style.transform = 'translateY(10px)';
-          }
-        });
-
-        // Force reflow
+        // Tiles 1-N fan out from tile 0 like cards scattered on a table
         el.offsetHeight;
 
-        // Stagger entrance for tiles 1-4
-        newChildren.forEach(function(t, i) {
-          if (i === 0) return;
-          var delay = (i - 1) * 0.1 + 0.06;
-          t.style.transition =
-            'opacity 0.32s ease-out ' + delay + 's, ' +
-            'transform 0.32s ease-out ' + delay + 's';
-          t.style.opacity = '1';
-          t.style.transform = 'translateY(0)';
-        });
+        if (window.gsap && document.documentElement.classList.contains('gsap-on')) {
+          var incoming = newChildren.slice(1);
+          var originRect = newChildren[0].getBoundingClientRect();
+          var rects = incoming.map(function(t) { return t.getBoundingClientRect(); });
 
-        // Clean up inline styles
-        setTimeout(function() {
-          newChildren.forEach(function(t) {
-            t.style.transition = '';
-            t.style.transform = '';
-            t.style.opacity = '';
+          gsap.set(incoming, {
+            x: function(i) { return originRect.left - rects[i].left; },
+            y: function(i) { return originRect.top - rects[i].top; },
+            rotation: 0,
+            scale: 0.9,
+            opacity: 0,
+            filter: 'blur(10px)'
           });
-          busy = false;
-        }, 600);
+          gsap.to(incoming, {
+            x: function() { return Math.random() * 6 - 3; },
+            y: function() { return Math.random() * 4 - 2; },
+            rotation: function() { return Math.random() * 5 - 2.5; },
+            scale: 1, opacity: 1,
+            filter: 'blur(0px)',
+            duration: 0.5, ease: 'back.out(1.2)',
+            delay: 0.3,
+            stagger: { each: 0.06, from: 0 },
+            onComplete: function() { busy = false; }
+          });
+        } else {
+          // CSS fallback
+          newChildren.forEach(function(t, i) {
+            if (i === 0) return;
+            var delay = (i - 1) * 0.1 + 0.06;
+            t.style.transition =
+              'opacity 0.32s ease-out ' + delay + 's, ' +
+              'transform 0.32s ease-out ' + delay + 's';
+            t.style.opacity = '1';
+            t.style.transform = 'translateY(0)';
+          });
+          setTimeout(function() {
+            newChildren.forEach(function(t) {
+              t.style.transition = '';
+              t.style.transform = '';
+              t.style.opacity = '';
+            });
+            busy = false;
+          }, 600);
+        }
       }, 530);
 
     } else {
@@ -272,30 +288,49 @@
         updateNav();
 
         var newChildren = Array.prototype.slice.call(el.children);
-        newChildren.forEach(function(t, i) {
-          t.style.opacity = '0';
-          t.style.transform = forward
-            ? 'translateX(-20px) scale(0.97)'
-            : 'translateX(-20px) scale(0.97)';
-        });
         el.offsetHeight;
-        newChildren.forEach(function(t, i) {
-          var delay = i * 0.08 + 0.05;
-          t.style.transition =
-            'opacity 0.3s ease-out ' + delay + 's, ' +
-            'transform 0.35s ease-out ' + delay + 's';
-          t.style.opacity = '1';
-          t.style.transform = 'translateX(0) scale(1)';
-        });
 
-        setTimeout(function() {
-          newChildren.forEach(function(t) {
-            t.style.transition = '';
-            t.style.transform = '';
-            t.style.opacity = '';
+        if (window.gsap && document.documentElement.classList.contains('gsap-on')) {
+          var originRect = newChildren[0].getBoundingClientRect();
+          var rects = newChildren.map(function(t) { return t.getBoundingClientRect(); });
+
+          gsap.set(newChildren, {
+            x: function(i) { return originRect.left - rects[i].left; },
+            y: function(i) { return originRect.top - rects[i].top; },
+            rotation: 0,
+            scale: 0.9,
+            opacity: 0,
+            filter: 'blur(10px)'
           });
-          busy = false;
-        }, 600);
+          gsap.to(newChildren, {
+            x: function() { return Math.random() * 6 - 3; },
+            y: function() { return Math.random() * 4 - 2; },
+            rotation: function() { return Math.random() * 5 - 2.5; },
+            scale: 1, opacity: 1,
+            filter: 'blur(0px)',
+            duration: 0.5, ease: 'back.out(1.2)',
+            delay: 0.3,
+            stagger: { each: 0.06, from: 0 },
+            onComplete: function() { busy = false; }
+          });
+        } else {
+          newChildren.forEach(function(t, i) {
+            var delay = i * 0.08 + 0.05;
+            t.style.transition =
+              'opacity 0.3s ease-out ' + delay + 's, ' +
+              'transform 0.35s ease-out ' + delay + 's';
+            t.style.opacity = '1';
+            t.style.transform = 'translateX(0) scale(1)';
+          });
+          setTimeout(function() {
+            newChildren.forEach(function(t) {
+              t.style.transition = '';
+              t.style.transform = '';
+              t.style.opacity = '';
+            });
+            busy = false;
+          }, 600);
+        }
       }, 300);
     }
   }

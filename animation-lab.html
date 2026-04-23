@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Animation Lab — Vibe Design</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Source+Code+Pro:wght@400;500&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js"></script>
+<style>
+  :root {
+    --bg: #f6f3ec;
+    --ink: #181818;
+    --ink-soft: #6a6a6a;
+    --line: #d8d2c4;
+    --accent: #c8542e;
+    --accent-2: #2c5e8a;
+    --green: #4a7a3a;
+    --paper: #ffffff;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--bg); color: var(--ink); font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
+  body { padding: 64px 48px 120px; max-width: 1280px; margin: 0 auto; }
+
+  .lab-header {
+    display: flex; align-items: baseline; justify-content: space-between;
+    border-bottom: 1px solid var(--line); padding-bottom: 24px; margin-bottom: 40px;
+  }
+  .lab-header h1 { font-family: 'Lora', serif; font-style: italic; font-weight: 400; font-size: 44px; letter-spacing: -0.02em; }
+  .lab-header .meta { font-family: 'Source Code Pro', monospace; font-size: 12px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.12em; }
+  .lab-intro { font-size: 16px; color: var(--ink-soft); max-width: 620px; line-height: 1.6; margin-bottom: 56px; }
+  .lab-intro a { color: var(--accent); text-decoration: none; border-bottom: 1px solid currentColor; }
+
+  .demo {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    margin-bottom: 32px;
+    overflow: hidden;
+  }
+  .demo-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 24px; border-bottom: 1px solid var(--line);
+  }
+  .demo-head .title-block h2 { font-family: 'Lora', serif; font-weight: 500; font-size: 22px; letter-spacing: -0.01em; }
+  .demo-head .title-block p { font-size: 13px; color: var(--ink-soft); margin-top: 4px; }
+  .demo-head .num {
+    font-family: 'Source Code Pro', monospace; font-size: 11px;
+    color: var(--ink-soft); letter-spacing: 0.15em; text-transform: uppercase;
+  }
+  .demo-stage {
+    position: relative; min-height: 280px;
+    display: flex; align-items: center; justify-content: center;
+    padding: 40px 32px;
+    overflow: hidden;
+    background: linear-gradient(to bottom, #fbf9f3, #f4efe2);
+  }
+  .demo-actions {
+    display: flex; gap: 8px; padding: 14px 24px;
+    border-top: 1px solid var(--line);
+    background: #faf7ef;
+  }
+  .btn {
+    appearance: none; cursor: pointer;
+    background: var(--ink); color: var(--bg);
+    border: 0; border-radius: 3px;
+    padding: 10px 18px;
+    font-family: 'Source Code Pro', monospace; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.12em; font-weight: 500;
+    transition: transform 0.15s ease, background 0.15s ease;
+  }
+  .btn:hover { background: var(--accent); }
+  .btn:active { transform: scale(0.97); }
+  .btn.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  .btn.ghost:hover { background: var(--ink); color: var(--bg); }
+
+  /* === SHARED STAGE STYLES === */
+  .card-row { display: flex; gap: 16px; }
+  .card {
+    width: 140px; height: 180px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    padding: 18px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    box-shadow: 0 1px 0 rgba(0,0,0,0.04);
+  }
+  .card .eyebrow { font-family: 'Source Code Pro', monospace; font-size: 10px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.15em; }
+  .card .num-big { font-family: 'Lora', serif; font-size: 38px; font-weight: 500; }
+  .card .label { font-size: 13px; color: var(--ink); }
+
+  .headline { font-family: 'Lora', serif; font-weight: 500; font-size: 56px; letter-spacing: -0.02em; line-height: 1.1; text-align: center; max-width: 720px; }
+  .headline em { font-style: italic; color: var(--accent); }
+  .sub { font-size: 16px; color: var(--ink-soft); margin-top: 16px; text-align: center; }
+
+  /* Demo 7 — magnetic buttons */
+  .magnet-wrap { display: flex; gap: 18px; }
+  .magnet {
+    width: 100px; height: 100px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--ink); color: var(--bg);
+    font-family: 'Source Code Pro', monospace; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    cursor: pointer;
+    will-change: transform;
+  }
+  .magnet:nth-child(2) { background: var(--accent); }
+  .magnet:nth-child(3) { background: var(--accent-2); }
+
+  /* Demo 8 — FLIP grid → detail */
+  .flip-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 100%; max-width: 640px; }
+  .flip-item {
+    aspect-ratio: 1;
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex; align-items: flex-end; justify-content: flex-start;
+    padding: 12px; color: white; font-family: 'Source Code Pro', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em;
+  }
+  .flip-item[data-c="1"] { background: var(--accent); }
+  .flip-item[data-c="2"] { background: var(--accent-2); }
+  .flip-item[data-c="3"] { background: var(--green); }
+  .flip-item[data-c="4"] { background: var(--ink); }
+  .flip-detail { width: 100%; max-width: 640px; aspect-ratio: 16/9; border-radius: 3px; padding: 32px; color: white; display: flex; align-items: flex-end; }
+  .flip-detail h3 { font-family: 'Lora', serif; font-weight: 500; font-size: 32px; }
+
+  /* Demo 9 — mask wipe */
+  .wipe-stage { position: relative; width: 100%; max-width: 640px; aspect-ratio: 16/9; overflow: hidden; border-radius: 3px; }
+  .wipe-layer { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Lora', serif; font-size: 56px; font-weight: 500; color: white; }
+  .wipe-layer.l1 { background: var(--ink); }
+  .wipe-layer.l2 { background: var(--accent); }
+  .wipe-layer.l3 { background: var(--accent-2); }
+
+  /* Demo 10 — split text */
+  .split-headline { font-family: 'Lora', serif; font-style: italic; font-weight: 400; font-size: 64px; letter-spacing: -0.02em; line-height: 1.05; text-align: center; max-width: 800px; }
+  .split-headline .word { display: inline-block; overflow: hidden; padding: 0 0.05em; }
+  .split-headline .word .inner { display: inline-block; }
+
+  /* Demo 11 — counter */
+  .counter { font-family: 'Lora', serif; font-weight: 500; font-size: 140px; letter-spacing: -0.04em; }
+  .counter-label { font-family: 'Source Code Pro', monospace; font-size: 11px; color: var(--ink-soft); text-transform: uppercase; letter-spacing: 0.15em; text-align: center; margin-top: 4px; }
+
+  /* Demo 12 — parallax exit */
+  .parallax-stage { position: relative; width: 100%; max-width: 720px; aspect-ratio: 16/9; }
+  .parallax-layer { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+  .parallax-bg { background: linear-gradient(135deg, #2c5e8a, #1a3a55); }
+  .parallax-mid { color: rgba(255,255,255,0.2); font-family: 'Lora', serif; font-size: 180px; font-weight: 700; }
+  .parallax-fg { color: white; font-family: 'Lora', serif; font-style: italic; font-size: 44px; }
+
+  .footer-note {
+    margin-top: 80px; padding-top: 24px;
+    border-top: 1px solid var(--line);
+    font-family: 'Source Code Pro', monospace; font-size: 12px; color: var(--ink-soft);
+    text-transform: uppercase; letter-spacing: 0.12em;
+  }
+
+  /* === BACKGROUND TRANSITION STAGES === */
+  .bg-stage {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 0 24px 0;
+    background: var(--bg-from, #2c5e8a);
+    isolation: isolate;
+  }
+  .bg-stage::before {
+    content: attr(data-bg);
+    position: absolute;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    color: rgba(255,255,255,0.92);
+    font-family: 'Lora', serif; font-style: italic; font-size: 44px; font-weight: 500;
+    text-transform: capitalize;
+    z-index: 5; pointer-events: none;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.15);
+  }
+  .demo .bg-stage { margin: 0; border-radius: 0; }
+
+  .bg-overlay {
+    position: absolute; inset: 0;
+    background: var(--bg-to, #c8542e);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* iris */
+  .bg-iris { clip-path: circle(0% at 50% 50%); }
+
+  /* sweep */
+  .bg-sweep { transform: translateX(-100%) skewX(-12deg); transform-origin: top left; }
+
+  /* bands */
+  .bg-bands-wrap { position: absolute; inset: 0; z-index: 2; display: flex; }
+  .bg-bands-wrap .band { flex: 1; background: var(--bg-to, #c8542e); transform: scaleY(0); transform-origin: top; }
+
+  /* pixels */
+  .bg-pixels-wrap { position: absolute; inset: 0; z-index: 2; display: grid; grid-template-columns: repeat(16, 1fr); grid-template-rows: repeat(8, 1fr); }
+  .bg-pixels-wrap .pix { background: var(--bg-to, #c8542e); opacity: 0; }
+
+  /* blob */
+  .blob-svg { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+  .blob-path { fill: var(--bg-to, #c8542e); transform: translate(-100%, 0); }
+
+  /* hue — uses CSS variable transition via JS */
+
+  /* split */
+  .bg-split-top, .bg-split-bot {
+    position: absolute; left: 0; right: 0; height: 50%;
+    background: var(--bg-to, #c8542e); z-index: 2;
+  }
+  .bg-split-top { top: 0; transform: translateY(-100%); }
+  .bg-split-bot { bottom: 0; transform: translateY(100%); }
+
+  /* glitch */
+  .bg-glitch-r, .bg-glitch-g, .bg-glitch-b {
+    position: absolute; inset: 0; opacity: 0; z-index: 2;
+    mix-blend-mode: screen;
+  }
+  .bg-glitch-r { background: #ff003c; }
+  .bg-glitch-g { background: #00ff7c; }
+  .bg-glitch-b { background: #00b4ff; }
+
+  /* curtain */
+  .bg-curtain-wrap { position: absolute; inset: 0; z-index: 2; display: flex; }
+  .bg-curtain-wrap .panel { flex: 1; background: var(--bg-to, #c8542e); transform: translateY(-100%); }
+</style>
+</head>
+<body>
+
+<header class="lab-header">
+  <h1>Animation Lab</h1>
+  <span class="meta">vibe-design-talk · transitions playground</span>
+</header>
+
+<p class="lab-intro">
+  A scratchpad for picking the right motion for the talk. Each demo is one
+  technique on its own — replay it as many times as you want. Once you've
+  found the ones worth keeping, we wire them into the deck.
+  <br><br>
+  Back to <a href="/">the presentation</a>.
+</p>
+
+<!-- ============================================================ -->
+<!-- DEMO 1 — physics stagger -->
+<!-- ============================================================ -->
+<section class="demo" id="demo-1">
+  <div class="demo-head">
+    <div class="title-block">
+      <h2>Physics stagger</h2>
+      <p>The current default. Elements drop in with a slight overshoot (back.out) and de-blur as they settle.</p>
+    </div>
+    <span class="num">01 / Stagger</span>
+  </div>
+  <div class="demo-stage">
+    <div class="card-row" id="stage-1">
+      <div class="card"><span class="eyebrow">A</span><span class="num-big">01</span><span class="label">First card</span></div>
+      <div class="card"><span class="eyebrow">B</span><span class="num-big">02</span><span class="label">Second card</span></div>
+      <div class="card"><span class="eyebrow">C</span><span class="num-big">03</span><span class="label">Third card</span></div>
+      <div class="card"><span class="eyebrow">D</span><span class="num-big">04</span><span class="label">Fourth card</span></div>
+    </div>
+  </div>
+  <div class="demo-actions">
+    <button class="btn" data-replay="1">Replay</button>
+    <button class="btn ghost" data-variant="1" data-ease="back.out(1.7)">Bouncier</button>
+    <button class="btn ghost" data-variant="1" data-ease="power3.out">Calmer</button>
+    <button class="btn ghost" data-variant="1" data-ease="elastic.out(1, 0.6)">Elastic</button>
+  </div>
+</section>
+
+<!-- DEMO 2 — soft fade-up -->
+<section class="demo" id="demo-2">
+  <div class="demo-head">
+    <div class="title-block">
+      <h2>Soft fade + rise</h2>
+      <p>The classic. No bounce. Just a clean rise with opacity. Quiet and editorial.</p>
+    </div>
+    <span class="num">02 / Soft</span>
+  </div>
+  <div class="demo-stage">
+    <h2 class="headline" id="stage-2">A medium that <em>responds</em> to its reader.</h2>
+  </div>
+  <div class="demo-actions">
+    <button class="btn" data-replay="2">Replay</button>
+  </div>
+</section>
+
+<!-- DEMO 3 — split text words -->
+<section class="demo" id="demo-3">
+  <div class="demo-head">
+    <div class="title-block">
+      <h2>Word-by-word reveal</h2>
+      <p>Each word rises into view from its own clip mask. Feels intentional, almost like cinema title cards.</p>
+    </div>
+    <span class="num">03 / Words</span>
+  </div>
+  <div class="demo-stage">
+    <h2 class="split-headline" id="stage-3" data-text="Design that breathes with you."></h2>
+  </div>
+  <div class="demo-actions">
+    <button class="btn" data-replay="3">Replay</button>
+  </div>
+</section>
+
+<!-- DEMO 4 — split text characters -->
+<section class="demo" id="demo-4">
+  <div class="demo-head">
+    <div class="title-block">
+      <h2>Character cascade</h2>
+      <p>Letter-by-letter rotate-in. Use sparingly — perfect for the opening title or a punchline.</p>
+    </div>
+    <span class="num">04 / Chars</span>
+  </div>
+  <div class="demo-stage">
+    <h2 class="headline" id="stage-4" data-text="Vibe Design"></h2>
+  </div>
+  <div class="demo-actions">
+    <button class="btn" data-replay="4">Replay</button>
+  </div>
+</section>
+
+<!-- DEMO 5 — animated counter -->
+<section class="demo" id="demo-5">
+  <div class="demo-head">
+    <div class="title-block">
+      <h2>Counter tick-up</h2>
+      <p>Numbers count from 0 to their value. Great for stats slides.</p>
+    </div>
+    <span class="num">05 / Numbers</span>
+  </div>
+  <div class="demo-stage" style="flex-direction:column;">
+    <div class="counter" id="stage-5">0</div>
+    <div class="counter-label">design decisions per second</div>
+  </div>
+  <div class="demo-actions">
+    <button class="btn" data-replay="5">Replay</button>
+  </div>
+</section>
+
+<!-- DEMO 6 — mask wipe between layers -->
+<section class="demo" id="demo-6">
+  <div class="demo-head">
+    <div class="title-block">
+      <h2>Curtain wipe</h2>
+      <p>Director's-cut transition between two states. Could replace slide-to-slide cuts.</p>
+    </div>
+    <span class="num">06 / Wipe</span>
+  </div>
+  <div class="demo-stage">
+    <div class="wipe-stage" id="stage-6">
+      <div class="wipe-layer l1">First state</div>
+      <div class="wipe-layer l2" style="clip-path: inset(0 100% 0 0);">Second state</div>
+      <div class="wipe-layer l3" style="clip-path: inset(0 100% 0 0);">Third state</div>
+    </div>
+  </div>
+  <div class="demo-actions">
+    <button class="btn" data-replay="6">Replay</button>
+  </div>
+</section>
+
+<!-- DEMO 7 — magnetic hover -->
+<section class="demo" id="demo-7">
+  <div class="demo-head">
+    <div class="title-block">
+      <h2>Magnetic hover</h2>
+      <p>Hover the circles. They lean toward your cursor. A small but lovable interaction trick.</p>
+    </div>
+    <span class="num">07 / Magnet</span>
+  </div>
+  <div class="demo-stage">
+    <div class="magnet-wrap">
+      <div class="magnet">Hover</div>
+      <div class="magnet">Me</div>
+      <div class="magnet">Now</div>
+    </div>
+  </div>
+  <div class="demo-actions">
+    <span class="btn ghost" style="cursor:default;">Just hover ↑</span>
+  </div>
+</section>
+
+<!-- DEMO 8 — FLIP morph -->
+<section class="demo" id="demo-8">
+  <div class="demo-head">
+    <div class="title-block">
+      <h2>FLIP morph (shared element)</h2>
+      <p>Click a tile. It expands into the detail state — same DOM element, smoothly resized using GSAP's Flip plugin. Click again to collapse.</p>
+    </div>
+    <span class="num">08 / FLIP</span>
+  </div>
+  <div class="demo-stage" style="flex-direction:column; gap:16px;">
+    <div class="flip-grid" id="flip-grid">
+      <div class="flip-item" data-c="1">Tide</div>
+      <div class="flip-item" data-c="2">Atlas</div>
+      <div class="flip-item" data-c="3">Grain</div>
+      <div class="flip-item" data-c="4">Embers</div>
+    </div>
+    <div id="flip-host"></div>
+  </div>
+  <div class="demo-actions">
+    <span class="btn ghost" style="cursor:default;">Click a tile ↑</span>
+  </div>
+</section>
+
+<!-- DEMO 9 — parallax exit -->
+<section class="demo" id="demo-9">
+  <div class="demo-head">
+    <div class="title-block">
+      <h2>Parallax exit</h2>
+      <p>Layers leave at different speeds. Feels like depth without 3D.</p>
+    </div>
+    <span class="num">09 / Parallax</span>
+  </div>
+  <div class="demo-stage">
+    <div class="parallax-stage" id="stage-9">
+      <div class="parallax-layer parallax-bg"></div>
+      <div class="parallax-layer parallax-mid">2026</div>
+      <div class="parallax-layer parallax-fg">A field guide to motion.</div>
+    </div>
+  </div>
+  <div class="demo-actions">
+    <button class="btn" data-replay="9">Replay</button>
+  </div>
+</section>
+
+<!-- DEMO 10 — slide-in from edge with rotation -->
+<section class="demo" id="demo-10">
+  <div class="demo-head">
+    <div class="title-block">
+      <h2>Tossed-in cards</h2>
+      <p>Cards arrive from off-screen with a tiny rotation, like dealing a hand. Playful but not too much.</p>
+    </div>
+    <span class="num">10 / Toss</span>
+  </div>
+  <div class="demo-stage">
+    <div class="card-row" id="stage-10">
+      <div class="card"><span class="eyebrow">Why</span><span class="num-big">·</span><span class="label">Intent first</span></div>
+      <div class="card"><span class="eyebrow">How</span><span class="num-big">·</span><span class="label">Then craft</span></div>
+      <div class="card"><span class="eyebrow">What</span><span class="num-big">·</span><span class="label">Then ship</span></div>
+    </div>
+  </div>
+  <div class="demo-actions">
+    <button class="btn" data-replay="10">Replay</button>
+  </div>
+</section>
+
+<!-- ============================================================ -->
+<!-- BACKGROUND TRANSITIONS — color sweeps between slide states  -->
+<!-- ============================================================ -->
+
+<section class="demo" id="demo-bg-1">
+  <div class="demo-head">
+    <div class="title-block">
+      <h2>Iris reveal</h2>
+      <p>A circle expands from a point and fills the screen with the next color. Soft, optical, very Saul Bass.</p>
+    </div>
+    <span class="num">11 / Iris</span>
+  </div>
+  <div class="bg-stage" data-bg="iris"></div>
+  <div class="demo-actions">
+    <button class="btn" data-bg="iris">Trigger</button>
+  </div>
+</section>
+
+<section class="demo" id="demo-bg-2">
+  <div class="demo-head">
+    <div class="title-block">
+      <h2>Diagonal sweep</h2>
+      <p>Color sheet flies in at an angle. Editorial, confident, makes a slide change feel like a chapter break.</p>
+    </div>
+    <span class="num">12 / Sweep</span>
+  </div>
+  <div class="bg-stage" data-bg="sweep"></div>
+  <div class="demo-actions">
+    <button class="btn" data-bg="sweep">Trigger</button>
+  </div>
+</section>
+
+<section class="demo" id="demo-bg-3">
+  <div class="demo-head">
+    <div class="title-block">
+      <h2>Vertical bands (glitch)</h2>
+      <p>Eight vertical strips snap in randomly. Brief stutter feels like a tape switch or analog cut.</p>
+    </div>
+    <span class="num">13 / Bands</span>
+  </div>
+  <div class="bg-stage" data-bg="bands"></div>
+  <div class="demo-actions">
+    <button class="btn" data-bg="bands">Trigger</button>
+  </div>
+</section>
+
+<section class="demo" id="demo-bg-4">
+  <div class="demo-head">
+    <div class="title-block">
+      <h2>Pixel scatter</h2>
+      <p>A grid of tiles flips in with random delays. Very 'computer assembling reality' — fits the vibe-design theme nicely.</p>
+    </div>
+    <span class="num">14 / Pixels</span>
+  </div>
+  <div class="bg-stage" data-bg="pixels"></div>
+  <div class="demo-actions">
+    <button class="btn" data-bg="pixels">Trigger</button>
+  </div>
+</section>
+
+<section class="demo" id="demo-bg-5">
+  <div class="demo-head">
+    <div class="title-block">
+      <h2>Liquid blob morph</h2>
+      <p>An SVG blob inflates from off-screen and overtakes the canvas. Organic, modern, a little playful.</p>
+    </div>
+    <span class="num">15 / Liquid</span>
+  </div>
+  <div class="bg-stage" data-bg="blob">
+    <svg class="blob-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <path class="blob-path" d="M -20,50 Q -20,-20 50,-20 Q 120,-20 120,50 Q 120,120 50,120 Q -20,120 -20,50 Z" />
+    </svg>
+  </div>
+  <div class="demo-actions">
+    <button class="btn" data-bg="blob">Trigger</button>
+  </div>
+</section>
+
+<section class="demo" id="demo-bg-6">
+  <div class="demo-head">
+    <div class="title-block">
+      <h2>Hue cycle</h2>
+      <p>The whole background shifts hue smoothly to the next color. No wipe — just a continuous chromatic glide.</p>
+    </div>
+    <span class="num">16 / Hue</span>
+  </div>
+  <div class="bg-stage" data-bg="hue"></div>
+  <div class="demo-actions">
+    <button class="btn" data-bg="hue">Trigger</button>
+  </div>
+</section>
+
+<section class="demo" id="demo-bg-7">
+  <div class="demo-head">
+    <div class="title-block">
+      <h2>Split panels</h2>
+      <p>Top and bottom halves wipe in opposite directions and meet in the middle. Architectural, very satisfying.</p>
+    </div>
+    <span class="num">17 / Split</span>
+  </div>
+  <div class="bg-stage" data-bg="split"></div>
+  <div class="demo-actions">
+    <button class="btn" data-bg="split">Trigger</button>
+  </div>
+</section>
+
+<section class="demo" id="demo-bg-8">
+  <div class="demo-head">
+    <div class="title-block">
+      <h2>RGB shift cut</h2>
+      <p>A 200ms chromatic-aberration glitch covers the cut between colors. Just a hint of digital instability.</p>
+    </div>
+    <span class="num">18 / Glitch</span>
+  </div>
+  <div class="bg-stage" data-bg="glitch"></div>
+  <div class="demo-actions">
+    <button class="btn" data-bg="glitch">Trigger</button>
+  </div>
+</section>
+
+<section class="demo" id="demo-bg-9">
+  <div class="demo-head">
+    <div class="title-block">
+      <h2>Curtain panels</h2>
+      <p>Five vertical panels drop down with staggered timing. Theatrical without being cheesy.</p>
+    </div>
+    <span class="num">19 / Curtain</span>
+  </div>
+  <div class="bg-stage" data-bg="curtain"></div>
+  <div class="demo-actions">
+    <button class="btn" data-bg="curtain">Trigger</button>
+  </div>
+</section>
+
+<div class="footer-note">end of lab — pick your favorites</div>
+
+<script>
+(function() {
+  var gsap = window.gsap;
+
+  // ---------- Demo 1: physics stagger ----------
+  function play1(ease) {
+    ease = ease || 'back.out(1.4)';
+    var els = document.querySelectorAll('#stage-1 .card');
+    gsap.set(els, { opacity: 0, y: 40, filter: 'blur(6px)' });
+    gsap.to(els, {
+      opacity: 1, y: 0, filter: 'blur(0px)',
+      duration: 0.8, ease: ease, stagger: 0.08
+    });
+  }
+
+  // ---------- Demo 2: soft fade-up ----------
+  function play2() {
+    var el = document.querySelector('#stage-2');
+    gsap.fromTo(el, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 1.0, ease: 'power2.out' });
+  }
+
+  // ---------- Demo 3: word-by-word ----------
+  function buildSplit(el, kind) {
+    var text = el.dataset.text;
+    el.innerHTML = '';
+    if (kind === 'word') {
+      text.split(' ').forEach(function(w) {
+        var word = document.createElement('span');
+        word.className = 'word';
+        var inner = document.createElement('span');
+        inner.className = 'inner';
+        inner.textContent = w;
+        word.appendChild(inner);
+        el.appendChild(word);
+        el.appendChild(document.createTextNode(' '));
+      });
+    } else {
+      text.split('').forEach(function(c) {
+        var ch = document.createElement('span');
+        ch.style.display = 'inline-block';
+        ch.textContent = c === ' ' ? '\u00A0' : c;
+        el.appendChild(ch);
+      });
+    }
+  }
+  function play3() {
+    var el = document.querySelector('#stage-3');
+    buildSplit(el, 'word');
+    var inners = el.querySelectorAll('.word .inner');
+    gsap.set(inners, { yPercent: 110 });
+    gsap.to(inners, { yPercent: 0, duration: 0.75, ease: 'power3.out', stagger: 0.07 });
+  }
+
+  // ---------- Demo 4: characters ----------
+  function play4() {
+    var el = document.querySelector('#stage-4');
+    buildSplit(el, 'char');
+    var chars = el.children;
+    gsap.set(chars, { opacity: 0, y: 30, rotateX: -90, transformOrigin: '50% 100%' });
+    gsap.to(chars, {
+      opacity: 1, y: 0, rotateX: 0,
+      duration: 0.7, ease: 'back.out(1.6)', stagger: 0.04
+    });
+  }
+
+  // ---------- Demo 5: counter ----------
+  function play5() {
+    var el = document.querySelector('#stage-5');
+    var obj = { v: 0 };
+    el.textContent = '0';
+    gsap.to(obj, {
+      v: 847, duration: 1.6, ease: 'power3.out',
+      onUpdate: function() { el.textContent = Math.round(obj.v).toLocaleString(); }
+    });
+  }
+
+  // ---------- Demo 6: curtain wipe ----------
+  function play6() {
+    var l1 = document.querySelector('#stage-6 .l1');
+    var l2 = document.querySelector('#stage-6 .l2');
+    var l3 = document.querySelector('#stage-6 .l3');
+    gsap.set(l2, { clipPath: 'inset(0 100% 0 0)' });
+    gsap.set(l3, { clipPath: 'inset(0 100% 0 0)' });
+    var tl = gsap.timeline();
+    tl.to(l2, { clipPath: 'inset(0 0% 0 0)', duration: 0.8, ease: 'power3.inOut' })
+      .to(l3, { clipPath: 'inset(0 0% 0 0)', duration: 0.8, ease: 'power3.inOut' }, '+=0.4');
+  }
+
+  // ---------- Demo 7: magnetic hover ----------
+  document.querySelectorAll('.magnet').forEach(function(el) {
+    var bounds;
+    el.addEventListener('mouseenter', function() { bounds = el.getBoundingClientRect(); });
+    el.addEventListener('mousemove', function(e) {
+      var cx = bounds.left + bounds.width / 2;
+      var cy = bounds.top + bounds.height / 2;
+      var dx = (e.clientX - cx) * 0.4;
+      var dy = (e.clientY - cy) * 0.4;
+      gsap.to(el, { x: dx, y: dy, duration: 0.4, ease: 'power3.out' });
+    });
+    el.addEventListener('mouseleave', function() {
+      gsap.to(el, { x: 0, y: 0, duration: 0.6, ease: 'elastic.out(1, 0.5)' });
+    });
+  });
+
+  // ---------- Demo 8: FLIP morph ----------
+  var flipExpanded = null;
+  document.querySelectorAll('.flip-item').forEach(function(item) {
+    item.addEventListener('click', function() {
+      if (!window.Flip) { console.warn('Flip plugin missing'); return; }
+      var state = window.Flip.getState(item);
+      if (flipExpanded === item) {
+        // collapse back into grid
+        document.getElementById('flip-grid').appendChild(item);
+        item.classList.remove('flip-detail');
+        item.style.aspectRatio = '';
+        item.innerHTML = item.dataset.label || item.textContent;
+        flipExpanded = null;
+      } else {
+        if (flipExpanded) {
+          // collapse other first instantly
+          document.getElementById('flip-grid').appendChild(flipExpanded);
+          flipExpanded.classList.remove('flip-detail');
+          flipExpanded.style.aspectRatio = '';
+        }
+        item.dataset.label = item.textContent;
+        document.getElementById('flip-host').appendChild(item);
+        item.classList.add('flip-detail');
+        item.innerHTML = '<h3>' + item.dataset.label + ' — selected case study</h3>';
+        flipExpanded = item;
+      }
+      window.Flip.from(state, { duration: 0.7, ease: 'power3.inOut', absolute: true });
+    });
+  });
+
+  // ---------- Demo 9: parallax ----------
+  function play9() {
+    var bg = document.querySelector('#stage-9 .parallax-bg');
+    var mid = document.querySelector('#stage-9 .parallax-mid');
+    var fg = document.querySelector('#stage-9 .parallax-fg');
+    gsap.set([bg, mid, fg], { x: 0, opacity: 1 });
+    var tl = gsap.timeline();
+    tl.to(fg, { x: -300, opacity: 0, duration: 0.8, ease: 'power2.in' })
+      .to(mid, { x: -180, opacity: 0, duration: 0.8, ease: 'power2.in' }, 0.05)
+      .to(bg, { x: -80, opacity: 0, duration: 0.8, ease: 'power2.in' }, 0.1)
+      .add(function() {
+        gsap.set([bg, mid, fg], { x: 60, opacity: 0 });
+      })
+      .to(bg, { x: 0, opacity: 1, duration: 0.8, ease: 'power2.out' })
+      .to(mid, { x: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, '-=0.7')
+      .to(fg, { x: 0, opacity: 1, duration: 0.8, ease: 'power2.out' }, '-=0.6');
+  }
+
+  // ---------- Demo 10: tossed cards ----------
+  function play10() {
+    var els = document.querySelectorAll('#stage-10 .card');
+    gsap.set(els, { opacity: 0, x: -200, y: 40, rotation: -12 });
+    gsap.to(els, {
+      opacity: 1, x: 0, y: 0, rotation: 0,
+      duration: 0.85, ease: 'power3.out', stagger: 0.12
+    });
+  }
+
+  var players = { 1: play1, 2: play2, 3: play3, 4: play4, 5: play5, 6: play6, 9: play9, 10: play10 };
+
+  document.querySelectorAll('[data-replay]').forEach(function(b) {
+    b.addEventListener('click', function() {
+      var n = b.dataset.replay;
+      if (players[n]) players[n]();
+    });
+  });
+  document.querySelectorAll('[data-variant="1"]').forEach(function(b) {
+    b.addEventListener('click', function() { play1(b.dataset.ease); });
+  });
+
+  // ============================================================
+  // BACKGROUND TRANSITIONS
+  // ============================================================
+  var palette = ['#2c5e8a', '#c8542e', '#4a7a3a', '#1a1a1a', '#d4a93a', '#7a3a8a', '#3a8a7a'];
+
+  function pickNext(current) {
+    var next = palette[Math.floor(Math.random() * palette.length)];
+    while (next === current) next = palette[Math.floor(Math.random() * palette.length)];
+    return next;
+  }
+
+  function setupStage(stage) {
+    var kind = stage.dataset.bg;
+    var idx = Math.floor(Math.random() * palette.length);
+    stage.style.setProperty('--bg-from', palette[idx]);
+    stage.style.setProperty('--bg-to', pickNext(palette[idx]));
+    stage._bgIdx = idx;
+
+    if (kind === 'bands') {
+      var w = document.createElement('div'); w.className = 'bg-bands-wrap';
+      for (var i = 0; i < 8; i++) { var b = document.createElement('div'); b.className = 'band'; w.appendChild(b); }
+      stage.appendChild(w);
+    } else if (kind === 'pixels') {
+      var w = document.createElement('div'); w.className = 'bg-pixels-wrap';
+      for (var i = 0; i < 16 * 8; i++) { var p = document.createElement('div'); p.className = 'pix'; w.appendChild(p); }
+      stage.appendChild(w);
+    } else if (kind === 'split') {
+      var t = document.createElement('div'); t.className = 'bg-split-top';
+      var b = document.createElement('div'); b.className = 'bg-split-bot';
+      stage.appendChild(t); stage.appendChild(b);
+    } else if (kind === 'glitch') {
+      ['r','g','b'].forEach(function(c) { var el = document.createElement('div'); el.className = 'bg-glitch-' + c; stage.appendChild(el); });
+      var ov = document.createElement('div'); ov.className = 'bg-overlay'; ov.style.opacity = '0'; stage.appendChild(ov);
+    } else if (kind === 'curtain') {
+      var w = document.createElement('div'); w.className = 'bg-curtain-wrap';
+      for (var i = 0; i < 5; i++) { var p = document.createElement('div'); p.className = 'panel'; w.appendChild(p); }
+      stage.appendChild(w);
+    } else if (kind === 'iris' || kind === 'sweep') {
+      var ov = document.createElement('div'); ov.className = 'bg-overlay bg-' + kind; stage.appendChild(ov);
+    } else if (kind === 'blob') {
+      // path already in markup
+    } else if (kind === 'hue') {
+      // pure background tween
+    }
+  }
+
+  function commit(stage) {
+    // After transition: the "to" color becomes the new "from", and pick a fresh "to"
+    var to = getComputedStyle(stage).getPropertyValue('--bg-to').trim();
+    stage.style.setProperty('--bg-from', to);
+    stage.style.background = to;
+    stage.style.setProperty('--bg-to', pickNext(to));
+    // reset overlays
+    var ov = stage.querySelector('.bg-overlay');
+    if (ov) {
+      ov.style.background = stage.style.getPropertyValue('--bg-to');
+      ov.style.clipPath = '';
+      ov.style.transform = '';
+      ov.style.opacity = '';
+      if (ov.classList.contains('bg-iris')) ov.style.clipPath = 'circle(0% at 50% 50%)';
+      if (ov.classList.contains('bg-sweep')) ov.style.transform = 'translateX(-100%) skewX(-12deg)';
+    }
+    var bands = stage.querySelectorAll('.bg-bands-wrap .band');
+    bands.forEach(function(b) { b.style.background = stage.style.getPropertyValue('--bg-to'); b.style.transform = 'scaleY(0)'; b.style.transformOrigin = 'top'; });
+    var pixs = stage.querySelectorAll('.bg-pixels-wrap .pix');
+    pixs.forEach(function(p) { p.style.background = stage.style.getPropertyValue('--bg-to'); p.style.opacity = '0'; });
+    var splitT = stage.querySelector('.bg-split-top');
+    var splitB = stage.querySelector('.bg-split-bot');
+    if (splitT) { splitT.style.background = stage.style.getPropertyValue('--bg-to'); splitT.style.transform = 'translateY(-100%)'; }
+    if (splitB) { splitB.style.background = stage.style.getPropertyValue('--bg-to'); splitB.style.transform = 'translateY(100%)'; }
+    var blobPath = stage.querySelector('.blob-path');
+    if (blobPath) { blobPath.style.fill = stage.style.getPropertyValue('--bg-to'); gsap.set(blobPath, { x: '-100%', scaleX: 1 }); }
+    var curtains = stage.querySelectorAll('.bg-curtain-wrap .panel');
+    curtains.forEach(function(p) { p.style.background = stage.style.getPropertyValue('--bg-to'); p.style.transform = 'translateY(-100%)'; });
+  }
+
+  var bgPlayers = {
+    iris: function(stage) {
+      var ov = stage.querySelector('.bg-overlay');
+      gsap.set(ov, { clipPath: 'circle(0% at 50% 50%)' });
+      gsap.to(ov, { clipPath: 'circle(75% at 50% 50%)', duration: 0.9, ease: 'power3.inOut', onComplete: function() { commit(stage); } });
+    },
+    sweep: function(stage) {
+      var ov = stage.querySelector('.bg-overlay');
+      gsap.set(ov, { x: '-110%', skewX: -12 });
+      gsap.to(ov, { x: '0%', duration: 0.7, ease: 'power3.inOut', onComplete: function() { commit(stage); } });
+    },
+    bands: function(stage) {
+      var bands = Array.from(stage.querySelectorAll('.bg-bands-wrap .band'));
+      gsap.set(bands, { scaleY: 0, transformOrigin: 'top' });
+      // randomize order for glitchy feel
+      var shuffled = bands.slice().sort(function() { return Math.random() - 0.5; });
+      gsap.to(shuffled, { scaleY: 1, duration: 0.45, ease: 'power2.in', stagger: 0.04, onComplete: function() { commit(stage); } });
+    },
+    pixels: function(stage) {
+      var pixs = Array.from(stage.querySelectorAll('.bg-pixels-wrap .pix'));
+      gsap.set(pixs, { opacity: 0 });
+      var shuffled = pixs.slice().sort(function() { return Math.random() - 0.5; });
+      gsap.to(shuffled, { opacity: 1, duration: 0.05, stagger: 0.005, onComplete: function() { commit(stage); } });
+    },
+    blob: function(stage) {
+      var path = stage.querySelector('.blob-path');
+      gsap.set(path, { x: '-100%' });
+      var tl = gsap.timeline({ onComplete: function() { commit(stage); } });
+      tl.to(path, { x: '0%', duration: 0.9, ease: 'power3.inOut' })
+        .to(path, { scaleX: 1.4, duration: 0.4, ease: 'power2.out', transformOrigin: 'center' }, '-=0.2');
+    },
+    hue: function(stage) {
+      var to = getComputedStyle(stage).getPropertyValue('--bg-to').trim();
+      gsap.to(stage, { backgroundColor: to, duration: 1.2, ease: 'power2.inOut', onComplete: function() { commit(stage); } });
+    },
+    split: function(stage) {
+      var t = stage.querySelector('.bg-split-top');
+      var b = stage.querySelector('.bg-split-bot');
+      gsap.set(t, { y: '-100%' }); gsap.set(b, { y: '100%' });
+      var tl = gsap.timeline({ onComplete: function() { commit(stage); } });
+      tl.to(t, { y: '0%', duration: 0.6, ease: 'power3.inOut' }, 0)
+        .to(b, { y: '0%', duration: 0.6, ease: 'power3.inOut' }, 0);
+    },
+    glitch: function(stage) {
+      var r = stage.querySelector('.bg-glitch-r');
+      var g = stage.querySelector('.bg-glitch-g');
+      var bb = stage.querySelector('.bg-glitch-b');
+      var ov = stage.querySelector('.bg-overlay');
+      gsap.set([r, g, bb, ov], { opacity: 0, x: 0 });
+      var tl = gsap.timeline({ onComplete: function() { commit(stage); } });
+      tl.to(r, { opacity: 0.7, x: -8, duration: 0.05 })
+        .to(g, { opacity: 0.7, x: 6, duration: 0.05 }, 0.02)
+        .to(bb, { opacity: 0.7, x: -3, duration: 0.05 }, 0.04)
+        .to([r, g, bb], { x: 0, duration: 0.08, ease: 'power2.in' }, 0.1)
+        .to(ov, { opacity: 1, duration: 0.08 }, 0.1)
+        .to([r, g, bb], { opacity: 0, duration: 0.1 }, 0.18);
+    },
+    curtain: function(stage) {
+      var panels = stage.querySelectorAll('.bg-curtain-wrap .panel');
+      gsap.set(panels, { y: '-100%' });
+      gsap.to(panels, { y: '0%', duration: 0.7, ease: 'power3.in', stagger: 0.07, onComplete: function() { commit(stage); } });
+    }
+  };
+
+  document.querySelectorAll('.bg-stage').forEach(setupStage);
+  document.querySelectorAll('[data-bg]').forEach(function(btn) {
+    if (btn.classList.contains('bg-stage')) return;
+    btn.addEventListener('click', function() {
+      var kind = btn.dataset.bg;
+      var stage = document.querySelector('.bg-stage[data-bg="' + kind + '"]');
+      if (!stage || !bgPlayers[kind]) return;
+      bgPlayers[kind](stage);
+    });
+  });
+
+  // Auto-play each demo once on load (staggered so the page comes alive)
+  setTimeout(play1, 200);
+  setTimeout(play2, 400);
+  setTimeout(play3, 600);
+  setTimeout(play4, 800);
+  setTimeout(play5, 1000);
+  setTimeout(play6, 1200);
+  setTimeout(play9, 1600);
+  setTimeout(play10, 1800);
+})();
+</script>
+
+</body>
+</html>

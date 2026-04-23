@@ -16,6 +16,17 @@
 .slide.active .fade-in-5 { animation-delay: 480ms; }
 .slide.active .fade-in-6 { animation-delay: 600ms; }
 
+/* When GSAP is on, suppress the CSS keyframe so JS can drive the reveal */
+html.gsap-on .slide.active .fade-in,
+html.gsap-on .slide.active [class*="fade-in-"] {
+  animation: none !important;
+}
+
+/* Let GSAP drive opacity+transform on perm-cards; keep box-shadow transition */
+html.gsap-on .perm-card {
+  transition: box-shadow 0.22s ease !important;
+}
+
 @keyframes revealUp {
   from {
     opacity: 0;
@@ -44,7 +55,7 @@
 .slide[data-transition="fade"].exiting {
   opacity: 0;
   transform: none;
-  transition: opacity var(--duration-slow) var(--ease-in-out);
+  transition: opacity 150ms ease-out;
 }
 
 /* ── TRANSITION: SLIDE-LEFT — Horizontal mechanical slide ── */

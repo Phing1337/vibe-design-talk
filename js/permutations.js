@@ -118,29 +118,19 @@
     var deepRow2 = document.createElement('div');
     deepRow2.className = 'perm-row';
 
-    // ── Reset button ──
-    var resetBtn = document.createElement('button');
-    resetBtn.className = 'perm-reset';
-    resetBtn.textContent = '\u2190 reset';
-
     stage.appendChild(wideSection);
     stage.appendChild(connector);
     stage.appendChild(deepSection);
-    stage.appendChild(resetBtn);
 
     // ── Card click handler ──
     wideCards.forEach(function (card) {
       card.addEventListener('click', function () {
-        if (isExpanded) return;
-        isExpanded = true;
-
         var h = parseInt(card.dataset.h);
         deepLabel.textContent = 'Generation 2 — deep (same direction)';
 
         wideCards.forEach(function (c) {
-          c.classList.remove('perm-card--selected', 'perm-card--dim');
+          c.classList.remove('perm-card--selected');
           if (c === card) c.classList.add('perm-card--selected');
-          else c.classList.add('perm-card--dim');
         });
 
         hint.classList.add('perm-hint--hidden');
@@ -163,27 +153,11 @@
 
         requestAnimationFrame(function () {
           deepSection.classList.add('perm-deep--visible');
-          cascadeIn(newCards, 160);
+          cascadeIn(newCards, isExpanded ? 0 : 160);
         });
 
-        setTimeout(function () {
-          resetBtn.classList.add('perm-reset--visible');
-        }, 700);
+        isExpanded = true;
       });
-    });
-
-    // ── Reset ──
-    resetBtn.addEventListener('click', function () {
-      isExpanded = false;
-      wideCards.forEach(function (c) {
-        c.classList.remove('perm-card--selected', 'perm-card--dim');
-      });
-      deepSection.classList.remove('perm-deep--visible');
-      connector.classList.remove('perm-connector--visible');
-      hint.classList.remove('perm-hint--hidden');
-      resetBtn.classList.remove('perm-reset--visible');
-      deepRow1.innerHTML = '';
-      deepRow2.innerHTML = '';
     });
 
     // ── Trigger cascade when slide enters viewport ──
