@@ -201,11 +201,12 @@
       var splatSlide = splatIframe.closest('.slide');
       var splatIndex = slides.indexOf(splatSlide);
       if (currentIndex === splatIndex) {
-        // Load it
+        // Load it when we arrive
         if (splatIframe.dataset.src && splatIframe.getAttribute('src') !== splatIframe.dataset.src) {
           splatIframe.src = splatIframe.dataset.src;
         }
-        splatIframe.style.pointerEvents = 'auto';
+        // Keep pointer-events off so iframe doesn't steal keyboard focus
+        splatIframe.style.pointerEvents = 'none';
       } else {
         // Unload it to free GPU
         if (splatIframe.getAttribute('src')) {
@@ -225,6 +226,9 @@
         return;
       }
     }
+
+    // (Arrow keys always navigate slides — use on-screen buttons for in-slide dials)
+
     switch (e.key) {
       case 'ArrowRight':
       case 'ArrowDown':

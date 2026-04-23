@@ -1,0 +1,260 @@
+/* ── Case Study: Stage-based generational exploration ──────────── */
+
+.slide.slide-casestudy {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+/* ── Header ── */
+.cs-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: calc(var(--header-height) + 16px) 80px 0;
+  flex-shrink: 0;
+}
+.cs-beat-label {
+  font-family: var(--font-body);
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-signal);
+  margin-bottom: 4px;
+}
+.cs-title {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  line-height: 1.1;
+}
+.cs-title span { color: var(--color-signal); }
+
+/* ── Controls ── */
+.cs-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.cs-btn {
+  font-family: var(--font-body);
+  font-size: 0.5rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-dim);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 5px 14px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.cs-btn:hover {
+  background: rgba(255,255,255,0.08);
+  color: var(--color-text-muted);
+}
+.cs-btn.cs-active {
+  background: rgba(196,62,28,0.15);
+  border-color: rgba(196,62,28,0.3);
+  color: var(--color-signal);
+}
+
+/* ── Stage body (one gen at a time, fills screen) ── */
+.cs-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px 80px 0;
+  gap: 18px;
+  min-height: 0;
+}
+
+.cs-stage-info {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.cs-stage-num {
+  font-family: var(--font-body);
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-signal);
+  transition: opacity 0.2s ease;
+}
+.cs-stage-name {
+  font-family: var(--font-body);
+  font-size: 0.62rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  transition: opacity 0.2s ease;
+}
+
+/* ── Tile grid — 3 columns × 2 rows ── */
+.cs-tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.cs-tile {
+  width: calc((100% - 28px) / 3);
+  aspect-ratio: 16 / 9;
+  border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+  cursor: default;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+}
+.cs-tile:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4);
+}
+
+/* Selected */
+.cs-tile--selected {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+}
+/* Tile number */
+.cs-tile-num {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  z-index: 10;
+  font-family: var(--font-body);
+  font-size: 0.4rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.35);
+  background: rgba(0,0,0,0.3);
+  padding: 1px 5px;
+  border-radius: 2px;
+}
+
+/* Tile content — fixed reference size, scaled to fit tile */
+.cs-tile-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 580px;
+  height: 326px;
+  transform: translate(-50%, -50%) scale(0.58);
+  transform-origin: center center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 4;
+  padding: 40px;
+}
+
+/* ── Stage navigation ── */
+.cs-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 12px 80px 28px;
+  flex-shrink: 0;
+}
+.cs-nav-btn {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--color-text-dim);
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.06);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+.cs-nav-btn:hover {
+  background: rgba(255,255,255,0.08);
+  color: var(--color-text-muted);
+}
+.cs-nav-btn:disabled {
+  opacity: 0.15;
+  cursor: default;
+  pointer-events: none;
+}
+.cs-dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.cs-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.cs-dot--active {
+  background: var(--color-signal);
+  width: 20px;
+  border-radius: 3px;
+}
+
+/* ── Result overlay — letterbox, z-index ABOVE global header (100) ── */
+.cs-result-overlay {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 200;
+  background: rgba(0,0,0,0.92);
+  backdrop-filter: blur(12px);
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+.cs-result-overlay.cs-result--active {
+  display: flex;
+}
+.cs-result-close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  z-index: 210;
+  font-family: var(--font-body);
+  font-size: 1.2rem;
+  line-height: 1;
+  color: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.cs-result-close:hover {
+  background: rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.7);
+}
+.cs-result-frame {
+  width: 100%;
+  max-width: 1400px;
+  aspect-ratio: 16 / 9;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 16px 60px rgba(0,0,0,0.6);
+}

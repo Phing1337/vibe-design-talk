@@ -91,6 +91,7 @@
     #b87c3a 70%,
     #9e6428 100%
   );
+  transition: background 1.2s ease;
 }
 
 /* Static desert background photo — sits above gradient, no-repeat in case PNG is blank */
@@ -101,6 +102,7 @@
   background: url('../assets/desert-palm-bg.png') center center / cover no-repeat;
   z-index: 0;
   pointer-events: none;
+  transition: filter 1.2s ease;
 }
 
 /* ── Palm leaf shadow overlay ── */
@@ -189,14 +191,14 @@
 .paper-stack-b {
   inset: 0;
   transform: rotate(-2.8deg) translate(-10px, 8px);
-  background: #ede2c8;
+  background: #ede2c8 !important;
   z-index: 0;
 }
 
 .paper-stack-m {
   inset: 0;
   transform: rotate(-1.3deg) translate(-5px, 4px);
-  background: #f5ecd6;
+  background: #f5ecd6 !important;
   z-index: 1;
 }
 
@@ -305,7 +307,9 @@
 /* ── FRONT: the paper article ── */
 .paper-front {
   /* Organic paper feel — warm center, cooler aged edges */
-  background-color: #fdf8ef;
+  background-color: #fdf8ef !important;
+  color: #26190e;
+  color-scheme: light only;
   background-image:
     radial-gradient(
       ellipse 110% 75% at 48% 22%,
@@ -384,7 +388,7 @@
   font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
   font-size: 2.1rem;
   font-weight: 700;
-  color: #1a1612;
+  color: #1a1612 !important;
   line-height: 1.2;
   margin: 0 0 10px;
   text-align: center;
@@ -455,7 +459,7 @@
   font-family: 'Crimson Text', 'Palatino Linotype', Georgia, serif;
   font-size: 1.12rem;
   line-height: 1.88;
-  color: #26190e;
+  color: #26190e !important;
   text-shadow: 0 0.4px 0 rgba(255, 245, 225, 0.22);
   margin: 0 0 12px;
 }
@@ -820,6 +824,25 @@
 }
 
 .paper-back-btn:hover { background: rgba(139,115,85,0.2); }
+
+/* ── Flashlight beam overlay ── */
+.flashlight-beam {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 13;
+  opacity: 0;
+  background: rgba(8, 12, 24, 0.82);
+  -webkit-mask-image: radial-gradient(circle 900px at 50% 50%, transparent 0%, transparent 40%, black 70%);
+  mask-image: radial-gradient(circle 900px at 50% 50%, transparent 0%, transparent 40%, black 70%);
+}
+
+/* Toggle button active state */
+.paper-toggle-btn.flashlight-active {
+  background: rgba(30,40,60,0.9) !important;
+  border-color: rgba(100,140,200,0.4) !important;
+  color: #8ab4f0 !important;
+}
 
 /* ── Tooltip card ── */
 #doc-tooltip {

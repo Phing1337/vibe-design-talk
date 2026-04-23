@@ -109,22 +109,6 @@
   var state = { paletteIdx: 0 };
 
   /* ── Color Utilities ─────────────────────────────────────── */
-  function hexToHsl(hex) {
-    var r=parseInt(hex.slice(1,3),16)/255;
-    var g=parseInt(hex.slice(3,5),16)/255;
-    var b=parseInt(hex.slice(5,7),16)/255;
-    var max=Math.max(r,g,b), min=Math.min(r,g,b);
-    var h=0, s=0, l=(max+min)/2;
-    if (max!==min) {
-      var d=max-min;
-      s=l>0.5?d/(2-max-min):d/(max+min);
-      if (max===r)      h=((g-b)/d+(g<b?6:0))/6;
-      else if (max===g) h=((b-r)/d+2)/6;
-      else              h=((r-g)/d+4)/6;
-    }
-    return [h*360, s*100, l*100];
-  }
-
   function luminance(hex) {
     var r=parseInt(hex.slice(1,3),16)/255;
     var g=parseInt(hex.slice(3,5),16)/255;
@@ -137,71 +121,12 @@
     return luminance(hex) > 0.35 ? '#111111' : '#ffffff';
   }
 
-  /* ── Color Wheel ─────────────────────────────────────────── */
-  function drawWheel(canvas, palette) {
-    var ctx=canvas.getContext('2d');
-    var W=canvas.width, H=canvas.height;
-    var cx=W/2, cy=H/2;
-    var outerR=Math.min(W,H)/2-2;
-    var innerR=outerR*0.54;
-    var midR=(outerR+innerR)/2;
-    ctx.clearRect(0,0,W,H);
-
-    for (var deg=0; deg<360; deg++) {
-      var a0=(deg-90-0.5)*Math.PI/180;
-      var a1=(deg-90+1.0)*Math.PI/180;
-      ctx.beginPath();
-      ctx.arc(cx,cy,outerR,a0,a1);
-      ctx.arc(cx,cy,innerR,a1,a0,true);
-      ctx.closePath();
-      ctx.fillStyle='hsl('+deg+',70%,52%)';
-      ctx.fill();
-    }
-
-    ctx.beginPath();
-    ctx.arc(cx,cy,innerR-1,0,Math.PI*2);
-    ctx.fillStyle=palette.dark?'#0a0a0a':'#f5f5f5';
-    ctx.fill();
-
-    palette.swatches.forEach(function(hex, i) {
-      var hsl=hexToHsl(hex);
-      if (hsl[1] < 10) return;
-      var angle=(hsl[0]-90)*Math.PI/180;
-      var dx=cx+midR*Math.cos(angle);
-      var dy=cy+midR*Math.sin(angle);
-      var isMain=(i===2);
-      var r=isMain?9:6;
-      ctx.beginPath(); ctx.arc(dx,dy,r+2,0,Math.PI*2);
-      ctx.fillStyle='rgba(0,0,0,0.35)'; ctx.fill();
-      ctx.beginPath(); ctx.arc(dx,dy,r,0,Math.PI*2);
-      ctx.fillStyle=hex; ctx.fill();
-      ctx.strokeStyle=isMain?'#fff':'rgba(255,255,255,0.7)';
-      ctx.lineWidth=isMain?2:1.5; ctx.stroke();
-    });
-  }
-
-  /* ── Render: Swatch Strip ────────────────────────────────── */
-  function renderSwatches(palette) {
-    var el=document.getElementById('cl-swatches');
-    if (!el) return;
-    el.innerHTML='';
-    palette.swatches.forEach(function(hex) {
-      var s=document.createElement('div');
-      s.className='cl-swatch';
-      s.style.background=hex;
-      var label=document.createElement('div');
-      label.className='cl-swatch-hex';
-      label.textContent=hex.toUpperCase();
-      s.appendChild(label);
-      el.appendChild(s);
-    });
-  }
-
   /* ── Render: Rich Preview Card ───────────────────────────── */
   function renderPreview(p) {
     var el=document.getElementById('cl-preview');
     if (!el) return;
     var textOn=onColor(p.primary);
+    var mutedOn=onColor(p.surface);
 
     el.innerHTML =
       '<div class="cl-preview-card" style="background:'+p.bg+';border:1px solid '+p.border+';color:'+p.text+'">' +
@@ -210,55 +135,55 @@
         '<div class="cl-pv-nav" style="background:'+p.surface+';border-bottom:1px solid '+p.border+'">' +
           '<span class="cl-pv-logo" style="color:'+p.text+'">● Studio</span>' +
           '<span class="cl-pv-links">' +
-            '<span style="color:'+p.muted+'">Features</span>' +
-            '<span style="color:'+p.muted+'">Pricing</span>' +
-            '<span style="color:'+p.muted+'">Docs</span>' +
-            '<span style="color:'+p.muted+'">Blog</span>' +
+            '<span style="color:'+p.muted+'">Dashboard</span>' +
+            '<span style="color:'+p.muted+'">Projects</span>' +
+            '<span style="color:'+p.muted+'">Assets</span>' +
+            '<span style="color:'+p.muted+'">Settings</span>' +
           '</span>' +
-          '<button class="cl-pv-cta" style="background:'+p.primary+';color:'+textOn+'">Get started</button>' +
+          '<button class="cl-pv-cta" style="background:'+p.primary+';color:'+textOn+'">New project</button>' +
         '</div>' +
 
         // Body: hero + aside
         '<div class="cl-pv-body">' +
 
+          // Left: content area
           '<div class="cl-pv-hero">' +
-            '<span class="cl-pv-badge" style="background:'+p.primary+';color:'+textOn+'">New · Spring 2025</span>' +
+            '<span class="cl-pv-badge" style="background:'+p.secondary+';color:'+p.accent+'">Active</span>' +
             '<h3 class="cl-pv-heading" style="color:'+p.text+'">Design that speaks<br>before a word is read.</h3>' +
-            '<p class="cl-pv-sub" style="color:'+p.muted+'">Color is the first thing users perceive — before type, layout, or content. A derived palette builds trust and hierarchy automatically.</p>' +
+            '<p class="cl-pv-sub" style="color:'+p.muted+'">Color is the first thing users perceive. A derived palette builds trust and hierarchy automatically.</p>' +
 
             '<div class="cl-pv-chips">' +
-              '<span style="background:'+p.secondary+';color:'+p.accent+'">✦ Color theory</span>' +
-              '<span style="background:'+p.secondary+';color:'+p.accent+'">✦ Type ramps</span>' +
-              '<span style="background:'+p.secondary+';color:'+p.accent+'">✦ Grid systems</span>' +
-              '<span style="background:'+p.secondary+';color:'+p.accent+'">✦ Visual hierarchy</span>' +
+              '<span style="background:'+p.secondary+';color:'+p.accent+'">Color</span>' +
+              '<span style="background:'+p.secondary+';color:'+p.accent+'">Type</span>' +
+              '<span style="background:'+p.secondary+';color:'+p.accent+'">Layout</span>' +
+              '<span style="background:'+p.secondary+';color:'+p.accent+'">Hierarchy</span>' +
             '</div>' +
 
             '<div class="cl-pv-stats">' +
-              '<div><strong style="color:'+p.text+'">12k+</strong><span style="color:'+p.muted+'">&nbsp;designers</span></div>' +
+              '<div><strong style="color:'+p.text+'">5</strong><span style="color:'+p.muted+'">&nbsp;tokens</span></div>' +
               '<div class="cl-pv-stat-div" style="background:'+p.border+'"></div>' +
-              '<div><strong style="color:'+p.text+'">4.9</strong><span style="color:'+p.muted+'">/5 ★</span></div>' +
-              '<div class="cl-pv-stat-div" style="background:'+p.border+'"></div>' +
-              '<div><strong style="color:'+p.text+'">Free</strong><span style="color:'+p.muted+'">&nbsp;to start</span></div>' +
+              '<div><strong style="color:'+p.text+'">'+p.name+'</strong><span style="color:'+p.muted+'">&nbsp;palette</span></div>' +
             '</div>' +
 
             '<div class="cl-pv-actions">' +
-              '<button class="cl-pv-btn-primary" style="background:'+p.primary+';color:'+textOn+'">Start free →</button>' +
-              '<button class="cl-pv-btn-ghost" style="border-color:'+p.border+';color:'+p.text+'">See examples</button>' +
-              '<span style="margin-left:auto;font-size:0.6rem;color:'+p.accent+';font-weight:600;cursor:default;">View all →</span>' +
+              '<button class="cl-pv-btn-primary" style="background:'+p.primary+';color:'+textOn+'">Apply palette</button>' +
+              '<button class="cl-pv-btn-ghost" style="border-color:'+p.border+';color:'+p.text+'">Export</button>' +
             '</div>' +
           '</div>' +
 
+          // Right: side card
           '<div class="cl-pv-aside" style="background:'+p.surface+';border:1px solid '+p.border+'">' +
-            '<div class="cl-pv-card-label" style="color:'+p.muted+'">Most popular</div>' +
-            '<div class="cl-pv-card-name" style="color:'+p.text+'">Pro</div>' +
-            '<div class="cl-pv-price" style="color:'+p.primary+'">$29 <span style="color:'+p.muted+';font-size:0.6rem;font-weight:400;">/ mo</span></div>' +
-            '<ul class="cl-pv-list" style="color:'+p.muted+'">' +
-              '<li><span style="color:'+p.accent+'">✓</span> Unlimited palettes</li>' +
-              '<li><span style="color:'+p.accent+'">✓</span> Type ramp export</li>' +
-              '<li><span style="color:'+p.accent+'">✓</span> Token generator</li>' +
-              '<li><span style="color:'+p.accent+'">✓</span> Team sharing</li>' +
-            '</ul>' +
-            '<button class="cl-pv-card-btn" style="background:'+p.primary+';color:'+textOn+'">Choose plan</button>' +
+            '<div class="cl-pv-card-label" style="color:'+p.muted+'">Palette</div>' +
+            '<div class="cl-pv-card-name" style="color:'+p.text+'">'+p.name+'</div>' +
+            '<div style="display:flex;flex-direction:column;gap:3px;margin:6px 0;flex:1;">' +
+              p.swatches.map(function(c){
+                return '<div style="display:flex;align-items:center;gap:6px;">' +
+                  '<div style="width:16px;height:16px;border-radius:4px;background:'+c+';border:1px solid '+p.border+';flex-shrink:0;"></div>' +
+                  '<span style="font-size:0.5rem;font-family:var(--font-mono);color:'+p.muted+'">'+c.toUpperCase()+'</span>' +
+                '</div>';
+              }).join('') +
+            '</div>' +
+            '<button class="cl-pv-card-btn" style="background:'+p.primary+';color:'+textOn+'">Copy tokens</button>' +
           '</div>' +
 
         '</div>' +
@@ -299,9 +224,6 @@
   /* ── Update ──────────────────────────────────────────────── */
   function updateAll() {
     var p=PALETTES[state.paletteIdx];
-    var canvas=document.getElementById('cl-wheel');
-    if (canvas) drawWheel(canvas, p);
-    renderSwatches(p);
     renderPreview(p);
   }
 

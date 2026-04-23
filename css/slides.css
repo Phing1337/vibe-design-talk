@@ -702,17 +702,7 @@
   max-width: 480px;
 }
 
-/* Dark gradient behind boat text — on the slide itself to prevent clipping */
-.slide-boat::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  background:
-    radial-gradient(ellipse 65% 90% at 18% 45%, rgba(10, 18, 62, 0.62) 0%, transparent 100%),
-    radial-gradient(ellipse 45% 100% at 0% 50%, rgba(10, 18, 62, 0.5) 0%, transparent 80%);
-  pointer-events: none;
-}
+/* (removed — blue gradient behind boat text) */
 
 .boat-image {
   position: absolute;

@@ -203,7 +203,7 @@
   var cardsBySlideIndex = {}; // maps slide index → thumb element (for zoom-out)
 
   slides.forEach(function(slide, i) {
-    if (i < 2) return;
+    if (i < 3) return; // skip Title, Index, Roadmap
     var beat = slide.getAttribute('data-beat') || '0';
     if (!beatGroups[beat]) {
       beatGroups[beat] = [];
@@ -212,7 +212,6 @@
     beatGroups[beat].push({ slide: slide, index: i });
   });
 
-  var slideCounter = 0;
   beatOrder.forEach(function(beat) {
     var group = document.createElement('div');
     group.className = 'index-beat-group';
@@ -226,9 +225,9 @@
     cardsRow.className = 'index-beat-cards';
 
     beatGroups[beat].forEach(function(entry) {
-      slideCounter++;
       var slide = entry.slide;
       var i = entry.index;
+      var slideNum = i + 1; // match header "N / 38" numbering
       var title = slide.getAttribute('data-title') || '';
 
       var thumb = document.createElement('div');
@@ -258,7 +257,7 @@
       // Label
       var thumbLabel = document.createElement('div');
       thumbLabel.className = 'index-thumb-label';
-      thumbLabel.innerHTML = '<span class="index-thumb-number">' + slideCounter + '</span>' + title;
+      thumbLabel.innerHTML = '<span class="index-thumb-number">' + slideNum + '</span>' + title;
       thumb.appendChild(thumbLabel);
 
       // ── 3D Tilt + Shader + Parallax ──
@@ -358,7 +357,7 @@
     slideNumberEl.addEventListener('click', function() {
       var currentIdx = PRES.currentIndex;
       // If already on index or title, just go to index
-      if (currentIdx <= 1) {
+      if (currentIdx <= 2) {
         PRES.goToSlide(1);
         return;
       }

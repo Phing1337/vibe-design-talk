@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Policy Gradient Methods — REINFORCE</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@700&family=Outfit:wght@400&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            /* ── Light theme (warm cardstock) ── */
+            --bg-base: #f0ebe3;
+            --bg-gradient-a: hsla(210,40%,85%,1);
+            --bg-gradient-a-fade: hsla(210,20%,90%,0);
+            --bg-gradient-b: hsla(350,30%,85%,1);
+            --bg-gradient-b-fade: hsla(350,15%,90%,0);
+            --dot-color: rgba(60,50,40,0.17);
+            --heading-color: #1e1c18;
+            --sub-color: #7a756b;
+            --label-color: rgba(0,0,0,0.3);
+            --topo-opacity: 0.23;
+            --toggle-bg: rgba(0,0,0,0.08);
+            --toggle-hover: rgba(0,0,0,0.14);
+            --toggle-text: #3e3a34;
+            --toggle-active-bg: rgba(0,0,0,0.15);
+        }
+
+        [data-theme="dark"] {
+            --bg-base: #0e1117;
+            --bg-gradient-a: hsla(220,40%,12%,1);
+            --bg-gradient-a-fade: hsla(220,20%,8%,0);
+            --bg-gradient-b: hsla(260,30%,14%,1);
+            --bg-gradient-b-fade: hsla(260,15%,8%,0);
+            --dot-color: rgba(180,200,230,0.10);
+            --heading-color: #e8e4de;
+            --sub-color: #8a9bb0;
+            --label-color: rgba(255,255,255,0.18);
+            --topo-opacity: 0.12;
+            --toggle-bg: rgba(255,255,255,0.08);
+            --toggle-hover: rgba(255,255,255,0.14);
+            --toggle-text: #c0c8d4;
+            --toggle-active-bg: rgba(255,255,255,0.18);
+        }
+
+        html, body {
+            width: 100%; height: 100%;
+            overflow: hidden;
+            font-family: "Outfit", sans-serif;
+        }
+
+        body {
+            background:
+                radial-gradient(circle, var(--dot-color) 0.8px, transparent 0.8px) 0 0 / 28px 28px,
+                radial-gradient(ellipse 140% 140% at 100% 0%, var(--bg-gradient-a) 0%, var(--bg-gradient-a-fade) 55%),
+                radial-gradient(ellipse 90% 90% at 0% 100%, var(--bg-gradient-b) 0%, var(--bg-gradient-b-fade) 40%),
+                var(--bg-base);
+            transition: background-color 0.5s ease;
+        }
+
+        /* ── Topo map overlay ── */
+        .topo-overlay {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none; z-index: 0;
+            opacity: var(--topo-opacity);
+            background: url('map-export (1).svg') center/cover no-repeat;
+            transition: opacity 0.5s ease;
+        }
+
+        [data-theme="dark"] .topo-overlay {
+            filter: invert(1) hue-rotate(180deg);
+        }
+
+        /* ── Simulation canvas ── */
+        #sim-canvas {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1;
+        }
+
+        /* ── Centered title ── */
+        .title-wrap {
+            position: relative; z-index: 2;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            width: 100%; height: 100%;
+            pointer-events: none;
+        }
+
+        .title-wrap h1 {
+            font-family: "Figtree", sans-serif;
+            font-weight: 700;
+            font-size: clamp(2rem, 5vw, 4.5rem);
+            letter-spacing: -0.01em;
+            text-transform: uppercase;
+            color: var(--heading-color);
+            transition: color 0.5s ease;
+        }
+
+        .title-wrap h4 {
+            font-family: "Source Code Pro", monospace;
+            font-weight: 400;
+            font-size: clamp(0.8rem, 1.5vw, 1.2rem);
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--sub-color);
+            margin-top: 0.4em;
+            transition: color 0.5s ease;
+        }
+
+        /* ── Presenter label ── */
+        .presenter-label {
+            position: fixed;
+            right: 8px; top: 50%;
+            transform: translateY(-50%);
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            font-family: "Source Code Pro", monospace;
+            font-size: 35px; font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            white-space: nowrap;
+            color: var(--label-color);
+            pointer-events: none;
+            z-index: 999;
+            transition: color 0.5s ease;
+        }
+
+        /* ── Theme toggle ── */
+        .theme-toggle {
+            position: fixed;
+            top: 16px; right: 16px;
+            z-index: 1000;
+            display: flex; gap: 0;
+            background: var(--toggle-bg);
+            border-radius: 8px;
+            padding: 3px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: background 0.3s ease;
+        }
+
+        .theme-toggle button {
+            border: none; outline: none;
+            background: transparent;
+            color: var(--toggle-text);
+            font-family: "Source Code Pro", monospace;
+            font-size: 13px;
+            letter-spacing: 0.04em;
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex; align-items: center; gap: 6px;
+        }
+
+        .theme-toggle button:hover {
+            background: var(--toggle-hover);
+        }
+
+        .theme-toggle button.active {
+            background: var(--toggle-active-bg);
+            font-weight: 500;
+        }
+
+        .theme-toggle button svg {
+            width: 14px; height: 14px;
+            fill: currentColor;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Topo map overlay -->
+    <div class="topo-overlay"></div>
+
+    <!-- Simulation canvas -->
+    <canvas id="sim-canvas"></canvas>
+
+    <!-- Centered title -->
+    <div class="title-wrap">
+        <h1>Policy Gradient Methods</h1>
+        <h4>Reinforcement Learning</h4>
+    </div>
+
+    <!-- Theme toggle -->
+    <div class="theme-toggle">
+        <button id="btn-light" class="active" onclick="setTheme('light')">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+            Light
+        </button>
+        <button id="btn-dark" onclick="setTheme('dark')">
+            <svg viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+            Dark
+        </button>
+    </div>
+
+    <!-- ═══════════ Scripts ═══════════ -->
+
+    <script>
+    /* ── Theme management ── */
+    function setTheme(theme) {
+        document.documentElement.setAttribute('data-theme', theme);
+        document.getElementById('btn-light').classList.toggle('active', theme === 'light');
+        document.getElementById('btn-dark').classList.toggle('active', theme === 'dark');
+        window._currentTheme = theme;
+        // Re-generate agent colors on theme change
+        if (window._regenerateColors) window._regenerateColors();
+    }
+
+    function getTheme() {
+        return window._currentTheme || 'light';
+    }
+
+    // Init from system preference
+    (function() {
+        let pref = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        setTheme(pref);
+    })();
+    </script>
+
+    <script>
+    /* ── UI utilities ── */
+    CTX = {};
+
+    function ctx_cache(e) {
+        if (typeof e == 'string') e = document.getElementById(e);
+        let just_added = false;
+        if (e.id in CTX == false) {
+            CTX[e.id] = e.getContext('2d');
+            just_added = true;
+        }
+        if (just_added || e.offsetWidth != CTX[e.id].width || e.offsetHeight != CTX[e.id].height) {
+            const dpr = window.devicePixelRatio || 1;
+            e.width = e.offsetWidth;
+            e.height = e.offsetHeight;
+            CTX[e.id].scale(dpr, dpr);
+            CTX[e.id].width = e.offsetWidth;
+            CTX[e.id].height = e.offsetHeight;
+            CTX[e.id].wants_redraw = true;
+        } else {
+            CTX[e.id].wants_redraw = false;
+        }
+        return CTX[e.id];
+    }
+
+    function clear(cvsId) {
+        const e = document.getElementById(cvsId);
+        const ctx = ctx_cache(e);
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    }
+    </script>
+
+    <script>
+    /* ── Math utilities ── */
+    let rows = (A) => A.length;
+    let cols = (A) => A[0].length;
+    let zeros = (r, c) => {
+        let z = Array(r);
+        for (let i = 0; i < r; i++) z[i] = Array(c).fill(0);
+        return z;
+    };
+
+    function matmul(A, B) {
+        if (cols(A) != rows(B)) throw "Matrix dimensions do not match";
+        let C = [];
+        for (let r = 0; r < rows(A); r++) {
+            C.push([]);
+            for (let c = 0; c < cols(B); c++) {
+                let sum = 0;
+                for (let k = 0; k < cols(A); k++) sum += A[r][k] * B[k][c];
+                C[r].push(sum);
+            }
+        }
+        return C;
+    }
+
+    function softmax(z) {
+        let sum = z.reduce((acc, val) => acc + Math.exp(val), 0);
+        return z.map(val => Math.exp(val) / sum);
+    }
+
+    function sample_multinomial(p) {
+        let r = Math.random(), sum = 0;
+        for (let i = 0; i < p.length; i++) {
+            sum += p[i];
+            if (r < sum) return i;
+        }
+    }
+
+    function dist(p0, p1) {
+        return Math.sqrt(Math.pow(p0[0] - p1[0], 2) + Math.pow(p0[1] - p1[1], 2));
+    }
+
+    function vecsub(a, b) {
+        let c = [];
+        for (let i = 0; i < a.length; i++) c.push(a[i] - b[i]);
+        return c;
+    }
+
+    function vecscl(a, s) {
+        let b = [];
+        for (let i = 0; i < a.length; i++) b.push(a[i] * s);
+        return b;
+    }
+
+    function vecdot(a, b) {
+        let d = 0;
+        for (let i = 0; i < a.length; i++) d += a[i] * b[i];
+        return d;
+    }
+
+    function vecmag(a) { return Math.sqrt(vecdot(a, a)); }
+    </script>
+
+    <script>
+    /* ── Puck simulation object ── */
+    let puck = {
+        w: 100,
+        h: 100,
+        step_size: 8,
+        set_step_size: function(s) {
+            this.step_size = s;
+            this._deltas = null;
+        },
+        deltas: function() {
+            if (!this._deltas) {
+                this._deltas = [];
+                for (let i = 0; i < 8; i++) {
+                    let t = (i / 8) * Math.PI * 2;
+                    this._deltas.push([Math.cos(t) * this.step_size, Math.sin(t) * this.step_size]);
+                }
+            }
+            return this._deltas;
+        },
+        trained_theta: [[8.66745740506822,5.996406710365718,-0.15365873881940448,-6.311126006483258,-8.81864980406707,-6.359052573470944,-0.08042535100680422,6.072945095631422],[0.08889004751905238,6.09754307857545,8.8735708505469,6.268372669526972,0.07562654356798991,-6.035568669418457,-8.716570151762186,-6.128285213749267]],
+        phi: function(x) {
+            let dx = x[2] - x[0], dy = x[3] - x[1];
+            let mag = Math.sqrt(dx * dx + dy * dy) + 0.1;
+            let s = 1 / mag;
+            return [dx * s, dy * s];
+        },
+        pi2: function(theta, x) {
+            let phi = puck.phi(x);
+            let z = matmul([phi], theta)[0];
+            let pr = softmax(z);
+            let a_idx = sample_multinomial(pr);
+            return { pr: [pr], idx: [a_idx] };
+        },
+        dist_to_target: function(x) {
+            return dist([x[0], x[1]], [x[2], x[3]]);
+        },
+        initial_state: function(left_top, right_bottom, randomize_target, opts) {
+            opts = opts || {};
+            left_top = left_top || [0, 0];
+            right_bottom = right_bottom || [500, 500];
+            let r = Math.random;
+            let w = right_bottom[0] - left_top[0];
+            let h = right_bottom[1] - left_top[1];
+            let o_x = left_top[0], o_y = left_top[1];
+            let min_dist = opts.min_spawn_dist || 10;
+            let targ_x = randomize_target ? r() * w : w / 2;
+            let targ_y = randomize_target ? r() * h : h / 2;
+            let x_0 = [o_x + r() * w, o_y + r() * h, o_x + targ_x, o_y + targ_y];
+            if (!randomize_target) {
+                let rad = 10 + r() * 100;
+                let t = r() * 2 * Math.PI;
+                x_0 = [o_x + targ_x + Math.cos(t) * rad, o_y + targ_y + Math.sin(t) * rad, o_x + targ_x, o_y + targ_y];
+            }
+            for (let i = 0; i < 50 && puck.dist_to_target(x_0) <= min_dist; i++) {
+                x_0 = [o_x + r() * w, o_y + r() * h, o_x + targ_x, o_y + targ_y];
+            }
+            return x_0;
+        },
+        sample_trajectory: function(theta, left_top, right_bottom, randomize_target, opts) {
+            opts = opts || {};
+            let x_t = opts.initial_x ? [...opts.initial_x] : puck.initial_state(left_top, right_bottom, randomize_target, opts);
+            let time_steps = opts.time_steps ? opts.time_steps : 5 * 60;
+            let T = { X: [], A_pr: [], A: [], R: [], G: [] };
+            for (let t = 0; t < time_steps; t++) {
+                let a_t = puck.pi2(theta, x_t);
+                let r_t = puck.step2(T, x_t, a_t, 0.99);
+                if (r_t == null) break;
+                x_t = T.X[t];
+            }
+            T.G = new Array(T.R.length);
+            let G_t = 0;
+            for (let t = T.R.length - 1; t >= 0; t--) {
+                G_t += T.R[t];
+                T.G[t] = G_t;
+            }
+            return T;
+        },
+        reward: function(x_t, x_t1) {
+            var move = [x_t1[0] - x_t[0], x_t1[1] - x_t[1]];
+            let move_mag = vecmag(move);
+            move = vecscl(move, 1 / move_mag);
+            var to_target = [x_t1[2] - x_t1[0], x_t1[3] - x_t1[1]];
+            let to_target_mag = vecmag(to_target);
+            to_target = vecscl(to_target, 1 / (Math.max(to_target_mag, 0.001)));
+            let alignment = Math.pow(vecdot(move, to_target), 64);
+            let d0 = puck.dist_to_target(x_t);
+            let d1 = puck.dist_to_target(x_t1);
+            return (d0 - d1) * alignment;
+        },
+        step2: function(T, x_t, a_t, gamma) {
+            let x_t1 = zeros(4, 1);
+            x_t1[0] = x_t[0] + puck.deltas()[a_t.idx[0]][0];
+            x_t1[1] = x_t[1] + puck.deltas()[a_t.idx[0]][1];
+            x_t1[2] = x_t[2];
+            x_t1[3] = x_t[3];
+            let d1 = puck.dist_to_target(x_t1);
+            let r_t = puck.reward(x_t, x_t1);
+            if (d1 < 5) return null;
+            T.X.push(x_t1);
+            T.R.push(r_t);
+            T.A_pr.push(a_t.pr);
+            T.A.push(a_t.idx);
+            return r_t;
+        },
+        draw_puck: function(ctx, x, y, opts) {
+            opts = opts || {};
+            let baseAlpha = opts._globalAlpha != null ? opts._globalAlpha : 1;
+            ctx.globalAlpha = baseAlpha;
+            ctx.beginPath();
+            ctx.strokeStyle = opts.puck_color || '#333';
+            ctx.lineWidth = opts.puck_line_width || 1;
+            ctx.arc(x, y, opts.puck_radius || 4, 0, 2 * Math.PI);
+            ctx.stroke();
+            ctx.lineWidth = 1;
+            ctx.globalAlpha = 1;
+        },
+        draw: function(cvsId, time, trajectory, left_top, right_bottom, opts) {
+            opts = opts || {};
+            const e = document.getElementById(cvsId);
+            const ctx = ctx_cache(e);
+            const dpr = window.devicePixelRatio || 1;
+            time = Math.min(time, trajectory.X.length - 1);
+            let state = trajectory.X[time];
+            if (!left_top) left_top = [0, 0];
+            if (!right_bottom) right_bottom = [ctx.canvas.width / dpr, ctx.canvas.height / dpr];
+            puck.w = right_bottom[0] - left_top[0];
+            puck.h = right_bottom[1] - left_top[1];
+            if (state == undefined) return;
+
+            // draw target
+            let tsize = opts.target_size || 5;
+            let baseAlpha = opts._globalAlpha != null ? opts._globalAlpha : 1;
+            ctx.globalAlpha = baseAlpha;
+            ctx.beginPath();
+            ctx.strokeStyle = opts.target_color || '#333';
+            ctx.lineWidth = opts.target_line_width || 1;
+            ctx.moveTo(state[2] - tsize, state[3] - tsize);
+            ctx.lineTo(state[2] + tsize, state[3] + tsize);
+            ctx.moveTo(state[2] - tsize, state[3] + tsize);
+            ctx.lineTo(state[2] + tsize, state[3] - tsize);
+            ctx.stroke();
+            ctx.lineWidth = 1;
+
+            // draw path with trail fade
+            if (opts.trail_fade) {
+                let fade_len = opts.trail_fade_length || 80;
+                ctx.lineWidth = opts.path_line_width || 1;
+                ctx.setLineDash(opts.path_dash || [5, 15]);
+                for (let t = 1; t <= time; t++) {
+                    let age = time - t;
+                    let alpha = Math.max(0, 1 - (age / fade_len)) * baseAlpha;
+                    ctx.globalAlpha = alpha;
+                    ctx.strokeStyle = opts.path_color || '#aaa';
+                    ctx.beginPath();
+                    ctx.moveTo(trajectory.X[t - 1][0], trajectory.X[t - 1][1]);
+                    ctx.lineTo(trajectory.X[t][0], trajectory.X[t][1]);
+                    ctx.stroke();
+                }
+                ctx.setLineDash([]);
+                ctx.globalAlpha = 1;
+            } else {
+                ctx.beginPath();
+                ctx.setLineDash(opts.path_dash || [5, 15]);
+                ctx.lineWidth = opts.path_line_width || 1;
+                ctx.strokeStyle = opts.path_color || '#aaa';
+                let x = trajectory.X[0];
+                ctx.moveTo(x[0], x[1]);
+                for (let t = 1; t < time; t++) {
+                    x = trajectory.X[t];
+                    ctx.lineTo(x[0], x[1]);
+                }
+                ctx.setLineDash([]);
+                ctx.stroke();
+            }
+
+            puck.draw_puck(ctx, state[0], state[1], opts);
+            ctx.globalAlpha = 1;
+        }
+    };
+    </script>
+
+    <script>
+    /* ── Multi-agent simulation ── */
+    (function() {
+        const cvs = document.getElementById('sim-canvas');
+        const COUNT = 16;
+        let trajectories = [];
+        let times = [];
+        let optsPerAgent = [];
+        const FADE_OUT_FRAMES = 20;
+        let fadeTimers = [];
+
+        /* ── Color palette per theme ── */
+        const PALETTES = {
+            light: {
+                puck:   '#CC5500',
+                path:   '#E8860C',
+                target: '#D2691E'
+            },
+            dark: {
+                puck:   '#4A9EE8',
+                path:   '#3B8DD6',
+                target: '#5BB0F0'
+            }
+        };
+
+        function hueShift(hex, shift) {
+            let r = parseInt(hex.slice(1, 3), 16) / 255;
+            let g = parseInt(hex.slice(3, 5), 16) / 255;
+            let b = parseInt(hex.slice(5, 7), 16) / 255;
+            let max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+            let h = 0, s = max ? d / max : 0, v = max;
+            if (d) {
+                if (max === r) h = (g - b) / d + (g < b ? 6 : 0);
+                else if (max === g) h = (b - r) / d + 2;
+                else h = (r - g) / d + 4;
+                h *= 60;
+            }
+            h = (h + shift + 360) % 360;
+            let c = v * s, x = c * (1 - Math.abs((h / 60) % 2 - 1)), m = v - c;
+            let r1, g1, b1;
+            if (h < 60) { r1 = c; g1 = x; b1 = 0; }
+            else if (h < 120) { r1 = x; g1 = c; b1 = 0; }
+            else if (h < 180) { r1 = 0; g1 = c; b1 = x; }
+            else if (h < 240) { r1 = 0; g1 = x; b1 = c; }
+            else if (h < 300) { r1 = x; g1 = 0; b1 = c; }
+            else { r1 = c; g1 = 0; b1 = x; }
+            let toHex = v => ('0' + Math.round((v + m) * 255).toString(16)).slice(-2);
+            return '#' + toHex(r1) + toHex(g1) + toHex(b1);
+        }
+
+        function makeOpts() {
+            let theme = getTheme();
+            let pal = PALETTES[theme];
+            // Light: shift toward red only (no yellow). Dark: shift ±30° around blue
+            let shift = theme === 'dark'
+                ? (Math.random() - 0.5) * 60
+                : -(Math.random() * 45);
+            return {
+                puck_color: hueShift(pal.puck, shift),
+                puck_radius: 8,
+                puck_line_width: 2,
+                path_color: hueShift(pal.path, shift),
+                path_line_width: 2.5,
+                path_dash: [],
+                target_color: hueShift(pal.target, shift),
+                target_size: 12,
+                target_line_width: 2,
+                trail_fade: true,
+                trail_fade_length: 60
+            };
+        }
+
+        function spawnOne() {
+            let w = cvs.offsetWidth || cvs.clientWidth || 960;
+            let h = cvs.offsetHeight || cvs.clientHeight || 700;
+            return puck.sample_trajectory(puck.trained_theta, [0, 0], [w, h], true, {
+                time_steps: 6 * 60,
+                min_spawn_dist: Math.min(w, h) * 0.25
+            });
+        }
+
+        for (let i = 0; i < COUNT; i++) {
+            trajectories.push(null);
+            times.push(0);
+            optsPerAgent.push(makeOpts());
+            fadeTimers.push(-1);
+        }
+
+        // Regenerate all agent colors on theme change
+        window._regenerateColors = function() {
+            for (let i = 0; i < COUNT; i++) {
+                optsPerAgent[i] = makeOpts();
+            }
+        };
+
+        setInterval(() => {
+            clear('sim-canvas');
+            for (let i = 0; i < COUNT; i++) {
+                if (!trajectories[i]) trajectories[i] = spawnOne();
+
+                let isFading = fadeTimers[i] >= 0;
+                if (isFading) {
+                    optsPerAgent[i]._globalAlpha = 1 - (fadeTimers[i] / FADE_OUT_FRAMES);
+                    fadeTimers[i]++;
+                    if (fadeTimers[i] > FADE_OUT_FRAMES) {
+                        trajectories[i] = spawnOne();
+                        optsPerAgent[i] = makeOpts();
+                        times[i] = 0;
+                        fadeTimers[i] = -1;
+                        continue;
+                    }
+                }
+
+                puck.draw('sim-canvas', times[i], trajectories[i], null, null, optsPerAgent[i]);
+
+                if (!isFading) {
+                    times[i]++;
+                    if (times[i] >= trajectories[i].X.length) {
+                        fadeTimers[i] = 0;
+                    }
+                }
+            }
+        }, 100);
+    })();
+    </script>
+
+</body>
+</html>

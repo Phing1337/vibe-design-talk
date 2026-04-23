@@ -57,15 +57,13 @@
   }
   updateAmbilight();
 
-  // Auto play/pause when slide becomes active/inactive
+  // Pause video when leaving slide — user clicks play manually
   var videoSlide = main.closest('.slide');
   if (videoSlide) {
     var observer = new MutationObserver(function(mutations) {
       mutations.forEach(function(m) {
         if (m.attributeName === 'class') {
-          if (videoSlide.classList.contains('active')) {
-            main.play().catch(function(){});
-          } else {
+          if (!videoSlide.classList.contains('active')) {
             main.pause();
           }
         }

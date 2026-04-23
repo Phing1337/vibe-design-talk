@@ -150,7 +150,7 @@
 
     var HALF = 310; /* ms per half of the flip */
 
-    /* ── Card flip — half-flip technique (works with overflow:hidden ancestor) ── */
+    /* ── Card flip— half-flip technique (works with overflow:hidden ancestor) ── */
     function flip(toBack) {
       if (!panel || !track || isAnimating) return;
       isAnimating = true;
