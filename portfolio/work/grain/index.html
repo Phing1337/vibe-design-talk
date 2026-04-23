@@ -3,28 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Lorem Ipsum · Project Beta</title>
+<title>Nick McVey · Mouse Mode</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<script>(function(){try{var d=document.documentElement.dataset,g=function(k){return localStorage.getItem(k)},M={compact:['sm','compact'],normal:['md','normal'],airy:['lg','airy']};var t=g('res.theme');if(t)d.theme=t;var s=g('res.size')||'airy';if(M[s]){d.size=s;d.text=M[s][0];d.density=M[s][1];}}catch(e){}})();</script>
+<script>(function(){try{var d=document.documentElement.dataset,g=function(k){return localStorage.getItem(k)},M={compact:['sm','compact'],normal:['md','normal'],airy:['lg','airy']};var t=g('nick.theme');if(t)d.theme=t;var s=g('nick.size')||'airy';if(M[s]){d.size=s;d.text=M[s][0];d.density=M[s][1];}}catch(e){}})();</script>
 <link rel="stylesheet" href="../../_lib/shell.css">
 </head>
 <body class="page-work page-case">
 <div class="shell">
 
   <aside class="rail">
-    <nav class="crumbs" aria-label="breadcrumb"><a href="../../../../">studio</a><span class="sep">/</span><a href="../../">resident</a><span class="sep">/</span><a href="../">work</a><span class="sep">/</span><span class="here">project-beta</span></nav>
-    <div class="brand"><a href="../../"><span class="dot"></span> lorem ipsum</a></div>
-    <div class="brand-sub">designer<br>at studio</div>
+    <nav class="crumbs" aria-label="breadcrumb"><a href="../../">nick</a><span class="sep">/</span><a href="../">work</a><span class="sep">/</span><span class="here">tide</span></nav>
+    <div class="brand"><a href="../../"><span class="dot"></span> nick mcvey</a></div>
+    <div class="brand-sub">designer<br>at xbox</div>
     <nav class="primary">
       <a href="../../"><span class="idx">00</span> intro</a>
       <a href="../../work/" class="active"><span class="idx">01</span> work &amp; knowledge</a>
-      <a href="../../art/"><span class="idx">02</span> art</a>
-      <a href="../../about/"><span class="idx">03</span> about</a>
+      <a href="../../about/"><span class="idx">02</span> about</a>
     </nav>
     <div class="rail-foot">
-      <div class="rail-blurb"><a href="../../../../">site</a>. lorem ipsum dolor sit amet, consectetur adipiscing elit.</div>
+      
       <div class="display-menu" id="displayMenu">
         <button class="display-trigger" type="button" aria-haspopup="true" aria-expanded="false">
           <span class="dot"></span> display
@@ -56,41 +55,40 @@
   <main>
     <header class="page-head case-head">
       <span class="label" data-reveal>// case study</span>
-      <h1 data-reveal>Project Placeholder</h1>
+      <h1 data-reveal>Grain</h1>
     </header>
 
     <article class="case">
-      <p class="case-lede" data-reveal>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      <p class="case-lede" data-reveal>A touch-first input study built to still feel precise on a trackpad.</p>
 
       <aside class="case-links-block">
         <div class="case-links-label">links</div>
         <div class="case-links">
           <a class="case-link" href="#"><span class="case-link-kind">figma</span> Figma file <span class="arr">↗</span></a>
           <a class="case-link" href="#"><span class="case-link-kind">proto</span> Prototype <span class="arr">↗</span></a>
-          <a class="case-link" href="#"><span class="case-link-kind">repo</span> Repo <span class="arr">↗</span></a>
         </div>
       </aside>
 
       <div class="case-body">
-        <p class="case-intro" data-reveal>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+        <p class="case-intro" data-reveal>Grain is a working interaction model that treats touch as the primary input but degrades gracefully when a precise pointer is available. The goal: never make a touch user feel like they got the lesser experience.</p>
 
-      <h2 data-reveal>Lorem ipsum</h2>
+      <h2 data-reveal>The problem</h2>
 
-      <p data-reveal>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+      <p data-reveal>Most apps designed touch-first lose precision when you bring a pointer in; most apps designed pointer-first feel cramped on touch. Choosing one is the easy answer; doing both is where the work is.</p>
 
-      <figure class="case-fig"><div class="case-fig-placeholder">placeholder</div></figure>
+      <figure class="case-fig"><div class="case-fig-placeholder">thumb zones · overlay</div></figure>
 
-      <h2 data-reveal>Dolor sit amet</h2>
+      <h2 data-reveal>What we explored</h2>
 
-      <p data-reveal>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.</p>
+      <p data-reveal>Hit targets sized to thumbs, gestures that map cleanly to pointer equivalents, and a focus model that does not require knowing whether the user touched or clicked. Plus a lot of measurement.</p>
 
-      <figure class="case-fig"><div class="case-fig-placeholder">placeholder</div></figure>
+      <figure class="case-fig"><div class="case-fig-placeholder">gesture map · primary actions</div></figure>
 
-      <h2 data-reveal>Consectetur adipiscing</h2>
+      <h2 data-reveal>Where it landed</h2>
 
-      <p data-reveal>Sunt in culpa qui officia deserunt mollit anim id est laborum. Lorem ipsum dolor sit amet.</p>
+      <p data-reveal>A short kit of components, a tuning page for hit targets and gesture thresholds, and a cheat sheet of the things that go wrong when you try to support both inputs in the same surface.</p>
 
-        <p class="case-footnote" data-reveal>Placeholder content.</p>
+        <p class="case-footnote" data-reveal>This page is a placeholder writeup — the longer version lives elsewhere.</p>
       </div>
 
       <nav class="case-foot">

@@ -21,8 +21,8 @@
   const SIZE_TO_TEXT    = { compact: 'sm', normal: 'md', airy: 'lg' };
   const SIZE_TO_DENSITY = { compact: 'compact', normal: 'normal', airy: 'airy' };
 
-  const KEY_THEME = 'res.theme';
-  const KEY_SIZE  = 'res.size';
+  const KEY_THEME = 'nick.theme';
+  const KEY_SIZE  = 'nick.size';
 
   const root = document.documentElement;
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
