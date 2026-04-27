@@ -275,6 +275,7 @@
       <div class="de-tabs">
         <button class="de-tab" id="deTabSlide" onclick="window._deShowTab('slide')">🔍 Slide</button>
         <button class="de-tab active" id="deTabLayers" onclick="window._deShowTab('layers')">🗂 Layers</button>
+        <button class="de-tab" id="deTabAnnotate" onclick="window._deShowTab('annotate')">✏️ Annotate</button>
       </div>
       <div id="deSlidePanel" style="display:none;">
         <button class="de-refresh-btn" onclick="window._deRefreshSlide()">↻ refresh</button>
@@ -286,6 +287,7 @@
         <div id="deLayersBreadcrumb"></div>
         <div id="deLayersTree" style="color:#555;font-size:11px;">Loading…</div>
       </div>
+      <div id="deAnnotatePanel" style="display:none;"></div>
       <div class="de-output" id="deOutput"></div>
     `;
     document.body.appendChild(panel);
@@ -363,12 +365,27 @@
     // Tab switcher
     window._deShowTab = function(tab) {
       activeTab = tab;
-      document.getElementById('deTabSlide').classList.toggle('active',  tab === 'slide');
-      document.getElementById('deTabLayers').classList.toggle('active', tab === 'layers');
-      document.getElementById('deSlidePanel').style.display  = tab === 'slide'  ? 'block' : 'none';
-      document.getElementById('deLayersPanel').style.display = tab === 'layers' ? 'block' : 'none';
+      document.getElementById('deTabSlide').classList.toggle('active',    tab === 'slide');
+      document.getElementById('deTabLayers').classList.toggle('active',   tab === 'layers');
+      document.getElementById('deTabAnnotate').classList.toggle('active', tab === 'annotate');
+      document.getElementById('deSlidePanel').style.display    = tab === 'slide'    ? 'block' : 'none';
+      document.getElementById('deLayersPanel').style.display   = tab === 'layers'   ? 'block' : 'none';
+      document.getElementById('deAnnotatePanel').style.display = tab === 'annotate' ? 'block' : 'none';
       if (tab === 'slide')  { refreshSlideDiag(); buildTokenControls(); }
       if (tab === 'layers') buildLayerTree();
+      if (tab === 'annotate') {
+        if (window.PRES && window.PRES.annotate) {
+          window.PRES.annotate.init();
+          window.PRES.annotate.show();
+          window.PRES.annotate.buildToolbar(document.getElementById('deAnnotatePanel'));
+        }
+        deselectElement();
+        if (highlight) highlight.style.display = 'none';
+      } else {
+        if (window.PRES && window.PRES.annotate) {
+          window.PRES.annotate.hide();
+        }
+      }
     };
     window._deRefreshSlide = function() { refreshSlideDiag(); buildTokenControls(); };
   }
@@ -775,6 +792,7 @@
   // ── Hover ─────────────────────────────────────────────────────
   function onHover(e) {
     if (!active || !highlight) return;
+    if (activeTab === 'annotate') { highlight.style.display = 'none'; return; }
     if (panel    && panel.contains(e.target))    { highlight.style.display = 'none'; return; }
     if (flyout   && flyout.contains(e.target))   return;
     if (overlay  && overlay.contains(e.target))  return;
@@ -791,6 +809,7 @@
   // ── Main click-to-select ──────────────────────────────────────
   function onMouseDown(e) {
     if (!active || e.button !== 0) return;
+    if (activeTab === 'annotate') return;
     if (panel    && panel.contains(e.target))    return;
     if (flyout   && flyout.contains(e.target))   return;
     if (overlay  && overlay.contains(e.target))  return;  // handles & selbox handled separately
@@ -1093,6 +1112,11 @@
       window.removeEventListener('scroll', onScroll, true);
       window.removeEventListener('resize', onResize);
       document.removeEventListener('slidechange', onSlideChange);
+      // Clean up annotation overlay
+      if (window.PRES && window.PRES.annotate) {
+        window.PRES.annotate.hide();
+        window.PRES.annotate.clear();
+      }
       // Clean up any active drags
       document.removeEventListener('mousemove', onHandleDrag, true);
       document.removeEventListener('mouseup',   onHandleUp,   true);
