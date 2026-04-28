@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wide & Deep — 3D Exploration</title>
+  <link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0f0d0b; --signal: #c43e1c; --text: #f0ede8;
+      --text-dim: rgba(255,255,255,0.25);
+      --font-display: 'Young Serif', Georgia, serif;
+      --font-body: 'Inter', sans-serif;
+    }
+    body {
+      background: var(--bg); color: var(--text); font-family: var(--font-body);
+      margin: 0; padding: 0; overflow: hidden; width: 100vw; height: 100vh;
+    }
+    #viewer {
+      position: absolute; inset: 0; width: 100%; height: 100%; cursor: grab;
+    }
+    #viewer:active { cursor: grabbing; }
+
+    /* Floating header */
+    .sim-header {
+      position: absolute; top: 16px; left: 0; right: 0; text-align: center;
+      z-index: 10; pointer-events: none;
+    }
+    .sim-label {
+      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--signal); margin-bottom: 4px;
+    }
+    .sim-title {
+      font-family: var(--font-display); font-size: 1.6rem;
+      font-weight: 400; color: var(--text); letter-spacing: -0.02em;
+    }
+
+    /* Floating bottom panel */
+    .bottom-panel {
+      position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+      z-index: 10; display: flex; flex-direction: column; align-items: center; gap: 8px;
+      background: rgba(15, 13, 11, 0.8); backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.08); border-radius: 14px;
+      padding: 12px 20px;
+    }
+
+    .sim-controls {
+      display: flex; align-items: center; gap: 12px;
+      justify-content: center; flex-wrap: wrap;
+    }
+    .sim-btn {
+      font-family: var(--font-body); font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.03em; color: rgba(255,255,255,0.5);
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px; padding: 8px 16px; cursor: pointer;
+      transition: all 0.18s ease; user-select: none;
+    }
+    .sim-btn:hover {
+      color: var(--signal); background: rgba(196,62,28,0.06);
+      border-color: rgba(196,62,28,0.25);
+    }
+    .sim-btn--primary {
+      color: #fff; background: var(--signal); border-color: var(--signal);
+    }
+    .sim-btn--primary:hover {
+      background: #d4502e; border-color: #d4502e; color: #fff;
+    }
+    .sim-divider { width: 1px; height: 20px; background: rgba(255,255,255,0.08); }
+    .sim-status {
+      font-size: 1rem; color: rgba(255,255,255,0.4);
+      letter-spacing: 0.04em; text-align: center;
+    }
+    .sim-status strong { color: var(--signal); font-weight: 700; font-size: 1.3rem; }
+    .gen-counter {
+      font-size: 1rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: rgba(255,255,255,0.35);
+    }
+    .gen-counter strong { color: var(--signal); font-size: 1.5rem; }
+    .hint {
+      position: absolute; bottom: 12px; left: 0; right: 0; text-align: center;
+      font-size: 0.55rem; color: rgba(255,255,255,0.12); letter-spacing: 0.06em;
+      pointer-events: none;
+    }
+    /* ── Constraint slider ── */
+    .slider-row {
+      display: flex; align-items: center; gap: 8px;
+      justify-content: center;
+    }
+    .slider-label {
+      font-size: 0.58rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: rgba(255,255,255,0.3); min-width: 42px;
+    }
+    .slider-tag {
+      font-size: 0.55rem; color: rgba(255,255,255,0.2);
+      letter-spacing: 0.04em; min-width: 28px; text-align: center;
+    }
+    .slider-value {
+      font-size: 0.65rem; font-weight: 700; color: var(--signal);
+      min-width: 32px; text-align: right; font-variant-numeric: tabular-nums;
+    }
+    .constraint-slider {
+      -webkit-appearance: none; appearance: none;
+      width: 120px; height: 3px; border-radius: 2px;
+      background: rgba(255,255,255,0.08); outline: none; cursor: pointer;
+    }
+    .constraint-slider::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: var(--signal); border: 2px solid rgba(255,255,255,0.2);
+      cursor: pointer; transition: transform 0.12s ease;
+    }
+    .constraint-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
+    .constraint-slider::-moz-range-thumb {
+      width: 16px; height: 16px; border-radius: 50%;
+      background: var(--signal); border: 2px solid rgba(255,255,255,0.2);
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 3D viewer fills entire page -->
+  <div id="viewer"></div>
+
+  <!-- Floating header -->
+  <div class="sim-header">
+    <div class="sim-label">Goals + Constraints</div>
+    <div class="sim-title">Wide, then deep.</div>
+  </div>
+
+  <!-- Floating bottom panel -->
+  <div class="bottom-panel">
+    <div class="sim-controls">
+      <button class="sim-btn" id="btnBreadth">↔ Breadth</button>
+      <button class="sim-btn" id="btnDepth">↕ Depth</button>
+      <div class="sim-divider"></div>
+      <div class="slider-row">
+        <label class="slider-label">Count</label>
+        <input type="range" id="countSlider" class="constraint-slider" min="1" max="30" value="1" step="1">
+        <span class="slider-value" id="countVal">1</span>
+      </div>
+      <div class="sim-divider"></div>
+      <button class="sim-btn" id="btnReset">Reset</button>
+      <div class="sim-divider"></div>
+      <div class="gen-counter" id="genCounter">Generations <strong>0</strong></div>
+    </div>
+    <div style="display:flex;gap:20px;align-items:center;">
+      <div class="slider-row">
+        <label class="slider-label">Radius</label>
+        <input type="range" id="constraintSlider" class="constraint-slider" min="0" max="80" value="0" step="1">
+        <span class="slider-value" id="constraintVal">100%</span>
+      </div>
+      <div class="slider-row">
+        <label class="slider-label">Angle</label>
+        <input type="range" id="angleSlider" class="constraint-slider" min="10" max="360" value="360" step="5">
+        <span class="slider-value" id="angleVal">360°</span>
+      </div>
+      <div class="slider-row">
+        <label class="slider-label">Direction</label>
+        <input type="range" id="dirSlider" class="constraint-slider" min="0" max="360" value="0" step="5">
+        <span class="slider-value" id="dirVal">0°</span>
+      </div>
+    </div>
+    <div class="sim-status" id="status">Explore the idea space</div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+<script>
+(function () {
+  'use strict';
+
+  var container = document.getElementById('viewer');
+  var W = container.clientWidth || 820;
+  var H = container.clientHeight || 580;
+  var DISC_R = 5;
+
+  // ── Scene ──
+  var scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x0f0d0b);
+  scene.fog = new THREE.FogExp2(0x0f0d0b, 0.03);
+
+  var camera = new THREE.PerspectiveCamera(40, W / H, 0.01, 500);
+  camera.position.set(5, 9, 11);
+  camera.lookAt(0, 1, 0);
+
+  var renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setSize(W, H);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  container.appendChild(renderer.domElement);
+  renderer.domElement.style.borderRadius = '16px';
+
+  // Resize handler
+  window.addEventListener('resize', function () {
+    W = container.clientWidth || 820;
+    H = container.clientHeight || 580;
+    camera.aspect = W / H;
+    camera.updateProjectionMatrix();
+    renderer.setSize(W, H);
+  });
+
+  var controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = false;
+  controls.minDistance = 2;
+  controls.maxDistance = 50;
+  controls.maxPolarAngle = Math.PI * 0.48;
+  controls.target.set(0, 1, 0);
+  controls.autoRotate = false;
+  controls.enablePan = true;
+  controls.mouseButtons = {
+    LEFT: THREE.MOUSE.ROTATE,
+    MIDDLE: THREE.MOUSE.PAN,
+    RIGHT: THREE.MOUSE.PAN
+  };
+  controls.panSpeed = 1.2;
+
+  // ── Bright lighting ──
+  scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+  var dir1 = new THREE.DirectionalLight(0xf0ede8, 0.9);
+  dir1.position.set(6, 14, 8);
+  scene.add(dir1);
+  var dir2 = new THREE.DirectionalLight(0x8888bb, 0.35);
+  dir2.position.set(-5, 8, -6);
+  scene.add(dir2);
+
+  // ── Disc ──
+  var disc = new THREE.Mesh(
+    new THREE.CylinderGeometry(DISC_R, DISC_R, 0.08, 80),
+    new THREE.MeshStandardMaterial({ color: 0x1e1a16, roughness: 0.8, metalness: 0.05 })
+  );
+  disc.position.y = -0.04;
+  scene.add(disc);
+
+  // Edge
+  var edge = new THREE.Mesh(
+    new THREE.TorusGeometry(DISC_R, 0.03, 8, 128),
+    new THREE.MeshBasicMaterial({ color: 0x555555 })
+  );
+  edge.rotation.x = Math.PI / 2;
+  edge.position.y = 0.01;
+  scene.add(edge);
+
+  // ── Constraint ring — visible boundary that shrinks ──
+  var constraintPct = 0; // 0 = full disc, 80 = small area
+  var constraintRing = new THREE.Mesh(
+    new THREE.TorusGeometry(DISC_R, 0.035, 12, 128),
+    new THREE.MeshBasicMaterial({ color: 0xf0ede8, transparent: true, opacity: 0 })
+  );
+  constraintRing.rotation.x = Math.PI / 2;
+  constraintRing.position.y = 0.06;
+  scene.add(constraintRing);
+
+  // Excluded area outside constraint — dark overlay (not orange)
+  var constraintFill = new THREE.Mesh(
+    new THREE.RingGeometry(0, DISC_R, 64),
+    new THREE.MeshBasicMaterial({
+      color: 0x000000, transparent: true, opacity: 0, side: THREE.DoubleSide
+    })
+  );
+  constraintFill.rotation.x = -Math.PI / 2;
+  constraintFill.position.y = 0.055;
+  scene.add(constraintFill);
+
+  function getConstraintRadius() {
+    // 0% constraint = full disc, 80% = 20% of disc
+    return DISC_R * (1 - constraintPct / 100);
+  }
+
+  function updateConstraintVisuals() {
+    var cr = getConstraintRadius();
+    var t = constraintPct / 80; // 0..1
+
+    // Boundary ring — subtle white line showing the spawnable edge
+    constraintRing.geometry.dispose();
+    constraintRing.geometry = new THREE.TorusGeometry(cr, 0.025, 12, 128);
+    constraintRing.material.opacity = t * 0.4;
+
+    // Dark overlay on excluded outer area
+    constraintFill.geometry.dispose();
+    constraintFill.geometry = new THREE.RingGeometry(cr, DISC_R, 64);
+    constraintFill.material.opacity = t * 0.55;
+  }
+
+  // ── Angle cone constraint ──
+  var coneAngleDeg = 360; // full circle
+  var coneCenterAngle = 0; // direction the cone faces (radians), 0 = +X
+
+  // Cone wedge visual — dark overlay on the BLOCKED angle area
+  var coneMesh = new THREE.Mesh(
+    new THREE.CircleGeometry(DISC_R, 64, 0, Math.PI * 2),
+    new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0, side: THREE.DoubleSide })
+  );
+  coneMesh.rotation.x = Math.PI / 2;
+  coneMesh.position.y = 0.052;
+  scene.add(coneMesh);
+
+  // Edge lines — subtle white
+  var coneLineMat = new THREE.LineBasicMaterial({ color: 0xf0ede8, transparent: true, opacity: 0 });
+  var coneLine1 = new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(0, 0.06, 0), new THREE.Vector3(DISC_R, 0.06, 0)
+  ]), coneLineMat.clone());
+  var coneLine2 = new THREE.Line(new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(0, 0.06, 0), new THREE.Vector3(DISC_R, 0.06, 0)
+  ]), coneLineMat.clone());
+  scene.add(coneLine1);
+  scene.add(coneLine2);
+
+  function getConeAngles() {
+    var half = (coneAngleDeg / 2) * Math.PI / 180;
+    return { min: coneCenterAngle - half, max: coneCenterAngle + half, half: half };
+  }
+
+  function randomAngleInCone() {
+    if (coneAngleDeg >= 360) return Math.random() * Math.PI * 2;
+    var cone = getConeAngles();
+    return cone.min + Math.random() * (cone.max - cone.min);
+  }
+
+  function updateConeVisuals() {
+    var show = coneAngleDeg < 360;
+    var cone = getConeAngles();
+    var cr = getConstraintRadius();
+
+    if (show) {
+      // Dark overlay on the blocked area (outside the allowed cone)
+      var coneRad = coneAngleDeg * Math.PI / 180;
+      var blockedStart = cone.max;
+      var blockedAngle = Math.PI * 2 - coneRad;
+
+      coneMesh.geometry.dispose();
+      coneMesh.geometry = new THREE.CircleGeometry(DISC_R * 1.01, 64, blockedStart, blockedAngle);
+      coneMesh.material.opacity = 0.5;
+
+      // Subtle white edge lines at cone boundaries
+      var r = cr > 0 ? cr : DISC_R;
+      var p1 = new THREE.Vector3(Math.cos(cone.min) * r, 0.06, Math.sin(cone.min) * r);
+      var p2 = new THREE.Vector3(Math.cos(cone.max) * r, 0.06, Math.sin(cone.max) * r);
+      var origin = new THREE.Vector3(0, 0.06, 0);
+
+      coneLine1.geometry.dispose();
+      coneLine1.geometry = new THREE.BufferGeometry().setFromPoints([origin, p1]);
+      coneLine1.material.opacity = 0.3;
+
+      coneLine2.geometry.dispose();
+      coneLine2.geometry = new THREE.BufferGeometry().setFromPoints([origin, p2]);
+      coneLine2.material.opacity = 0.3;
+    } else {
+      coneMesh.material.opacity = 0;
+      coneLine1.material.opacity = 0;
+      coneLine2.material.opacity = 0;
+    }
+  }
+
+  // ── Grid dots — bigger, brighter ──
+  var gMat = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.12 });
+  var gGeo = new THREE.SphereGeometry(0.045, 6, 6);
+  for (var gx = -DISC_R; gx <= DISC_R; gx += 0.6) {
+    for (var gz = -DISC_R; gz <= DISC_R; gz += 0.6) {
+      if (gx * gx + gz * gz > DISC_R * DISC_R * 0.92) continue;
+      var dd = new THREE.Mesh(gGeo, gMat);
+      dd.position.set(gx, 0.05, gz);
+      scene.add(dd);
+    }
+  }
+
+  // Center
+  scene.add(new THREE.Mesh(
+    new THREE.SphereGeometry(0.12, 16, 16),
+    new THREE.MeshBasicMaterial({ color: 0xf0ede8, transparent: true, opacity: 0.6 })
+  ).translateY(0.1));
+
+  // ── Axis labels as sprites ──
+  function makeTextSprite(text, pos, color, size) {
+    var canvas = document.createElement('canvas');
+    canvas.width = 256;
+    canvas.height = 64;
+    var ctx = canvas.getContext('2d');
+    ctx.font = (size || 20) + 'px Inter, sans-serif';
+    ctx.fillStyle = color || 'rgba(255,255,255,0.3)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(text, 128, 32);
+    var tex = new THREE.CanvasTexture(canvas);
+    var mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthWrite: false });
+    var sprite = new THREE.Sprite(mat);
+    sprite.position.copy(pos);
+    sprite.scale.set(2.5, 0.625, 1);
+    return sprite;
+  }
+
+  scene.add(makeTextSprite('idea space', new THREE.Vector3(0, 0.08, DISC_R + 0.7), 'rgba(255,255,255,0.18)', 18));
+  scene.add(makeTextSprite('quality ↑', new THREE.Vector3(-DISC_R - 0.8, 2.2, 0), 'rgba(255,255,255,0.18)', 18));
+
+  // ── Raycaster for peak interaction ──
+  var raycaster = new THREE.Raycaster();
+  var mouse = new THREE.Vector2();
+  var peakMeshes = []; // { mesh, gen, score } — filled during bake
+  var hoveredPeak = null;
+
+  // Tooltip element
+  var tooltip = document.createElement('div');
+  tooltip.style.cssText = 'position:absolute;pointer-events:none;background:rgba(15,13,11,0.9);border:1px solid rgba(196,62,28,0.4);border-radius:6px;padding:6px 10px;font-size:0.65rem;color:#f0ede8;letter-spacing:0.03em;display:none;white-space:nowrap;z-index:10;font-family:Inter,sans-serif;';
+  container.style.position = 'relative';
+  container.appendChild(tooltip);
+
+  renderer.domElement.addEventListener('mousemove', function (e) {
+    var rect = renderer.domElement.getBoundingClientRect();
+    mouse.x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
+    mouse.y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
+
+    raycaster.setFromCamera(mouse, camera);
+    var hits = raycaster.intersectObjects(peakMeshes.map(function (p) { return p.mesh; }));
+
+    if (hits.length > 0) {
+      var hit = hits[0].object;
+      var peak = peakMeshes.find(function (p) { return p.mesh === hit; });
+      if (peak) {
+        tooltip.style.display = 'block';
+        tooltip.style.left = (e.clientX - rect.left + 12) + 'px';
+        tooltip.style.top = (e.clientY - rect.top - 10) + 'px';
+        tooltip.innerHTML = 'Gen <strong style="color:#c43e1c;">' + peak.gen + '</strong> · score <strong style="color:#c43e1c;">' + peak.score + '%</strong>';
+        renderer.domElement.style.cursor = 'pointer';
+        hoveredPeak = peak;
+      }
+    } else {
+      tooltip.style.display = 'none';
+      renderer.domElement.style.cursor = 'grab';
+      hoveredPeak = null;
+    }
+  });
+
+  // ── Coverage tracking ──
+  // Approximate % of disc area covered by landing points (using grid buckets)
+  var COVERAGE_GRID = 20;
+  var coverageBuckets = {};
+  function addCoveragePoint(x, z) {
+    var bx = Math.floor((x / DISC_R + 1) * COVERAGE_GRID / 2);
+    var bz = Math.floor((z / DISC_R + 1) * COVERAGE_GRID / 2);
+    coverageBuckets[bx + ',' + bz] = true;
+  }
+  function getCoveragePct() {
+    // Count buckets inside the available area (constraint radius + cone angle)
+    var cr = getConstraintRadius();
+    var crNorm = cr / DISC_R; // normalized 0..1
+    var cone = getConeAngles();
+    var useCone = coneAngleDeg < 360;
+
+    var totalBuckets = 0;
+    var filled = 0;
+    for (var bx = 0; bx < COVERAGE_GRID; bx++) {
+      for (var bz = 0; bz < COVERAGE_GRID; bz++) {
+        var nx = (bx / COVERAGE_GRID * 2 - 1);
+        var nz = (bz / COVERAGE_GRID * 2 - 1);
+        var r = Math.sqrt(nx * nx + nz * nz);
+
+        // Must be inside the disc
+        if (r > 1) continue;
+        // Must be inside the constraint radius
+        if (r > crNorm) continue;
+        // Must be inside the cone angle
+        if (useCone && r > 0.05) {
+          var angle = Math.atan2(nz, nx);
+          // Normalize angle difference to -PI..PI
+          var diff = angle - coneCenterAngle;
+          diff = ((diff + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
+          if (Math.abs(diff) > cone.half) continue;
+        }
+
+        totalBuckets++;
+        if (coverageBuckets[bx + ',' + bz]) filled++;
+      }
+    }
+    if (totalBuckets === 0) return 0;
+    return Math.min(100, Math.round(filled / totalBuckets * 100));
+  }
+
+  // ── Groups ──
+  var bakedGroup = new THREE.Group();
+  scene.add(bakedGroup);
+  var liveGroup = new THREE.Group();
+  scene.add(liveGroup);
+
+  // ── Colors ──
+  // ── Colors — position-based color wheel ──
+  // Hue from angle on disc, saturation from distance (pastel at center, vivid at edge)
+  function colorAtPosition(x, z) {
+    var angle = Math.atan2(z, x);
+    var hue = ((angle + Math.PI * 2) % (Math.PI * 2)) / (Math.PI * 2);
+    var dist = Math.min(1, Math.sqrt(x * x + z * z) / DISC_R);
+    var sat = 0.15 + dist * 0.75;       // soft pink at center → bright red at edge
+    var lit = 0.78 - dist * 0.25;       // light pastel center → rich saturated edge
+    var c = new THREE.Color();
+    c.setHSL(hue, sat, lit);
+    return c;
+  }
+
+  // ── Reusable geo ──
+  var geoSm = new THREE.SphereGeometry(0.05, 8, 8);
+  var geoMd = new THREE.SphereGeometry(0.08, 10, 10);
+  var geoLg = new THREE.SphereGeometry(0.12, 12, 12);
+
+  function makeTube(path, color, opacity, radius) {
+    if (path.length < 2) return new THREE.Group();
+    var curve = new THREE.CatmullRomCurve3(path);
+    var segs = Math.min(64, Math.max(4, path.length));
+    var geo = new THREE.TubeGeometry(curve, segs, radius || 0.03, 6, false);
+    var mat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: opacity });
+    return new THREE.Mesh(geo, mat);
+  }
+
+  function mkMarker(pos, geo, color, opacity) {
+    var mat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: opacity });
+    var m = new THREE.Mesh(geo, mat);
+    m.position.copy(pos);
+    return m;
+  }
+
+  function mkBeam(x, z, height, color, opacity) {
+    var p0 = new THREE.Vector3(x, 0.05, z);
+    var p1 = new THREE.Vector3(x, height, z);
+    var curve = new THREE.LineCurve3(p0, p1);
+    var geo = new THREE.TubeGeometry(curve, 2, 0.025, 6, false);
+    var mat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: opacity });
+    return new THREE.Mesh(geo, mat);
+  }
+
+  function mkRing(x, y, z, r, color, opacity) {
+    var geo = new THREE.TorusGeometry(r, 0.018, 8, 48);
+    var mat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: opacity });
+    var m = new THREE.Mesh(geo, mat);
+    m.position.set(x, y, z);
+    m.rotation.x = Math.PI / 2;
+    return m;
+  }
+
+  // ── Agent ──
+  function Agent(idx, startPos) {
+    this.idx = idx;
+    this.phase = 'wide';
+    this.maxR = getConstraintRadius();
+
+    // Start from given position or center
+    this.startX = startPos ? startPos.x : 0;
+    this.startZ = startPos ? startPos.z : 0;
+
+    this.wAngle = randomAngleInCone();
+    // Random distance from the start position — ranges from short to the constraint edge
+    // Compute how far we CAN go from startX/startZ in this direction before hitting the boundary
+    var testX = this.startX + Math.cos(this.wAngle) * this.maxR;
+    var testZ = this.startZ + Math.sin(this.wAngle) * this.maxR;
+    var testR = Math.sqrt(testX * testX + testZ * testZ);
+    var maxReach = testR > this.maxR * 0.93 ? (this.maxR * 0.93 / testR) * this.maxR : this.maxR;
+    this.wDist = (0.15 + Math.random() * 0.85) * maxReach * 0.93;
+    this.wSpeed = 0.028 + Math.random() * 0.014;
+    this.wProg = 0;
+    this.trail = [{ x: this.startX, z: this.startZ }];
+    this.landing = null;
+
+    this.dSpeed = 0;
+    this.dProg = 0;
+    this.dTrail = [];
+    this.dMaxH = 0;
+    this.dBest = null;
+  }
+
+  Agent.prototype.tick = function () {
+    if (this.phase === 'wide') {
+      this.wProg += this.wSpeed;
+      if (this.wProg > 1) this.wProg = 1;
+      var t = this.wProg;
+      var d = t * this.wDist;
+      var drift = Math.sin(t * 3.1 + this.wAngle) * 0.08 * t;
+      var x = this.startX + Math.cos(this.wAngle) * d + Math.cos(this.wAngle + 1.57) * drift;
+      var z = this.startZ + Math.sin(this.wAngle) * d + Math.sin(this.wAngle + 1.57) * drift;
+      var r = Math.sqrt(x * x + z * z);
+      if (r > this.maxR * 0.93) { x *= this.maxR * 0.93 / r; z *= this.maxR * 0.93 / r; }
+      this.trail.push({ x: x, z: z });
+
+      if (this.wProg >= 1) {
+        this.landing = { x: x, z: z };
+        this.phase = 'landed'; // wait for user to choose breadth or depth
+      }
+    } else if (this.phase === 'deep') {
+      this.dProg += this.dSpeed;
+      if (this.dProg > 1) this.dProg = 1;
+      var b = this.landing, t = this.dProg;
+      // Straight vertical rise from landing point — smooth ease
+      var ease = t * t * (3 - 2 * t); // smoothstep
+      var y = 0.1 + this.dMaxH * ease;
+      // Tiny XZ jitter that converges to zero
+      var jx = (Math.random() - 0.5) * 0.03 * (1 - t);
+      var jz = (Math.random() - 0.5) * 0.03 * (1 - t);
+      this.dTrail.push({ x: b.x + jx, y: y, z: b.z + jz });
+      if (!this.dBest || y > this.dBest.y) this.dBest = { x: b.x + jx, y: y, z: b.z + jz };
+
+      if (this.dProg >= 1) {
+        this.dBest = {
+          x: b.x,
+          y: this.dMaxH * 0.95 + 0.1,
+          z: b.z
+        };
+        this.phase = 'done';
+      }
+    }
+  };
+
+  Agent.prototype.startDeep = function () {
+    if (this.phase !== 'landed') return;
+    this.phase = 'deep';
+    this.dSpeed = 0.04 + Math.random() * 0.02;
+    this.dMaxH = 0.8 + Math.random() * 3.2;
+    this.dTrail = [{ x: this.landing.x, y: 0.1, z: this.landing.z }];
+  };
+
+  // Sample trail points for tube (every Nth)
+  function samplePts(arr, isDeep) {
+    var step = Math.max(1, Math.floor(arr.length / 30));
+    var pts = [];
+    for (var i = 0; i < arr.length; i += step) {
+      var p = arr[i];
+      pts.push(new THREE.Vector3(p.x, isDeep ? p.y : 0.08, p.z));
+    }
+    var last = arr[arr.length - 1];
+    pts.push(new THREE.Vector3(last.x, isDeep ? last.y : 0.08, last.z));
+    return pts;
+  }
+
+  Agent.prototype.buildLive = function (group) {
+    // Color from current tip position
+    var tipPt = this.trail.length ? this.trail[this.trail.length - 1] : { x: 0, z: 0 };
+    var c = colorAtPosition(tipPt.x, tipPt.z);
+
+    if (this.trail.length > 2) {
+      group.add(makeTube(samplePts(this.trail, false), c, 0.75, 0.035));
+    }
+    if (this.dTrail.length > 2) {
+      var dc = this.landing ? colorAtPosition(this.landing.x, this.landing.z) : c;
+      group.add(makeTube(samplePts(this.dTrail, true), dc, 0.55, 0.025));
+    }
+    if (this.landing) {
+      var lc = colorAtPosition(this.landing.x, this.landing.z);
+      group.add(mkMarker(new THREE.Vector3(this.landing.x, 0.12, this.landing.z), geoMd, lc, 0.85));
+    }
+    // Tip dot
+    var tip;
+    if (this.phase === 'wide' && this.trail.length) {
+      var t = this.trail[this.trail.length - 1];
+      tip = new THREE.Vector3(t.x, 0.14, t.z);
+    } else if (this.phase === 'deep' && this.dTrail.length) {
+      var d = this.dTrail[this.dTrail.length - 1];
+      tip = new THREE.Vector3(d.x, d.y, d.z);
+    }
+    if (tip) group.add(mkMarker(tip, geoMd, c, 1));
+  };
+
+  Agent.prototype.bake = function () {
+    // Color from landing position on the disc
+    var lx = this.landing ? this.landing.x : 0;
+    var lz = this.landing ? this.landing.z : 0;
+    var c = colorAtPosition(lx, lz);
+
+    if (this.trail.length > 2) {
+      bakedGroup.add(makeTube(samplePts(this.trail, false), c, 0.5, 0.035));
+    }
+    if (this.landing) {
+      bakedGroup.add(mkMarker(new THREE.Vector3(this.landing.x, 0.12, this.landing.z), geoMd, c, 0.7));
+      addCoveragePoint(this.landing.x, this.landing.z);
+      for (var i = 0; i < this.trail.length; i += 4) {
+        addCoveragePoint(this.trail[i].x, this.trail[i].z);
+      }
+    }
+    if (this.dTrail.length > 2) {
+      bakedGroup.add(makeTube(samplePts(this.dTrail, true), c, 0.35, 0.02));
+    }
+    if (this.dBest) {
+      var b = this.dBest;
+      var heightNorm = Math.min(1, b.y / 3.5);
+
+      var beamOpacity = 0.15 + heightNorm * 0.5;
+      bakedGroup.add(mkBeam(b.x, b.z, b.y + 0.05, c, beamOpacity));
+
+      var peakOpacity = 0.25 + heightNorm * 0.65;
+      var peakColor = new THREE.Color().copy(c);
+      peakColor.lerp(new THREE.Color(0xffffff), heightNorm * 0.3);
+      var peakMesh = mkMarker(new THREE.Vector3(b.x, b.y, b.z), geoMd, peakColor, peakOpacity);
+      bakedGroup.add(peakMesh);
+      peakMeshes.push({ mesh: peakMesh, gen: this.gen, score: Math.round(heightNorm * 100) });
+
+      if (heightNorm > 0.6) {
+        var glow = new THREE.PointLight(c, heightNorm * 0.35, 3);
+        glow.position.set(b.x, b.y, b.z);
+        bakedGroup.add(glow);
+      }
+    }
+  };
+
+  // ── State ──
+  var agents = [];
+  var totalGens = 0;
+  var running = false;
+
+  // Sequential mode — tracks the last landing point and color index
+  var seqLanding = null; // { x, z } of last sequential agent's landing
+  var seqColorIdx = 0;   // keeps same color for the sequential chain
+
+  function clearLive() {
+    while (liveGroup.children.length) liveGroup.remove(liveGroup.children[0]);
+  }
+
+  function spawn(count) {
+    for (var i = 0; i < count; i++) {
+      agents.push(new Agent(totalGens));
+      totalGens++;
+    }
+    running = true;
+    updateUI();
+  }
+
+  function spawnSequential() {
+    var a = new Agent(seqColorIdx, seqLanding);
+    agents.push(a);
+    totalGens++;
+    running = true;
+    updateUI();
+  }
+
+  function tickAll() {
+    var active = 0;
+    var landed = 0;
+    for (var i = 0; i < agents.length; i++) {
+      if (agents[i].phase === 'wide' || agents[i].phase === 'deep') {
+        agents[i].tick();
+        active++;
+      } else if (agents[i].phase === 'landed') {
+        landed++;
+      }
+    }
+
+    clearLive();
+    for (var i = 0; i < agents.length; i++) {
+      if (agents[i].phase !== 'done') {
+        agents[i].buildLive(liveGroup);
+      }
+    }
+
+    // All animating agents finished — but some may be landed (waiting)
+    if (active === 0 && running) {
+      // Bake only the done agents
+      var remaining = [];
+      for (var i = 0; i < agents.length; i++) {
+        if (agents[i].phase === 'done') {
+          agents[i].bake();
+          if (agents[i].landing) {
+            seqLanding = { x: agents[i].landing.x, z: agents[i].landing.z };
+          }
+        } else {
+          remaining.push(agents[i]);
+        }
+      }
+      agents = remaining;
+      if (agents.length === 0) {
+        running = false;
+        clearLive();
+      }
+    }
+    updateUI();
+  }
+
+  function resetAll() {
+    agents = []; totalGens = 0; running = false;
+    seqLanding = null;
+    seqColorIdx = Math.floor(Math.random() * 15);
+    peakMeshes = [];
+    coverageBuckets = {};
+    clearLive();
+    while (bakedGroup.children.length) bakedGroup.remove(bakedGroup.children[0]);
+    updateUI();
+  }
+
+  function updateUI() {
+    var counter = document.getElementById('genCounter');
+    var status = document.getElementById('status');
+    var active = agents.filter(function (a) { return a.phase !== 'done'; }).length;
+
+    counter.innerHTML = 'Generations <strong>' + totalGens + '</strong>';
+
+    if (!running && totalGens === 0 && agents.length === 0) status.innerHTML = 'Explore the idea space';
+    else if (active > 0) status.innerHTML = '<strong>' + active + '</strong> agent' + (active !== 1 ? 's' : '') + ' active';
+    else if (agents.length > 0) status.innerHTML = 'Landed — choose <strong>breadth</strong> or <strong>depth</strong>';
+    else {
+      var cov = getCoveragePct();
+      status.innerHTML = '<strong>' + totalGens + '</strong> generations · <strong>' + cov + '%</strong> coverage';
+    }
+  }
+
+  // ── Loop ──
+  function animate() {
+    requestAnimationFrame(animate);
+    if (running) tickAll();
+    controls.update();
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  // ── Controls ──
+
+  var spawnCount = 1;
+  document.getElementById('countSlider').addEventListener('input', function () {
+    spawnCount = parseInt(this.value);
+    document.getElementById('countVal').textContent = spawnCount;
+  });
+
+  // Breadth: spawns `spawnCount` agents. If count=1, sequential chain. If >1, from center.
+  document.getElementById('btnBreadth').addEventListener('click', function () {
+    // Bake any landed agents first
+    var remaining = [];
+    for (var i = 0; i < agents.length; i++) {
+      if (agents[i].phase === 'landed') {
+        agents[i].phase = 'done';
+        agents[i].bake();
+        if (agents[i].landing) {
+          seqLanding = { x: agents[i].landing.x, z: agents[i].landing.z };
+        }
+      } else {
+        remaining.push(agents[i]);
+      }
+    }
+    agents = remaining;
+
+    if (spawnCount <= 1) {
+      spawnSequential();
+    } else {
+      seqLanding = null;
+      seqColorIdx = Math.floor(Math.random() * 15);
+      spawn(spawnCount);
+    }
+  });
+
+  // Depth: trigger deep on all landed agents
+  document.getElementById('btnDepth').addEventListener('click', function () {
+    var triggered = false;
+    for (var i = 0; i < agents.length; i++) {
+      if (agents[i].phase === 'landed') {
+        agents[i].startDeep();
+        triggered = true;
+      }
+    }
+    if (triggered) running = true;
+    updateUI();
+  });
+
+  document.getElementById('btnReset').addEventListener('click', resetAll);
+
+  // ── Constraint slider ──
+  var slider = document.getElementById('constraintSlider');
+  var valLabel = document.getElementById('constraintVal');
+  slider.addEventListener('input', function () {
+    constraintPct = parseInt(slider.value);
+    // Show as spawnable area percentage (inverted)
+    var spawnable = Math.round(100 - constraintPct);
+    valLabel.textContent = spawnable + '%';
+    updateConstraintVisuals();
+    updateConeVisuals();
+  });
+
+  // ── Angle slider ──
+  var angleSlider = document.getElementById('angleSlider');
+  var angleLabel = document.getElementById('angleVal');
+  angleSlider.addEventListener('input', function () {
+    coneAngleDeg = parseInt(angleSlider.value);
+    angleLabel.textContent = coneAngleDeg + '°';
+    updateConeVisuals();
+  });
+
+  // ── Direction slider ──
+  var dirSlider = document.getElementById('dirSlider');
+  var dirLabel = document.getElementById('dirVal');
+  dirSlider.addEventListener('input', function () {
+    var deg = parseInt(dirSlider.value);
+    dirLabel.textContent = deg + '°';
+    coneCenterAngle = deg * Math.PI / 180;
+    updateConeVisuals();
+  });
+
+  updateUI();
+})();
+</script>
+
+</body>
+</html>

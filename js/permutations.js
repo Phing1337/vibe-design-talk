@@ -164,14 +164,22 @@
     var wideLabel = document.createElement('div');
     wideLabel.className = 'perm-phase-label';
     wideLabel.textContent = 'Generation 1 — wide';
+    wideLabel.style.opacity = '0';
+    wideLabel.style.transition = 'opacity 0.3s ease';
     wideSection.appendChild(wideLabel);
+
+    // "Generate 15 Ideas" button — shown first, cards hidden
+    var generateBtn = document.createElement('button');
+    generateBtn.className = 'perm-generate-btn';
+    generateBtn.innerHTML = '<span class="perm-generate-icon">⟡</span> Generate 15 ideas';
+    wideSection.appendChild(generateBtn);
 
     var wideRows = [
       document.createElement('div'),
       document.createElement('div'),
       document.createElement('div'),
     ];
-    wideRows.forEach(function (r) { r.className = 'perm-row'; });
+    wideRows.forEach(function (r) { r.className = 'perm-row'; r.style.display = 'none'; });
 
     WIDE_COLORS.forEach(function (color, i) {
       var card = makeCard(color);
@@ -182,6 +190,7 @@
 
     var hint = document.createElement('div');
     hint.className = 'perm-hint';
+    hint.style.display = 'none';
     hint.textContent = 'click any card to go deep →';
     wideSection.appendChild(hint);
 
@@ -189,8 +198,29 @@
     var wideCounter = document.createElement('div');
     wideCounter.className = 'perm-counter perm-counter-wide';
     wideCounter.id = 'permWideCounter';
+    wideCounter.style.display = 'none';
     wideCounter.innerHTML = 'Total explorations: <strong>15</strong>';
     wideSection.appendChild(wideCounter);
+
+    // Generate button click handler
+    var wideGenerated = false;
+    generateBtn.addEventListener('click', function () {
+      if (wideGenerated) return;
+      wideGenerated = true;
+
+      // Hide button with fade
+      generateBtn.classList.add('perm-generate-btn--hidden');
+
+      // Show label, rows, hint, counter
+      setTimeout(function () {
+        generateBtn.style.display = 'none';
+        wideLabel.style.opacity = '1';
+        wideRows.forEach(function (r) { r.style.display = ''; });
+        hint.style.display = '';
+        wideCounter.style.display = '';
+        cascadeIn(wideCards, 80);
+      }, 260);
+    });
 
     // Connector
     var connector = document.createElement('div');
@@ -264,20 +294,7 @@
       });
     });
 
-    // Trigger wide cascade on slide enter
-    var slide = stage.closest('.slide');
-    var target = slide || stage;
-
-    var triggered = false;
-    var observer = new IntersectionObserver(function (entries) {
-      if (entries[0].isIntersecting && !triggered) {
-        triggered = true;
-        cascadeIn(wideCards, 0);
-        observer.disconnect();
-      }
-    }, { threshold: 0.55 });
-
-    observer.observe(target);
+    // No auto-cascade — the Generate button triggers the wide cards
   }
 
   if (document.readyState === 'loading') {

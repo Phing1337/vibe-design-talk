@@ -29,7 +29,7 @@
   import { SplatMesh, SplatLoader } from "@sparkjsdev/spark";
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000);
+  const camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 100);
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -40,7 +40,87 @@
   const fillEl = document.getElementById('loaderFill');
   const textEl = document.getElementById('loaderText');
 
-  // Load with progress
+  // ── Orbit controls (inline, no import needed) ──
+  // Simple orbit: drag to rotate around a center point, scroll to zoom
+  const orbitState = {
+    theta: 0,        // horizontal angle
+    phi: Math.PI / 2.3, // vertical angle (slightly above horizon)
+    radius: 0.8,     // distance from center
+    target: new THREE.Vector3(0, 0, 0),
+    dragging: false,
+    prevX: 0,
+    prevY: 0,
+    minRadius: 0.2,
+    maxRadius: 3.0,
+    minPhi: 0.3,
+    maxPhi: Math.PI - 0.3
+  };
+
+  function updateCamera() {
+    const s = orbitState;
+    camera.position.set(
+      s.target.x + s.radius * Math.sin(s.phi) * Math.sin(s.theta),
+      s.target.y + s.radius * Math.cos(s.phi),
+      s.target.z + s.radius * Math.sin(s.phi) * Math.cos(s.theta)
+    );
+    camera.lookAt(s.target);
+  }
+
+  renderer.domElement.addEventListener('mousedown', (e) => {
+    orbitState.dragging = true;
+    orbitState.prevX = e.clientX;
+    orbitState.prevY = e.clientY;
+    renderer.domElement.style.cursor = 'grabbing';
+  });
+  window.addEventListener('mouseup', () => {
+    orbitState.dragging = false;
+    renderer.domElement.style.cursor = 'grab';
+  });
+  window.addEventListener('mousemove', (e) => {
+    if (!orbitState.dragging) return;
+    const dx = e.clientX - orbitState.prevX;
+    const dy = e.clientY - orbitState.prevY;
+    orbitState.theta -= dx * 0.005;
+    orbitState.phi = Math.max(orbitState.minPhi, Math.min(orbitState.maxPhi, orbitState.phi - dy * 0.005));
+    orbitState.prevX = e.clientX;
+    orbitState.prevY = e.clientY;
+  });
+  renderer.domElement.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    orbitState.radius = Math.max(orbitState.minRadius, Math.min(orbitState.maxRadius, orbitState.radius + e.deltaY * 0.001));
+  }, { passive: false });
+
+  // Touch support
+  let touchPrev = null;
+  renderer.domElement.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 1) {
+      touchPrev = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
+  });
+  renderer.domElement.addEventListener('touchmove', (e) => {
+    if (e.touches.length === 1 && touchPrev) {
+      const dx = e.touches[0].clientX - touchPrev.x;
+      const dy = e.touches[0].clientY - touchPrev.y;
+      orbitState.theta -= dx * 0.005;
+      orbitState.phi = Math.max(orbitState.minPhi, Math.min(orbitState.maxPhi, orbitState.phi - dy * 0.005));
+      touchPrev = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
+    e.preventDefault();
+  }, { passive: false });
+  renderer.domElement.addEventListener('touchend', () => { touchPrev = null; });
+
+  renderer.domElement.style.cursor = 'grab';
+
+  // ── Forward arrow keys to parent for slide navigation ──
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'keydown', key: e.key }, '*');
+      }
+    }
+  });
+
+  // Load splat
   const loader = new SplatLoader();
   loader.loadAsync("assets/2024-talk/extracted/rustic_kitchen_with_natural_light_500k.spz", (event) => {
     if (event.type === "progress" && event.lengthComputable) {
@@ -54,45 +134,10 @@
     splat.position.set(0, 0, 0);
     scene.add(splat);
 
-    // Hide loader
     setTimeout(() => loaderEl.classList.add('hidden'), 300);
   }).catch((err) => {
     textEl.textContent = 'Failed to load';
     console.warn(err);
-  });
-
-  // Camera at origin
-  camera.position.set(0, 0, 0);
-  let yaw = 0, pitch = 0;
-
-  // WASD to look around + move slightly
-  const keys = { w: false, a: false, s: false, d: false };
-  window.addEventListener('keydown', (e) => {
-    const k = e.key.toLowerCase();
-    if (k in keys) keys[k] = true;
-  });
-  window.addEventListener('keyup', (e) => {
-    const k = e.key.toLowerCase();
-    if (k in keys) keys[k] = false;
-  });
-
-  // Mouse drag to look
-  let isDragging = false;
-  let prevX = 0, prevY = 0;
-
-  renderer.domElement.addEventListener('mousedown', (e) => {
-    isDragging = true;
-    prevX = e.clientX;
-    prevY = e.clientY;
-  });
-  window.addEventListener('mouseup', () => { isDragging = false; });
-  window.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    yaw -= (e.clientX - prevX) * 0.003;
-    pitch -= (e.clientY - prevY) * 0.003;
-    pitch = Math.max(-Math.PI / 2.2, Math.min(Math.PI / 2.2, pitch));
-    prevX = e.clientX;
-    prevY = e.clientY;
   });
 
   window.addEventListener('resize', () => {
@@ -101,42 +146,15 @@
     renderer.setSize(window.innerWidth, window.innerHeight);
   });
 
-  // Camera debug — expose setCam globally
-  window.setCam = function(x, y, z) {
-    camera.position.set(x, y, z);
-    yaw = 0;
-    pitch = 0;
-  };
+  // Initial camera position
+  updateCamera();
 
   renderer.setAnimationLoop(function animate() {
-    // WASD movement
-    const speed = 0.02;
-    const forward = new THREE.Vector3(-Math.sin(yaw), 0, -Math.cos(yaw));
-    const right = new THREE.Vector3(Math.cos(yaw), 0, -Math.sin(yaw));
-
-    if (keys.w) camera.position.addScaledVector(forward, speed);
-    if (keys.s) camera.position.addScaledVector(forward, -speed);
-    if (keys.a) camera.position.addScaledVector(right, -speed);
-    if (keys.d) camera.position.addScaledVector(right, speed);
-
-    // Auto drift when idle
-    if (!isDragging && !keys.w && !keys.a && !keys.s && !keys.d) {
-      yaw += 0.0008;
-      const fwd = new THREE.Vector3(-Math.sin(yaw), 0, -Math.cos(yaw));
-      camera.position.addScaledVector(fwd, 0.003);
+    // Gentle auto-orbit when not dragging
+    if (!orbitState.dragging) {
+      orbitState.theta += 0.0012;
     }
-
-    camera.rotation.set(0, 0, 0);
-    camera.rotateY(yaw);
-    camera.rotateX(pitch);
-
-    // Update debug readout
-    const p = camera.position;
-    const posEl = document.getElementById('camPos');
-    const rotEl = document.getElementById('camRot');
-    if (posEl) posEl.textContent = 'pos: ' + p.x.toFixed(2) + ', ' + p.y.toFixed(2) + ', ' + p.z.toFixed(2);
-    if (rotEl) rotEl.textContent = 'yaw: ' + yaw.toFixed(3) + ' pitch: ' + pitch.toFixed(3);
-
+    updateCamera();
     renderer.render(scene, camera);
   });
 </script>
@@ -146,26 +164,6 @@
     <div>Loading 3D scene...</div>
     <div class="loader-bar"><div class="loader-fill" id="loaderFill"></div></div>
     <div class="loader-text" id="loaderText">0%</div>
-  </div>
-  <div id="camDebug" style="position:fixed;bottom:10px;left:10px;z-index:100;background:rgba(0,0,0,0.8);padding:10px 14px;border-radius:8px;font-family:monospace;font-size:11px;color:#d4a053;display:flex;flex-direction:column;gap:6px;">
-    <div id="camPos">pos: 0, 0, 0</div>
-    <div id="camRot">yaw: 0 pitch: 0</div>
-    <div style="display:flex;gap:4px;flex-wrap:wrap;">
-      <button onclick="setCam(0,0,0)" style="all:unset;background:#222;padding:2px 8px;border-radius:4px;cursor:pointer;font-size:10px;color:#aaa;">Origin</button>
-      <button onclick="setCam(0,0,-1)" style="all:unset;background:#222;padding:2px 8px;border-radius:4px;cursor:pointer;font-size:10px;color:#aaa;">Z-1</button>
-      <button onclick="setCam(0,0,-2)" style="all:unset;background:#222;padding:2px 8px;border-radius:4px;cursor:pointer;font-size:10px;color:#aaa;">Z-2</button>
-      <button onclick="setCam(0,0,1)" style="all:unset;background:#222;padding:2px 8px;border-radius:4px;cursor:pointer;font-size:10px;color:#aaa;">Z+1</button>
-      <button onclick="setCam(1,0,0)" style="all:unset;background:#222;padding:2px 8px;border-radius:4px;cursor:pointer;font-size:10px;color:#aaa;">X+1</button>
-      <button onclick="setCam(-1,0,0)" style="all:unset;background:#222;padding:2px 8px;border-radius:4px;cursor:pointer;font-size:10px;color:#aaa;">X-1</button>
-      <button onclick="setCam(0,1,0)" style="all:unset;background:#222;padding:2px 8px;border-radius:4px;cursor:pointer;font-size:10px;color:#aaa;">Y+1</button>
-      <button onclick="setCam(0,-1,0)" style="all:unset;background:#222;padding:2px 8px;border-radius:4px;cursor:pointer;font-size:10px;color:#aaa;">Y-1</button>
-    </div>
-    <div style="display:flex;gap:4px;">
-      <input id="camX" type="number" value="0" step="0.5" style="width:50px;background:#111;border:1px solid #333;color:#fff;padding:2px 4px;border-radius:3px;font-size:10px;" placeholder="X">
-      <input id="camY" type="number" value="0" step="0.5" style="width:50px;background:#111;border:1px solid #333;color:#fff;padding:2px 4px;border-radius:3px;font-size:10px;" placeholder="Y">
-      <input id="camZ" type="number" value="0" step="0.5" style="width:50px;background:#111;border:1px solid #333;color:#fff;padding:2px 4px;border-radius:3px;font-size:10px;" placeholder="Z">
-      <button onclick="setCam(+camX.value,+camY.value,+camZ.value)" style="all:unset;background:#d4a053;color:#000;padding:2px 8px;border-radius:4px;cursor:pointer;font-size:10px;font-weight:bold;">Go</button>
-    </div>
   </div>
 </body>
 </html>
