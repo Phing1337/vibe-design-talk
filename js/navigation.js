@@ -224,6 +224,9 @@
 
   /* Keyboard navigation */
   document.addEventListener('keydown', function(e) {
+    // Block all slide navigation when design editor is active
+    if (document.body.classList.contains('de-active')) return;
+
     // On weather slide: don't intercept Space or ArrowDown/Up (let them scroll)
     var currentSlide = slides[currentIndex];
     if (currentSlide && currentSlide.classList.contains('slide-weather')) {

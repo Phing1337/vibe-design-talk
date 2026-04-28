@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design Editor — Figma-style Layout</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@400;500;600;700&family=Figtree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --surf-0: oklch(0.10 0.008 285);
+      --surf-1: oklch(0.135 0.010 285);
+      --surf-2: oklch(0.17 0.012 285);
+      --surf-3: oklch(0.22 0.014 285);
+      --surf-4: oklch(0.28 0.016 285);
+      --border-subtle: oklch(0.26 0.010 285);
+      --border-dim: oklch(0.20 0.008 285);
+      --text-primary: oklch(0.92 0.008 285);
+      --text-secondary: oklch(0.60 0.008 285);
+      --text-tertiary: oklch(0.42 0.006 285);
+      --accent: oklch(0.72 0.18 285);
+      --accent-dim: oklch(0.55 0.14 285);
+      --accent-bg: oklch(0.22 0.05 285);
+      --accent-bg-hover: oklch(0.27 0.07 285);
+      --signal-red: oklch(0.63 0.22 25);
+      --font-ui: 'Figtree', system-ui, sans-serif;
+      --font-mono: 'Azeret Mono', 'SF Mono', monospace;
+      --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px;
+      --sp-5: 24px; --sp-6: 32px; --sp-7: 48px;
+      --radius-sm: 6px; --radius-md: 10px; --radius-lg: 14px;
+      --left-w: 272px;
+      --right-w: 296px;
+      --bottom-h: 52px;
+    }
+
+    /* ── App Shell ─────────────────────────────────────────── */
+    html, body { height: 100%; overflow: hidden; }
+
+    body {
+      font-family: var(--font-ui);
+      color: var(--text-primary);
+      background: var(--surf-0);
+      display: grid;
+      grid-template-columns: var(--left-w) 1fr var(--right-w);
+      grid-template-rows: 1fr var(--bottom-h);
+      grid-template-areas:
+        "left  stage right"
+        "left  bar   right";
+    }
+
+    /* ── Wallpaper (behind stage only) ─────────────────────── */
+    .stage {
+      grid-area: stage;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stage-wallpaper {
+      position: absolute; inset: 0;
+      background: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80') center / cover no-repeat;
+      filter: saturate(0.6) brightness(0.4);
+    }
+
+    .stage-smoke {
+      position: absolute; inset: 0;
+      background: oklch(0.10 0.008 285 / 0.60);
+      backdrop-filter: blur(50px) saturate(1.3);
+      -webkit-backdrop-filter: blur(50px) saturate(1.3);
+    }
+
+    /* Slide artboard */
+    .stage-artboard {
+      position: relative; z-index: 1;
+      width: 78%; aspect-ratio: 16 / 9;
+      max-height: 85%;
+      background: oklch(0.13 0.006 285);
+      border: 1px solid var(--border-dim);
+      border-radius: 6px;
+      box-shadow: 0 8px 40px oklch(0 0 0 / 0.5);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+
+    .stage-artboard-label {
+      font-size: 11px; font-weight: 500; color: var(--text-tertiary);
+      letter-spacing: 0.08em; text-transform: uppercase;
+    }
+
+    .stage-zoom {
+      position: absolute; bottom: 10px; right: 14px; z-index: 2;
+      font-family: var(--font-mono); font-size: 10px; color: var(--text-tertiary);
+      background: oklch(0.14 0.008 285 / 0.8);
+      backdrop-filter: blur(12px);
+      padding: 3px 10px; border-radius: 4px;
+      border: 1px solid var(--border-dim);
+    }
+
+    /* ── Side panel base ──────────────────────────────────── */
+    .panel-left, .panel-right {
+      display: flex; flex-direction: column;
+      background: var(--surf-1);
+      overflow: hidden;
+    }
+
+    .panel-left {
+      grid-area: left;
+      border-right: 1px solid var(--border-dim);
+      animation: slideFromLeft 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .panel-right {
+      grid-area: right;
+      border-left: 1px solid var(--border-dim);
+      animation: slideFromRight 0.4s cubic-bezier(0.22, 1, 0.36, 1) 0.06s both;
+    }
+
+    @keyframes slideFromLeft {
+      from { transform: translateX(-100%); opacity: 0.5; }
+      to   { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideFromRight {
+      from { transform: translateX(100%); opacity: 0.5; }
+      to   { transform: translateX(0); opacity: 1; }
+    }
+
+    /* ── Panel section chrome ─────────────────────────────── */
+    .p-section {
+      display: flex; flex-direction: column;
+      overflow: hidden;
+    }
+
+    .p-section.flex-1 { flex: 1; min-height: 0; }
+
+    .p-section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 14px;
+      background: var(--surf-2);
+      border-bottom: 1px solid var(--border-dim);
+      cursor: pointer;
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    .p-section-title {
+      font-size: 11px; font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: 0.01em;
+    }
+
+    .p-section-badge {
+      font-family: var(--font-mono); font-size: 9px; font-weight: 500;
+      color: var(--text-tertiary);
+      background: var(--surf-0);
+      padding: 1px 6px; border-radius: 4px;
+      border: 1px solid var(--border-dim);
+    }
+
+    .p-section-caret {
+      font-size: 10px; color: var(--text-tertiary);
+      transition: transform 0.2s ease;
+    }
+
+    .p-section-body {
+      overflow-y: auto;
+      flex: 1;
+      min-height: 0;
+    }
+
+    /* Divider between sections */
+    .p-divider {
+      height: 1px; flex-shrink: 0;
+      background: var(--border-dim);
+    }
+
+    /* ── Slide thumbnails ─────────────────────────────────── */
+    .slide-thumbs {
+      padding: 10px;
+      display: flex; flex-direction: column;
+      gap: 6px;
+    }
+
+    .slide-thumb {
+      display: flex; align-items: center;
+      gap: 10px; padding: 6px 8px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background 0.1s ease;
+    }
+
+    .slide-thumb:hover { background: var(--surf-3); }
+    .slide-thumb.active { background: var(--accent-bg); }
+
+    .slide-thumb-num {
+      font-family: var(--font-mono);
+      font-size: 9px; font-weight: 600;
+      color: var(--text-tertiary);
+      width: 20px; text-align: right; flex-shrink: 0;
+    }
+
+    .slide-thumb.active .slide-thumb-num { color: var(--accent); }
+
+    .slide-thumb-preview {
+      width: 64px; height: 36px; flex-shrink: 0;
+      background: var(--surf-0);
+      border: 1px solid var(--border-dim);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .slide-thumb.active .slide-thumb-preview {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .slide-thumb-name {
+      font-size: 10px; font-weight: 500;
+      color: var(--text-secondary);
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+      flex: 1;
+    }
+
+    .slide-thumb.active .slide-thumb-name { color: var(--accent); }
+
+    /* ── Layer tree ────────────────────────────────────────── */
+    .layer-tree { padding: 8px 10px; }
+
+    .lr {
+      display: flex; align-items: center;
+      gap: 4px; padding: 3px 6px;
+      border-radius: 4px; cursor: pointer;
+      transition: background 0.1s ease;
+      font-family: var(--font-mono);
+      font-size: 10px; font-weight: 500;
+      color: var(--text-secondary);
+      white-space: nowrap; overflow: hidden;
+    }
+
+    .lr:hover { background: var(--surf-3); color: var(--text-primary); }
+    .lr.sel  { background: var(--accent-bg); color: var(--accent); }
+
+    .lr-caret {
+      width: 12px; flex-shrink: 0;
+      font-size: 8px; color: var(--text-tertiary);
+      text-align: center; transition: transform 0.15s ease;
+    }
+
+    .lr-caret.open { transform: rotate(90deg); }
+
+    .lr-icon {
+      width: 14px; height: 14px; border-radius: 3px;
+      flex-shrink: 0; display: flex;
+      align-items: center; justify-content: center;
+      font-size: 7px; font-weight: 800;
+      border: 1px solid var(--border-dim);
+    }
+
+    .lr-icon.t-s { background: oklch(0.22 0.04 285); color: oklch(0.50 0.10 285); border-color: oklch(0.30 0.05 285); }
+    .lr-icon.t-d { background: oklch(0.20 0.03 180); color: oklch(0.48 0.07 180); border-color: oklch(0.28 0.04 180); }
+    .lr-icon.t-i { background: oklch(0.20 0.04 75);  color: oklch(0.48 0.07 75);  border-color: oklch(0.28 0.04 75); }
+    .lr-icon.t-h { background: oklch(0.20 0.04 25);  color: oklch(0.48 0.08 25);  border-color: oklch(0.28 0.04 25); }
+    .lr-icon.t-p { background: oklch(0.20 0.03 145); color: oklch(0.48 0.07 145); border-color: oklch(0.28 0.04 145); }
+
+    .lr-name { flex: 1; overflow: hidden; text-overflow: ellipsis; }
+
+    .lr-eye {
+      flex-shrink: 0; font-size: 9px; color: var(--text-tertiary);
+      cursor: pointer; opacity: 0; transition: opacity 0.1s ease;
+      padding: 0 2px;
+    }
+
+    .lr:hover .lr-eye { opacity: 1; }
+
+    .lr-kids { padding-left: 16px; }
+
+    /* ── Right panel: Spider graph ─────────────────────────── */
+    .spider-wrap {
+      padding: 14px;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 10px;
+    }
+
+    #spiderCanvas {
+      cursor: crosshair;
+      border-radius: var(--radius-sm);
+      background: var(--surf-0);
+      border: 1px solid var(--border-dim);
+      width: 100%; height: auto;
+    }
+
+    .spider-readout {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 3px 8px; width: 100%;
+    }
+
+    .sr-item {
+      display: flex; align-items: center; gap: 6px;
+      padding: 3px 6px; border-radius: 4px;
+    }
+
+    .sr-dot { width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0; }
+
+    .sr-name {
+      font-size: 9px; font-weight: 600;
+      color: var(--text-tertiary); flex: 1;
+    }
+
+    .sr-val {
+      font-family: var(--font-mono); font-size: 9px;
+      font-weight: 500; color: var(--accent);
+    }
+
+    .spider-presets {
+      display: flex; gap: 3px; flex-wrap: wrap; justify-content: center;
+    }
+
+    .sp-btn {
+      padding: 4px 10px; font-size: 9px; font-weight: 600;
+      font-family: var(--font-ui);
+      color: var(--text-tertiary);
+      background: var(--surf-0);
+      border: 1px solid var(--border-dim);
+      border-radius: var(--radius-sm);
+      cursor: pointer; transition: all 0.15s ease;
+    }
+
+    .sp-btn:hover { color: var(--text-secondary); background: var(--surf-2); }
+    .sp-btn.active { color: var(--accent); background: var(--accent-bg); border-color: oklch(0.72 0.18 285 / 0.25); }
+
+    /* ── Right panel: theme presets ─────────────────────────── */
+    .theme-strip {
+      display: flex; gap: 5px; padding: 10px 14px;
+      justify-content: center; flex-shrink: 0;
+    }
+
+    .ts-dot {
+      width: 22px; height: 22px; border-radius: 6px;
+      background: var(--surf-0); border: 1.5px solid var(--border-dim);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all 0.15s ease; padding: 0;
+    }
+
+    .ts-dot:hover { border-color: var(--border-subtle); transform: scale(1.1); }
+    .ts-dot.active { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+
+    .ts-dot-inner {
+      width: 12px; height: 12px; border-radius: 50%; display: block;
+    }
+
+    /* ── Right panel: local properties (empty state) ──────── */
+    .local-empty {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 8px; padding: 40px 20px;
+      text-align: center;
+    }
+
+    .local-empty-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      background: var(--surf-2); border: 1px solid var(--border-dim);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; color: var(--text-tertiary);
+    }
+
+    .local-empty-title {
+      font-size: 11px; font-weight: 600; color: var(--text-secondary);
+    }
+
+    .local-empty-desc {
+      font-size: 10px; color: var(--text-tertiary); line-height: 1.4;
+      max-width: 180px;
+    }
+
+    /* ── Bottom bar ────────────────────────────────────────── */
+    .bottom-bar {
+      grid-area: bar;
+      background: var(--surf-1);
+      border-top: 1px solid var(--border-dim);
+      display: flex; align-items: center;
+      justify-content: center;
+      gap: 2px; padding: 0 16px;
+      animation: slideFromBottom 0.35s cubic-bezier(0.22, 1, 0.36, 1) 0.12s both;
+    }
+
+    @keyframes slideFromBottom {
+      from { transform: translateY(100%); opacity: 0.5; }
+      to   { transform: translateY(0); opacity: 1; }
+    }
+
+    .bb-group {
+      display: flex; align-items: center;
+      gap: 2px; padding: 0 4px;
+    }
+
+    .bb-sep {
+      width: 1px; height: 24px; flex-shrink: 0;
+      background: var(--border-dim);
+      margin: 0 8px;
+    }
+
+    .bb-btn {
+      display: flex; align-items: center; justify-content: center;
+      gap: 5px; padding: 6px 12px;
+      font-size: 10px; font-weight: 600;
+      font-family: var(--font-ui);
+      color: var(--text-tertiary);
+      background: none; border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer; transition: all 0.12s ease;
+      white-space: nowrap;
+    }
+
+    .bb-btn:hover { color: var(--text-secondary); background: var(--surf-3); }
+    .bb-btn.active { color: var(--accent); background: var(--accent-bg); }
+
+    .bb-swatch {
+      width: 14px; height: 14px; border-radius: 4px;
+      border: 1px solid oklch(0 0 0 / 0.3);
+      cursor: pointer; transition: transform 0.1s ease;
+    }
+
+    .bb-swatch:hover { transform: scale(1.15); }
+    .bb-swatch.active { outline: 1.5px solid var(--accent); outline-offset: 1.5px; }
+
+    .bb-size-dot {
+      border-radius: 50%;
+      background: var(--text-tertiary);
+      cursor: pointer; transition: all 0.1s ease;
+    }
+
+    .bb-size-dot:hover { background: var(--text-secondary); }
+    .bb-size-dot.active { background: var(--accent); }
+
+    /* Toggle switches (for overlay toggles in bottom bar) */
+    .bb-toggle {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 10px; font-weight: 600;
+      color: var(--text-tertiary);
+      cursor: pointer; padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      transition: all 0.12s ease;
+    }
+
+    .bb-toggle:hover { color: var(--text-secondary); background: var(--surf-3); }
+
+    .bb-mini-switch {
+      width: 26px; height: 14px;
+      background: var(--surf-3); border-radius: 7px;
+      border: 1px solid var(--border-dim);
+      position: relative; flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+
+    .bb-mini-switch::after {
+      content: '';
+      position: absolute; top: 2px; left: 2px;
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--text-tertiary);
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .bb-toggle.on .bb-mini-switch {
+      background: var(--accent-bg);
+      border-color: oklch(0.72 0.18 285 / 0.3);
+    }
+
+    .bb-toggle.on .bb-mini-switch::after {
+      transform: translateX(12px);
+      background: var(--accent);
+    }
+
+    /* ── Export Panel ──────────────────────────────────────── */
+    .export-panel {
+      position: fixed;
+      bottom: calc(var(--bottom-h) + 12px);
+      left: 50%; transform: translateX(-50%) translateY(20px);
+      width: 580px; max-width: calc(100vw - var(--left-w) - var(--right-w) - 48px);
+      background: var(--surf-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 12px 48px oklch(0 0 0 / 0.6), 0 0 0 1px oklch(0 0 0 / 0.2);
+      z-index: 100000;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+      font-family: var(--font-ui);
+    }
+
+    .export-panel.open {
+      opacity: 1; pointer-events: auto;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .export-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px;
+      background: var(--surf-2);
+      border-bottom: 1px solid var(--border-dim);
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    }
+
+    .export-title {
+      font-size: 12px; font-weight: 700; color: var(--text-primary);
+    }
+
+    .export-close {
+      background: none; border: none; color: var(--text-tertiary);
+      font-size: 14px; cursor: pointer; padding: 2px 6px;
+      border-radius: 4px; transition: all 0.12s ease; line-height: 1;
+    }
+
+    .export-close:hover { color: var(--text-secondary); background: var(--surf-3); }
+
+    .export-body { padding: 14px 16px; }
+
+    .export-chips {
+      display: flex; flex-wrap: wrap; gap: 5px;
+      margin-bottom: 12px;
+    }
+
+    .export-chip {
+      font-size: 9px; font-weight: 600;
+      padding: 3px 9px; border-radius: 12px;
+      border: 1px solid var(--border-dim);
+      color: var(--text-secondary);
+      background: var(--surf-0);
+    }
+
+    .export-chip.changed {
+      color: var(--accent);
+      background: var(--accent-bg);
+      border-color: oklch(0.72 0.18 285 / 0.25);
+    }
+
+    .export-preview {
+      background: var(--surf-0);
+      border: 1px solid var(--border-dim);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      max-height: 240px; overflow-y: auto;
+      font-family: var(--font-mono);
+      font-size: 10px; line-height: 1.65;
+      color: var(--text-secondary);
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin-bottom: 12px;
+    }
+
+    .export-preview .ep-heading {
+      color: var(--accent); font-weight: 700;
+      display: block; margin-top: 8px;
+    }
+
+    .export-preview .ep-heading:first-child { margin-top: 0; }
+
+    .export-preview .ep-dim { color: var(--text-tertiary); }
+    .export-preview .ep-val { color: var(--accent); }
+    .export-preview .ep-old { color: var(--text-tertiary); text-decoration: line-through; }
+
+    .export-actions {
+      display: flex; gap: 8px;
+    }
+
+    .export-action-btn {
+      flex: 1; padding: 9px 0;
+      font-size: 11px; font-weight: 700;
+      font-family: var(--font-ui);
+      color: var(--accent);
+      background: var(--accent-bg);
+      border: 1px solid oklch(0.72 0.18 285 / 0.2);
+      border-radius: var(--radius-sm);
+      cursor: pointer; transition: all 0.12s ease;
+      text-align: center;
+    }
+
+    .export-action-btn:hover { background: var(--accent-bg-hover); }
+
+    .export-action-btn.secondary {
+      color: var(--text-secondary);
+      background: var(--surf-2);
+      border-color: var(--border-dim);
+    }
+
+    .export-action-btn.secondary:hover {
+      background: var(--surf-3);
+      color: var(--text-primary);
+    }
+
+    .export-action-btn.copied {
+      color: oklch(0.75 0.16 145);
+      background: oklch(0.18 0.04 145);
+      border-color: oklch(0.72 0.16 145 / 0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ═══ LEFT PANEL ══════════════════════════════════════════ -->
+  <div class="panel-left">
+
+    <!-- Slide navigator -->
+    <div class="p-section" style="max-height: 45%;">
+      <div class="p-section-header">
+        <span class="p-section-title">Slides</span>
+        <span class="p-section-badge">5 / 40</span>
+      </div>
+      <div class="p-section-body">
+        <div class="slide-thumbs">
+          <div class="slide-thumb">
+            <span class="slide-thumb-num">1</span>
+            <div class="slide-thumb-preview" style="background: linear-gradient(135deg, oklch(0.14 0.01 285), oklch(0.18 0.02 285));"></div>
+            <span class="slide-thumb-name">Title Slide</span>
+          </div>
+          <div class="slide-thumb">
+            <span class="slide-thumb-num">2</span>
+            <div class="slide-thumb-preview" style="background: linear-gradient(135deg, oklch(0.90 0.01 75), oklch(0.85 0.02 45));"></div>
+            <span class="slide-thumb-name">About Me</span>
+          </div>
+          <div class="slide-thumb">
+            <span class="slide-thumb-num">3</span>
+            <div class="slide-thumb-preview" style="background: linear-gradient(135deg, oklch(0.14 0.01 285), oklch(0.20 0.03 30));"></div>
+            <span class="slide-thumb-name">The Problem</span>
+          </div>
+          <div class="slide-thumb">
+            <span class="slide-thumb-num">4</span>
+            <div class="slide-thumb-preview" style="background: linear-gradient(135deg, oklch(0.88 0.01 75), oklch(0.84 0.01 45));"></div>
+            <span class="slide-thumb-name">One Takeaway</span>
+          </div>
+          <div class="slide-thumb active">
+            <span class="slide-thumb-num">5</span>
+            <div class="slide-thumb-preview" style="background: linear-gradient(135deg, oklch(0.88 0.01 75), oklch(0.80 0.02 75));"></div>
+            <span class="slide-thumb-name">Building New Things</span>
+          </div>
+          <div class="slide-thumb">
+            <span class="slide-thumb-num">6</span>
+            <div class="slide-thumb-preview" style="background: linear-gradient(135deg, oklch(0.14 0.01 285), oklch(0.16 0.02 240));"></div>
+            <span class="slide-thumb-name">Bret Victor</span>
+          </div>
+          <div class="slide-thumb">
+            <span class="slide-thumb-num">7</span>
+            <div class="slide-thumb-preview" style="background: linear-gradient(135deg, oklch(0.12 0.008 285), oklch(0.16 0.015 285));"></div>
+            <span class="slide-thumb-name">Dynamic Medium</span>
+          </div>
+          <div class="slide-thumb">
+            <span class="slide-thumb-num">8</span>
+            <div class="slide-thumb-preview" style="background: linear-gradient(135deg, oklch(0.14 0.01 285), oklch(0.18 0.02 285));"></div>
+            <span class="slide-thumb-name">Color Theory</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-divider"></div>
+
+    <!-- Layers -->
+    <div class="p-section flex-1">
+      <div class="p-section-header">
+        <span class="p-section-title">Layers</span>
+        <span class="p-section-caret">▾</span>
+      </div>
+      <div class="p-section-body">
+        <div class="layer-tree">
+          <div class="lr sel">
+            <span class="lr-caret open">▶</span>
+            <span class="lr-icon t-s">S</span>
+            <span class="lr-name">section.slide</span>
+            <span class="lr-eye">👁</span>
+          </div>
+          <div class="lr-kids">
+            <div class="lr">
+              <span class="lr-caret" style="visibility:hidden">▶</span>
+              <span class="lr-icon t-i">I</span>
+              <span class="lr-name">img.hero-visual</span>
+              <span class="lr-eye">👁</span>
+            </div>
+            <div class="lr">
+              <span class="lr-caret open">▶</span>
+              <span class="lr-icon t-d">D</span>
+              <span class="lr-name">div.content-block</span>
+              <span class="lr-eye">👁</span>
+            </div>
+            <div class="lr-kids">
+              <div class="lr">
+                <span class="lr-caret" style="visibility:hidden">▶</span>
+                <span class="lr-icon t-p">P</span>
+                <span class="lr-name">p.fade-in-1</span>
+                <span class="lr-eye">👁</span>
+              </div>
+              <div class="lr">
+                <span class="lr-caret" style="visibility:hidden">▶</span>
+                <span class="lr-icon t-h">H</span>
+                <span class="lr-name">h1.fade-in-2</span>
+                <span class="lr-eye">👁</span>
+              </div>
+              <div class="lr">
+                <span class="lr-caret" style="visibility:hidden">▶</span>
+                <span class="lr-icon t-p">P</span>
+                <span class="lr-name">p.fade-in-3</span>
+                <span class="lr-eye">👁</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ CENTER STAGE ════════════════════════════════════════ -->
+  <div class="stage">
+    <div class="stage-wallpaper"></div>
+    <div class="stage-smoke"></div>
+    <div class="stage-artboard">
+      <span class="stage-artboard-label">Slide 5 — Building New Things</span>
+    </div>
+    <div class="stage-zoom">100%</div>
+  </div>
+
+  <!-- ═══ RIGHT PANEL ═════════════════════════════════════════ -->
+  <div class="panel-right">
+
+    <!-- Global: Design Tokens (spider graph) -->
+    <div class="p-section" style="max-height: 55%;">
+      <div class="p-section-header">
+        <span class="p-section-title">Design Tokens</span>
+        <span class="p-section-caret">▾</span>
+      </div>
+      <div class="p-section-body">
+        <!-- Theme color presets -->
+        <div class="theme-strip">
+          <button class="ts-dot active" data-preset="violet"><span class="ts-dot-inner" style="background:oklch(0.72 0.18 285);"></span></button>
+          <button class="ts-dot" data-preset="ember"><span class="ts-dot-inner" style="background:oklch(0.68 0.20 30);"></span></button>
+          <button class="ts-dot" data-preset="ocean"><span class="ts-dot-inner" style="background:oklch(0.70 0.14 230);"></span></button>
+          <button class="ts-dot" data-preset="mint"><span class="ts-dot-inner" style="background:oklch(0.75 0.14 165);"></span></button>
+          <button class="ts-dot" data-preset="gold"><span class="ts-dot-inner" style="background:oklch(0.78 0.15 85);"></span></button>
+          <button class="ts-dot" data-preset="rose"><span class="ts-dot-inner" style="background:oklch(0.70 0.16 350);"></span></button>
+          <button class="ts-dot" data-preset="mono"><span class="ts-dot-inner" style="background:oklch(0.70 0.00 0);"></span></button>
+        </div>
+
+        <!-- Spider graph -->
+        <div class="spider-wrap">
+          <canvas id="spiderCanvas" width="260" height="260"></canvas>
+          <div class="spider-readout" id="spiderReadout"></div>
+          <div class="spider-presets">
+            <button class="sp-btn active" data-shape="default">Default</button>
+            <button class="sp-btn" data-shape="compact">Compact</button>
+            <button class="sp-btn" data-shape="airy">Airy</button>
+            <button class="sp-btn" data-shape="sharp">Sharp</button>
+            <button class="sp-btn" data-shape="soft">Soft</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-divider"></div>
+
+    <!-- Local: Selection properties -->
+    <div class="p-section flex-1">
+      <div class="p-section-header">
+        <span class="p-section-title">Selection</span>
+        <span class="p-section-badge" style="display:none;">div</span>
+      </div>
+      <div class="p-section-body">
+        <div class="local-empty">
+          <div class="local-empty-icon">⬚</div>
+          <div class="local-empty-title">No element selected</div>
+          <div class="local-empty-desc">Click an element on the slide to inspect and edit its properties.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ BOTTOM TOOLBAR ══════════════════════════════════════ -->
+  <div class="bottom-bar">
+
+    <!-- Drawing tools -->
+    <div class="bb-group">
+      <button class="bb-btn active">✏️ Pen</button>
+      <button class="bb-btn">🖍️ Marker</button>
+    </div>
+
+    <div class="bb-sep"></div>
+
+    <!-- Color swatches -->
+    <div class="bb-group" style="gap: 4px;">
+      <div class="bb-swatch active" style="background: oklch(0.63 0.26 25);"></div>
+      <div class="bb-swatch" style="background: oklch(0.65 0.20 260);"></div>
+      <div class="bb-swatch" style="background: oklch(0.70 0.18 150);"></div>
+      <div class="bb-swatch" style="background: oklch(0.82 0.18 95);"></div>
+      <div class="bb-swatch" style="background: oklch(0.96 0.005 0); border-color: var(--border-subtle);"></div>
+      <div class="bb-swatch" style="background: oklch(0.72 0.18 285);"></div>
+    </div>
+
+    <div class="bb-sep"></div>
+
+    <!-- Stroke size -->
+    <div class="bb-group" style="gap: 6px; align-items: center;">
+      <div class="bb-size-dot" style="width:5px; height:5px;"></div>
+      <div class="bb-size-dot active" style="width:8px; height:8px;"></div>
+      <div class="bb-size-dot" style="width:12px; height:12px;"></div>
+    </div>
+
+    <div class="bb-sep"></div>
+
+    <!-- Actions -->
+    <div class="bb-group">
+      <button class="bb-btn">↩ Undo</button>
+      <button class="bb-btn">✕ Clear</button>
+    </div>
+
+    <div class="bb-sep"></div>
+
+    <!-- Overlay toggles -->
+    <div class="bb-group">
+      <div class="bb-toggle on">
+        <div class="bb-mini-switch"></div>
+        Labels
+      </div>
+      <div class="bb-toggle on">
+        <div class="bb-mini-switch"></div>
+        Outlines
+      </div>
+      <div class="bb-toggle">
+        <div class="bb-mini-switch"></div>
+        Spacing
+      </div>
+    </div>
+
+    <div class="bb-sep"></div>
+
+    <!-- Export -->
+    <div class="bb-group">
+      <button class="bb-btn" id="exportBtn" style="color: var(--accent); font-weight: 700;">⬆ Export</button>
+    </div>
+
+  </div>
+
+  <!-- ═══ EXPORT PANEL ════════════════════════════════════════ -->
+  <div class="export-panel" id="exportPanel">
+    <div class="export-header">
+      <span class="export-title">Export Changes</span>
+      <button class="export-close" id="exportClose">✕</button>
+    </div>
+    <div class="export-body">
+      <!-- Change summary chips -->
+      <div class="export-chips" id="exportChips"></div>
+      <!-- Preview -->
+      <div class="export-preview" id="exportPreview"></div>
+      <!-- Actions -->
+      <div class="export-actions">
+        <button class="export-action-btn" id="exportCopyText">📋 Copy for Agent</button>
+        <button class="export-action-btn secondary" id="exportCopyScreenshot">📷 Copy Screenshot</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ SPIDER GRAPH SCRIPT ═════════════════════════════════ -->
+  <script>
+  (function() {
+    'use strict';
+
+    var canvas = document.getElementById('spiderCanvas');
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height;
+    var CX = W / 2, CY = H / 2;
+    var R = 95;
+    var root = document.documentElement;
+
+    var AXES = [
+      { key: 'spacing',   label: 'Spacing',  color: '#b694fa' },
+      { key: 'padding',   label: 'Padding',  color: '#6da1ed' },
+      { key: 'radius',    label: 'Radius',   color: '#5ec9a0' },
+      { key: 'border',    label: 'Border',   color: '#d4b85c' },
+      { key: 'shadow',    label: 'Shadow',   color: '#e07a5f' },
+      { key: 'typeScale', label: 'Type',     color: '#d17bb5' }
+    ];
+    var N = AXES.length;
+    var DEFAULTS = [0.50, 0.50, 0.50, 0.40, 0.50, 0.50];
+    var values = DEFAULTS.slice();
+
+    // Expose state for export
+    window._tokenState = { axes: AXES, values: values, defaults: DEFAULTS };
+
+    var PRESETS = {
+      'default': [0.50, 0.50, 0.50, 0.40, 0.50, 0.50],
+      'compact': [0.25, 0.20, 0.30, 0.30, 0.25, 0.35],
+      'airy':    [0.80, 0.75, 0.60, 0.50, 0.65, 0.60],
+      'sharp':   [0.45, 0.40, 0.08, 0.70, 0.40, 0.50],
+      'soft':    [0.55, 0.60, 0.90, 0.20, 0.70, 0.55]
+    };
+
+    var dragging = -1, hovered = -1;
+
+    function angle(i) { return (Math.PI * 2 * i / N) - Math.PI / 2; }
+
+    function axisPoint(i, val) {
+      var a = angle(i), r = val * R;
+      return { x: CX + Math.cos(a) * r, y: CY + Math.sin(a) * r };
+    }
+
+    function applyToCSS() {
+      var sp = 0.4 + values[0] * 1.2;
+      var pd = 0.4 + values[1] * 1.2;
+      var rd = Math.round(values[2] * 24);
+
+      [4,8,12,16,24,32,48].forEach(function(base, i) {
+        root.style.setProperty('--sp-' + (i + 1), Math.round(base * sp) + 'px');
+      });
+      root.style.setProperty('--radius-sm', Math.round(rd * 0.43) + 'px');
+      root.style.setProperty('--radius-md', Math.round(rd * 0.71) + 'px');
+      root.style.setProperty('--radius-lg', rd + 'px');
+
+      updateReadout();
+    }
+
+    function updateReadout() {
+      var el = document.getElementById('spiderReadout');
+      var sp = 0.4 + values[0] * 1.2;
+      var pd = 0.4 + values[1] * 1.2;
+      var rd = Math.round(values[2] * 24);
+      var labels = [sp.toFixed(1)+'x', pd.toFixed(1)+'x', rd+'px',
+        Math.round(values[3]*100)+'%', Math.round(values[4]*100)+'%',
+        (0.7 + values[5]*0.6).toFixed(1)+'x'];
+      var html = '';
+      for (var i = 0; i < N; i++) {
+        html += '<div class="sr-item"><div class="sr-dot" style="background:'+AXES[i].color+'"></div>' +
+          '<span class="sr-name">'+AXES[i].label+'</span>' +
+          '<span class="sr-val">'+labels[i]+'</span></div>';
+      }
+      el.innerHTML = html;
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+
+      for (var ring = 1; ring <= 4; ring++) {
+        var rr = (ring / 4) * R;
+        ctx.beginPath();
+        for (var gi = 0; gi < N; gi++) {
+          var a = angle(gi), gx = CX + Math.cos(a) * rr, gy = CY + Math.sin(a) * rr;
+          gi === 0 ? ctx.moveTo(gx, gy) : ctx.lineTo(gx, gy);
+        }
+        ctx.closePath();
+        ctx.strokeStyle = 'rgba(255,255,255,' + (ring === 2 ? 0.07 : 0.03) + ')';
+        ctx.lineWidth = 1; ctx.stroke();
+      }
+
+      for (var ai = 0; ai < N; ai++) {
+        var ap = axisPoint(ai, 1);
+        ctx.beginPath(); ctx.moveTo(CX, CY); ctx.lineTo(ap.x, ap.y);
+        ctx.strokeStyle = 'rgba(255,255,255,0.05)'; ctx.lineWidth = 1; ctx.stroke();
+      }
+
+      ctx.font = '600 9px Figtree, system-ui, sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      for (var li = 0; li < N; li++) {
+        var lp = axisPoint(li, 1.26);
+        ctx.fillStyle = li === hovered ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.3)';
+        ctx.fillText(AXES[li].label, lp.x, lp.y);
+      }
+
+      ctx.beginPath();
+      for (var si = 0; si < N; si++) {
+        var sp2 = axisPoint(si, values[si]);
+        si === 0 ? ctx.moveTo(sp2.x, sp2.y) : ctx.lineTo(sp2.x, sp2.y);
+      }
+      ctx.closePath();
+      var grad = ctx.createRadialGradient(CX, CY, 0, CX, CY, R);
+      grad.addColorStop(0, 'rgba(167,139,250,0.12)');
+      grad.addColorStop(1, 'rgba(167,139,250,0.02)');
+      ctx.fillStyle = grad; ctx.fill();
+
+      for (var ei = 0; ei < N; ei++) {
+        var e1 = axisPoint(ei, values[ei]);
+        var e2 = axisPoint((ei + 1) % N, values[(ei + 1) % N]);
+        ctx.beginPath(); ctx.moveTo(e1.x, e1.y); ctx.lineTo(e2.x, e2.y);
+        ctx.strokeStyle = AXES[ei].color;
+        ctx.globalAlpha = 0.5; ctx.lineWidth = 1.5; ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
+
+      for (var di = 0; di < N; di++) {
+        var dp = axisPoint(di, values[di]);
+        var isA = (di === dragging || di === hovered);
+        if (isA) {
+          ctx.beginPath(); ctx.arc(dp.x, dp.y, 12, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(167,139,250,0.12)'; ctx.fill();
+        }
+        ctx.beginPath(); ctx.arc(dp.x, dp.y, isA ? 6 : 4.5, 0, Math.PI * 2);
+        ctx.fillStyle = AXES[di].color; ctx.fill();
+        ctx.beginPath(); ctx.arc(dp.x, dp.y, isA ? 2.5 : 1.5, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,0.85)'; ctx.fill();
+      }
+    }
+
+    function getClosestAxis(mx, my) {
+      var best = -1, bestDist = 22;
+      for (var i = 0; i < N; i++) {
+        var p = axisPoint(i, values[i]);
+        var d = Math.sqrt((mx-p.x)*(mx-p.x) + (my-p.y)*(my-p.y));
+        if (d < bestDist) { bestDist = d; best = i; }
+      }
+      return best;
+    }
+
+    function projectOnAxis(i, mx, my) {
+      var a = angle(i);
+      var dot = (mx - CX) * Math.cos(a) + (my - CY) * Math.sin(a);
+      return Math.max(0.02, Math.min(1, dot / R));
+    }
+
+    canvas.addEventListener('pointerdown', function(e) {
+      var rect = canvas.getBoundingClientRect();
+      var mx = (e.clientX - rect.left) * (W / rect.width);
+      var my = (e.clientY - rect.top) * (H / rect.height);
+      var idx = getClosestAxis(mx, my);
+      if (idx >= 0) { dragging = idx; canvas.setPointerCapture(e.pointerId); e.preventDefault(); }
+    });
+
+    canvas.addEventListener('pointermove', function(e) {
+      var rect = canvas.getBoundingClientRect();
+      var mx = (e.clientX - rect.left) * (W / rect.width);
+      var my = (e.clientY - rect.top) * (H / rect.height);
+      if (dragging >= 0) {
+        values[dragging] = projectOnAxis(dragging, mx, my);
+        applyToCSS(); draw();
+        document.querySelectorAll('.sp-btn').forEach(function(b) { b.classList.remove('active'); });
+      } else {
+        var oldH = hovered;
+        hovered = getClosestAxis(mx, my);
+        if (hovered !== oldH) draw();
+        canvas.style.cursor = hovered >= 0 ? 'grab' : 'crosshair';
+      }
+    });
+
+    canvas.addEventListener('pointerup', function() { dragging = -1; });
+    canvas.addEventListener('pointerleave', function() { hovered = -1; dragging = -1; draw(); });
+
+    document.querySelectorAll('.sp-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var shape = PRESETS[btn.dataset.shape];
+        if (!shape) return;
+        var start = values.slice(), t0 = performance.now();
+        function anim(now) {
+          var t = Math.min(1, (now - t0) / 350);
+          var e = 1 - Math.pow(1 - t, 3);
+          for (var i = 0; i < N; i++) values[i] = start[i] + (shape[i] - start[i]) * e;
+          applyToCSS(); draw();
+          if (t < 1) requestAnimationFrame(anim);
+        }
+        requestAnimationFrame(anim);
+        document.querySelectorAll('.sp-btn').forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+      });
+    });
+
+    // Toggle clicks in bottom bar
+    document.querySelectorAll('.bb-toggle').forEach(function(el) {
+      el.addEventListener('click', function() { el.classList.toggle('on'); });
+    });
+
+    applyToCSS(); draw();
+  })();
+  </script>
+
+  <!-- ═══ THEME COLOR SCRIPT ══════════════════════════════════ -->
+  <script>
+  (function() {
+    'use strict';
+    var root = document.documentElement;
+
+    var PRESETS = {
+      violet: { hue: 285, c: 0.18, aL: 0.72 },
+      ember:  { hue: 30,  c: 0.20, aL: 0.68 },
+      ocean:  { hue: 230, c: 0.14, aL: 0.70 },
+      mint:   { hue: 165, c: 0.14, aL: 0.75 },
+      gold:   { hue: 85,  c: 0.15, aL: 0.78 },
+      rose:   { hue: 350, c: 0.16, aL: 0.70 },
+      mono:   { hue: 0,   c: 0.00, aL: 0.70 }
+    };
+
+    var currentTheme = { name: 'violet', hue: 285, c: 0.18, aL: 0.72 };
+    var defaultTheme = { name: 'violet', hue: 285, c: 0.18, aL: 0.72 };
+    window._themeState = { current: currentTheme, default: defaultTheme, presets: PRESETS };
+
+    function applyTheme(h, c, aL) {
+      root.style.setProperty('--accent', 'oklch(' + aL + ' ' + c + ' ' + h + ')');
+      root.style.setProperty('--accent-dim', 'oklch(' + (aL-0.17).toFixed(2) + ' ' + (c*0.78).toFixed(3) + ' ' + h + ')');
+      root.style.setProperty('--accent-bg', 'oklch(0.22 ' + (c*0.28).toFixed(3) + ' ' + h + ')');
+      root.style.setProperty('--accent-bg-hover', 'oklch(0.27 ' + (c*0.38).toFixed(3) + ' ' + h + ')');
+
+      // Tint surfaces
+      var sT = Math.max(0.002, c * 0.06).toFixed(3);
+      root.style.setProperty('--surf-0', 'oklch(0.10 ' + sT + ' ' + h + ')');
+      root.style.setProperty('--surf-1', 'oklch(0.135 ' + (sT*1.1).toFixed(3) + ' ' + h + ')');
+      root.style.setProperty('--surf-2', 'oklch(0.17 ' + (sT*1.2).toFixed(3) + ' ' + h + ')');
+      root.style.setProperty('--surf-3', 'oklch(0.22 ' + (sT*1.3).toFixed(3) + ' ' + h + ')');
+
+      root.style.setProperty('--text-primary', 'oklch(0.92 0.006 ' + h + ')');
+      root.style.setProperty('--text-secondary', 'oklch(0.60 0.006 ' + h + ')');
+      root.style.setProperty('--text-tertiary', 'oklch(0.42 0.005 ' + h + ')');
+    }
+
+    document.querySelectorAll('.ts-dot').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var p = PRESETS[btn.dataset.preset];
+        if (!p) return;
+        applyTheme(p.hue, p.c, p.aL);
+        currentTheme.name = btn.dataset.preset;
+        currentTheme.hue = p.hue;
+        currentTheme.c = p.c;
+        currentTheme.aL = p.aL;
+        document.querySelectorAll('.ts-dot').forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+      });
+    });
+  })();
+  </script>
+
+  <!-- ═══ EXPORT LOGIC ════════════════════════════════════════ -->
+  <script>
+  (function() {
+    'use strict';
+
+    var panel = document.getElementById('exportPanel');
+    var btn = document.getElementById('exportBtn');
+    var closeBtn = document.getElementById('exportClose');
+    var chipsEl = document.getElementById('exportChips');
+    var previewEl = document.getElementById('exportPreview');
+    var copyTextBtn = document.getElementById('exportCopyText');
+    var copySsBtn = document.getElementById('exportCopyScreenshot');
+
+    function isOpen() { return panel.classList.contains('open'); }
+
+    function toggle() {
+      if (isOpen()) { panel.classList.remove('open'); return; }
+      buildExport();
+      panel.classList.add('open');
+    }
+
+    btn.addEventListener('click', toggle);
+    closeBtn.addEventListener('click', function() { panel.classList.remove('open'); });
+
+    // Close on Escape
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && isOpen()) panel.classList.remove('open');
+    });
+
+    // ── Detect changes ──────────────────────────────────────
+    function getChanges() {
+      var changes = { theme: null, tokens: [], overlays: [] };
+      var ts = window._themeState;
+      var tk = window._tokenState;
+
+      // Theme changed?
+      if (ts && ts.current.name !== ts.default.name) {
+        changes.theme = {
+          from: ts.default.name,
+          to: ts.current.name,
+          hue: ts.current.hue,
+          chroma: ts.current.c,
+          lightness: ts.current.aL
+        };
+      }
+
+      // Token axes changed?
+      if (tk) {
+        for (var i = 0; i < tk.axes.length; i++) {
+          var diff = Math.abs(tk.values[i] - tk.defaults[i]);
+          if (diff > 0.02) {
+            var ax = tk.axes[i];
+            var v = tk.values[i];
+            var d = tk.defaults[i];
+            changes.tokens.push({
+              key: ax.key,
+              label: ax.label,
+              from: d,
+              to: v,
+              cssValues: getTokenCSS(ax.key, v, d)
+            });
+          }
+        }
+      }
+
+      // Overlay toggles
+      document.querySelectorAll('.bb-toggle').forEach(function(el) {
+        var name = el.textContent.trim();
+        var on = el.classList.contains('on');
+        changes.overlays.push({ name: name, on: on });
+      });
+
+      return changes;
+    }
+
+    function getTokenCSS(key, val, def) {
+      var result = [];
+      var spMul = function(v) { return 0.4 + v * 1.2; };
+      var bases = [4, 8, 12, 16, 24, 32, 48];
+
+      if (key === 'spacing') {
+        var newM = spMul(val), oldM = spMul(def);
+        for (var i = 0; i < bases.length; i++) {
+          result.push({
+            prop: '--sp-' + (i + 1),
+            from: Math.round(bases[i] * oldM) + 'px',
+            to: Math.round(bases[i] * newM) + 'px'
+          });
+        }
+      } else if (key === 'radius') {
+        var newR = Math.round(val * 24), oldR = Math.round(def * 24);
+        result.push({ prop: '--radius-sm', from: Math.round(oldR * 0.43) + 'px', to: Math.round(newR * 0.43) + 'px' });
+        result.push({ prop: '--radius-md', from: Math.round(oldR * 0.71) + 'px', to: Math.round(newR * 0.71) + 'px' });
+        result.push({ prop: '--radius-lg', from: oldR + 'px', to: newR + 'px' });
+      } else if (key === 'padding') {
+        var newP = spMul(val), oldP = spMul(def);
+        result.push({ prop: 'padding multiplier', from: oldP.toFixed(1) + 'x', to: newP.toFixed(1) + 'x' });
+      } else if (key === 'border') {
+        result.push({ prop: 'border opacity', from: Math.round(def * 100) + '%', to: Math.round(val * 100) + '%' });
+      } else if (key === 'shadow') {
+        result.push({ prop: 'shadow intensity', from: Math.round(def * 100) + '%', to: Math.round(val * 100) + '%' });
+      } else if (key === 'typeScale') {
+        var newTS = (0.7 + val * 0.6), oldTS = (0.7 + def * 0.6);
+        result.push({ prop: 'font-size multiplier', from: oldTS.toFixed(1) + 'x', to: newTS.toFixed(1) + 'x' });
+      }
+      return result;
+    }
+
+    // ── Build export output ──────────────────────────────────
+    function buildExport() {
+      var changes = getChanges();
+      var hasTheme = !!changes.theme;
+      var hasTokens = changes.tokens.length > 0;
+      var hasAny = hasTheme || hasTokens;
+
+      // Chips
+      var chips = '';
+      if (hasTheme) chips += '<span class="export-chip changed">Theme: ' + changes.theme.to + '</span>';
+      changes.tokens.forEach(function(t) {
+        chips += '<span class="export-chip changed">' + t.label + '</span>';
+      });
+      if (!hasAny) chips += '<span class="export-chip">No changes</span>';
+      chipsEl.innerHTML = chips;
+
+      // Preview text
+      previewEl.innerHTML = generateAgentText(changes);
+    }
+
+    function generateAgentText(changes) {
+      var hasTheme = !!changes.theme;
+      var hasTokens = changes.tokens.length > 0;
+
+      if (!hasTheme && !hasTokens) {
+        return '<span class="ep-dim">No design token or theme changes to export.\nUse the spider graph or theme presets to make changes, then export.</span>';
+      }
+
+      var lines = '';
+
+      lines += '<span class="ep-heading">## Design Editor Changes</span>';
+      lines += '<span class="ep-dim">Source: Design Editor panel (visual mockup)</span>\n';
+      lines += '<span class="ep-dim">Scope: Global design system — affects all slides</span>\n';
+
+      // Context section
+      lines += '\n<span class="ep-heading">### Context</span>';
+      lines += 'These changes were made in the presentation\'s live design\n';
+      lines += 'editor. Apply them to the CSS custom properties in the\n';
+      lines += 'project\'s token/variable files.\n';
+
+      if (hasTheme) {
+        lines += '\n<span class="ep-heading">### Theme Change</span>';
+        lines += '<span class="ep-dim">Category:</span> Accent color + surface tint\n';
+        lines += '<span class="ep-dim">Changed from:</span> <span class="ep-old">' + changes.theme.from + '</span>\n';
+        lines += '<span class="ep-dim">Changed to:</span>   <span class="ep-val">' + changes.theme.to + '</span>\n\n';
+        lines += '<span class="ep-dim">CSS Variables:</span>\n';
+        lines += '  --accent: <span class="ep-val">oklch(' + changes.theme.lightness + ' ' + changes.theme.chroma + ' ' + changes.theme.hue + ')</span>\n';
+
+        var sT = Math.max(0.002, changes.theme.chroma * 0.06).toFixed(3);
+        lines += '  --surf-0: <span class="ep-val">oklch(0.10 ' + sT + ' ' + changes.theme.hue + ')</span>\n';
+        lines += '  --surf-1: <span class="ep-val">oklch(0.135 ' + (sT * 1.1).toFixed(3) + ' ' + changes.theme.hue + ')</span>\n';
+        lines += '  --surf-2: <span class="ep-val">oklch(0.17 ' + (sT * 1.2).toFixed(3) + ' ' + changes.theme.hue + ')</span>\n';
+        lines += '  --text-primary: <span class="ep-val">oklch(0.92 0.006 ' + changes.theme.hue + ')</span>\n';
+      }
+
+      if (hasTokens) {
+        lines += '\n<span class="ep-heading">### Token Changes</span>';
+
+        changes.tokens.forEach(function(t) {
+          lines += '\n<span class="ep-dim">─ ' + t.label + '</span>\n';
+          t.cssValues.forEach(function(cv) {
+            lines += '  ' + cv.prop + ': <span class="ep-old">' + cv.from + '</span> → <span class="ep-val">' + cv.to + '</span>\n';
+          });
+        });
+      }
+
+      // Instructions for the agent
+      lines += '\n<span class="ep-heading">### Instructions for Agent</span>';
+      lines += 'Update the CSS custom properties listed above in the\n';
+      lines += 'project\'s design token files. The properties use OKLCH\n';
+      lines += 'color space. Ensure all computed values cascade correctly\n';
+      lines += 'through the component system.\n';
+
+      if (hasTheme) {
+        lines += '\nFor theme changes: update both the accent variables and\n';
+        lines += 'the surface tint variables. Text colors should pick up\n';
+        lines += 'a whisper of the new hue for visual cohesion.\n';
+      }
+
+      if (hasTokens) {
+        lines += '\nFor token changes: update the spacing/radius/shadow\n';
+        lines += 'scales in the :root block. These are multiplier-based\n';
+        lines += 'changes — the specific pixel values are listed above.\n';
+      }
+
+      return lines;
+    }
+
+    // ── Build plain text for clipboard ──────────────────────
+    function getPlainText(changes) {
+      var hasTheme = !!changes.theme;
+      var hasTokens = changes.tokens.length > 0;
+      var text = '';
+
+      text += '## Design Editor Changes\n';
+      text += 'Source: Design Editor panel\n';
+      text += 'Scope: Global design system — affects all slides\n\n';
+
+      text += '### Context\n';
+      text += 'These changes were made in the presentation\'s live design editor.\n';
+      text += 'Apply them to the CSS custom properties in the project\'s token files.\n\n';
+
+      if (hasTheme) {
+        text += '### Theme Change\n';
+        text += 'Category: Accent color + surface tint\n';
+        text += 'Changed from: ' + changes.theme.from + '\n';
+        text += 'Changed to: ' + changes.theme.to + '\n\n';
+        text += 'CSS Variables:\n';
+        text += '  --accent: oklch(' + changes.theme.lightness + ' ' + changes.theme.chroma + ' ' + changes.theme.hue + ')\n';
+        var sT = Math.max(0.002, changes.theme.chroma * 0.06).toFixed(3);
+        text += '  --surf-0: oklch(0.10 ' + sT + ' ' + changes.theme.hue + ')\n';
+        text += '  --surf-1: oklch(0.135 ' + (sT * 1.1).toFixed(3) + ' ' + changes.theme.hue + ')\n';
+        text += '  --surf-2: oklch(0.17 ' + (sT * 1.2).toFixed(3) + ' ' + changes.theme.hue + ')\n';
+        text += '  --surf-3: oklch(0.22 ' + (sT * 1.3).toFixed(3) + ' ' + changes.theme.hue + ')\n';
+        text += '  --text-primary: oklch(0.92 0.006 ' + changes.theme.hue + ')\n';
+        text += '  --text-secondary: oklch(0.60 0.006 ' + changes.theme.hue + ')\n';
+        text += '  --text-tertiary: oklch(0.42 0.005 ' + changes.theme.hue + ')\n';
+        text += '  --accent-bg: oklch(0.22 ' + (changes.theme.chroma * 0.28).toFixed(3) + ' ' + changes.theme.hue + ')\n\n';
+      }
+
+      if (hasTokens) {
+        text += '### Token Changes\n';
+        changes.tokens.forEach(function(t) {
+          text += '\n' + t.label + ':\n';
+          t.cssValues.forEach(function(cv) {
+            text += '  ' + cv.prop + ': ' + cv.from + ' → ' + cv.to + '\n';
+          });
+        });
+        text += '\n';
+      }
+
+      text += '### Instructions\n';
+      text += 'Update the CSS custom properties listed above in the :root block.\n';
+      text += 'Properties use OKLCH color space. Ensure all computed values\n';
+      text += 'cascade correctly through the component system.\n';
+
+      if (hasTheme) {
+        text += '\nFor theme: update accent + surface tint + text color variables.\n';
+        text += 'Text colors should pick up a whisper of the new hue for cohesion.\n';
+      }
+
+      if (hasTokens) {
+        text += '\nFor tokens: update the spacing/radius scales in :root.\n';
+        text += 'Specific pixel values are listed above.\n';
+      }
+
+      return text;
+    }
+
+    // ── Copy actions ────────────────────────────────────────
+    copyTextBtn.addEventListener('click', function() {
+      var changes = getChanges();
+      var text = getPlainText(changes);
+      navigator.clipboard.writeText(text).then(function() {
+        flashBtn(copyTextBtn, '✓ Copied');
+      });
+    });
+
+    copySsBtn.addEventListener('click', function() {
+      // Capture the stage area as screenshot
+      var stage = document.querySelector('.stage-artboard');
+      if (!stage) return;
+
+      // Use canvas to capture (simplified — real version would use html2canvas)
+      // For now, copy a note about the screenshot
+      var note = '[Screenshot of slide 5 with annotations]\n\n';
+      note += 'The annotated slide screenshot has been captured.\n';
+      note += 'Paste this image into your conversation for visual context.\n';
+
+      // Try to capture via canvas
+      try {
+        var c = document.createElement('canvas');
+        c.width = 1920; c.height = 1080;
+        var cCtx = c.getContext('2d');
+        cCtx.fillStyle = '#111315';
+        cCtx.fillRect(0, 0, 1920, 1080);
+        cCtx.fillStyle = '#888';
+        cCtx.font = '24px Figtree, sans-serif';
+        cCtx.textAlign = 'center';
+        cCtx.fillText('Slide 5 — Building New Things', 960, 540);
+
+        c.toBlob(function(blob) {
+          if (blob && navigator.clipboard && typeof ClipboardItem !== 'undefined') {
+            navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]).then(function() {
+              flashBtn(copySsBtn, '✓ Copied');
+            });
+          }
+        }, 'image/png');
+      } catch (e) {
+        flashBtn(copySsBtn, '⚠ Not available');
+      }
+    });
+
+    function flashBtn(el, msg) {
+      var orig = el.textContent;
+      el.textContent = msg;
+      el.classList.add('copied');
+      setTimeout(function() {
+        el.textContent = orig;
+        el.classList.remove('copied');
+      }, 1800);
+    }
+  })();
+  </script>
+
+</body>
+</html>

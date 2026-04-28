@@ -30,6 +30,8 @@
   var penColor = '#ff3b3b';
   var penSize = 4;
   var tool = 'pen'; // 'pen' or 'marker'
+  var showLabels = false;
+  var labelOverlays = []; // DOM elements for labels
 
   var COLORS = [
     { name: 'Red',    hex: '#ff3b3b' },
@@ -161,6 +163,80 @@
     ctx.restore();
   }
 
+  // ── Element Labels ───────────────────────────────────────────
+
+  function getElementLabel(el) {
+    var tag = el.tagName.toLowerCase();
+    var parts = [tag];
+    if (el.id) parts.push('#' + el.id);
+    if (el.classList.length) {
+      var cls = Array.from(el.classList)
+        .filter(function(c) { return c !== 'active' && c !== 'slide' && !c.startsWith('ann-'); })
+        .slice(0, 2)
+        .map(function(c) { return '.' + c; })
+        .join('');
+      if (cls) parts.push(cls);
+    }
+    return parts.join('');
+  }
+
+  function addLabels() {
+    removeLabels();
+    var activeSlide = document.querySelector('.slide.active');
+    if (!activeSlide) return;
+    var cont = getContainer();
+    if (!cont) return;
+    var contRect = cont.getBoundingClientRect();
+
+    // Label the slide's direct children and their children (2 levels)
+    var els = activeSlide.querySelectorAll('*');
+    els.forEach(function(el) {
+      // Skip invisible, tiny, or script/style elements
+      if (el.tagName === 'SCRIPT' || el.tagName === 'STYLE' || el.tagName === 'BR') return;
+      var rect = el.getBoundingClientRect();
+      if (rect.width < 20 || rect.height < 10) return;
+      if (rect.bottom < contRect.top || rect.top > contRect.bottom) return;
+
+      var label = document.createElement('div');
+      label.className = 'ann-element-label';
+      label.textContent = getElementLabel(el);
+
+      // Position relative to the container
+      label.style.left = (rect.left - contRect.left) + 'px';
+      label.style.top  = (rect.top  - contRect.top) + 'px';
+
+      // Outline the element
+      var outline = document.createElement('div');
+      outline.className = 'ann-element-outline';
+      outline.style.left   = (rect.left   - contRect.left) + 'px';
+      outline.style.top    = (rect.top    - contRect.top)  + 'px';
+      outline.style.width  = rect.width  + 'px';
+      outline.style.height = rect.height + 'px';
+
+      cont.appendChild(outline);
+      cont.appendChild(label);
+      labelOverlays.push(label, outline);
+    });
+  }
+
+  function removeLabels() {
+    labelOverlays.forEach(function(el) { el.remove(); });
+    labelOverlays = [];
+  }
+
+  function toggleLabels(on) {
+    showLabels = on;
+    if (showLabels) addLabels();
+    else removeLabels();
+  }
+
+  // Refresh labels when navigating slides
+  function refreshLabelsIfActive() {
+    if (showLabels) {
+      setTimeout(function() { addLabels(); }, 120);
+    }
+  }
+
   // ── Toolbar ──────────────────────────────────────────────────
 
   function buildToolbar(parentEl) {
@@ -250,6 +326,23 @@
       redraw();
     });
     actRow.querySelector('#annCopy').addEventListener('click', capture);
+
+    // Show Labels toggle
+    var labelRow = document.createElement('div');
+    labelRow.className = 'ann-row';
+    labelRow.style.marginTop = '10px';
+    labelRow.style.paddingTop = '10px';
+    labelRow.style.borderTop = '1px solid rgba(255,255,255,0.06)';
+    labelRow.innerHTML =
+      '<label class="ann-checkbox-label">' +
+        '<input type="checkbox" id="annShowLabels" class="ann-checkbox">' +
+        '<span>Show element labels</span>' +
+      '</label>';
+    toolbar.appendChild(labelRow);
+
+    labelRow.querySelector('#annShowLabels').addEventListener('change', function () {
+      toggleLabels(this.checked);
+    });
 
     parentEl.appendChild(toolbar);
   }
@@ -381,6 +474,8 @@
   function init() {
     createCanvas();
     injectStyles();
+    // Refresh labels when slides change
+    document.addEventListener('slidechange', refreshLabelsIfActive);
   }
 
   function show() {
@@ -395,6 +490,7 @@
     if (canvas) {
       canvas.style.pointerEvents = 'none';
     }
+    removeLabels();
   }
 
   function clearAll() {
@@ -402,6 +498,10 @@
     currentStroke = null;
     drawing = false;
     if (ctx) ctx.clearRect(0, 0, DESIGN_W, DESIGN_H);
+    removeLabels();
+    showLabels = false;
+    var cb = document.getElementById('annShowLabels');
+    if (cb) cb.checked = false;
   }
 
   function isActive() {
@@ -463,6 +563,29 @@
       .ann-action-btn:hover { background: rgba(167,139,250,0.15); color: #a78bfa; }
       .ann-copy-btn { background: rgba(167,139,250,0.12); color: #a78bfa; font-weight: 600; }
       .ann-copy-btn:hover { background: rgba(167,139,250,0.25); }
+      .ann-checkbox-label {
+        display: flex; align-items: center; gap: 8px;
+        font-size: 11px; color: #aaa; cursor: pointer; user-select: none;
+      }
+      .ann-checkbox-label:hover { color: #ccc; }
+      .ann-checkbox {
+        accent-color: #a78bfa; width: 14px; height: 14px; cursor: pointer;
+      }
+      .ann-element-label {
+        position: absolute; z-index: 99989;
+        background: rgba(167,139,250,0.92); color: #fff;
+        font-family: 'Courier New', monospace; font-size: 10px; font-weight: 700;
+        padding: 1px 5px; border-radius: 3px;
+        pointer-events: none; white-space: nowrap;
+        line-height: 1.4; letter-spacing: 0;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+        transform: translateY(-100%);
+      }
+      .ann-element-outline {
+        position: absolute; z-index: 99988;
+        border: 1px solid rgba(167,139,250,0.55);
+        pointer-events: none; border-radius: 2px;
+      }
     `;
     document.head.appendChild(style);
   }
@@ -477,7 +600,11 @@
     clear: clearAll,
     capture: capture,
     isActive: isActive,
-    buildToolbar: buildToolbar
+    buildToolbar: buildToolbar,
+    refreshLabels: refreshLabelsIfActive,
+    setColor: function(hex) { penColor = hex; },
+    setSize: function(sz) { penSize = sz; },
+    undo: function() { strokes.pop(); redraw(); }
   };
 
   console.log('[Annotate] Ready');

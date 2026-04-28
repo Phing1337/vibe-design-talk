@@ -28,6 +28,7 @@
   <link rel="stylesheet" href="css/garden.css?v=2">
   <link rel="stylesheet" href="css/permutations.css?v=1">
   <link rel="stylesheet" href="css/casestudy.css?v=1">
+  <link rel="stylesheet" href="css/design-editor.css?v=1">
 
 
   <!-- GSAP (animation) -->
@@ -234,8 +235,8 @@
 
     <!-- Slide 4b: One Takeaway (hammer & chisel visual) -->
     <section class="slide" data-beat="1" data-title="One Takeaway" data-transition="fade" data-3d="float" style="background: var(--color-bg-light-alt) !important; padding: 0 !important;">
-      <img src="assets/2024-talk/extracted/image-9-1.png" alt="Code carved in stone with a hammer and chisel" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: left center; z-index: 0;" />
-      <div style="position: absolute; top: 0; right: 0; width: 42%; height: 100%; display: flex; flex-direction: column; justify-content: center; padding: var(--space-3xl); z-index: 1;">
+      <img src="assets/2024-talk/extracted/image-9-1.png" alt="Code carved in stone with a hammer and chisel" style="position: absolute; top: 50%; left: 2%; transform: translateY(-50%); width: 55%; height: auto; object-fit: contain; z-index: 0;" />
+      <div style="position: absolute; top: 0; right: 0; width: 48%; height: 100%; display: flex; flex-direction: column; justify-content: center; padding: var(--space-3xl); z-index: 1;">
         <p class="fade-in fade-in-1" style="font-size: clamp(0.6rem, 0.9vw, 0.8rem); font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--color-signal); margin-bottom: clamp(0.5rem, 1vw, 1rem);">☞ If you remember one thing</p>
         <h1 class="fade-in fade-in-2" style="font-size: clamp(1.4rem, 2.8vw, 2.4rem); font-family: var(--font-display); font-weight: 400; letter-spacing: -0.03em; color: #1a1a1a; line-height: 1.25;">
           Design <span style="color: var(--color-signal);">foundations</span> &amp; terminology you can use to make more interesting, dynamic, and usable experiences.
@@ -1917,33 +1918,45 @@
 
     <!-- Slide: Wide & Deep - AI Methodology -->
     <section class="slide slide-permutations" data-beat="4" data-title="Wide &amp; Deep" data-transition="fade" style="background: var(--color-bg-dark) !important;">
-      <div class="perm-layout">
+      <div class="perm-layout-v2">
 
-        <!-- Left: copy -->
-        <div class="perm-left">
-          <p class="perm-beat-label fade-in fade-in-1">Goals + Constraints</p>
-          <h2 class="perm-headline fade-in fade-in-2">Wide,<br>then deep.</h2>
-          <ol class="perm-steps fade-in fade-in-3">
-            <li class="perm-step">
-              <span class="perm-step-num">01</span>
-              <div class="perm-step-text">
-                <strong>Generate wide</strong>
-                <span>Set your constraints and goals, then ask for many versions. Push for real variety.</span>
-              </div>
-            </li>
-            <li class="perm-step">
-              <span class="perm-step-num">02</span>
-              <div class="perm-step-text">
-                <strong>Go deep</strong>
-                <span>Pick the most interesting direction and generate more within it. Same constraints, refined goal.</span>
-              </div>
-            </li>
-          </ol>
+        <!-- Top header -->
+        <div class="perm-header fade-in fade-in-1">
+          <div>
+            <p class="perm-beat-label">Goals + Constraints</p>
+            <h2 class="perm-headline-v2">Wide, then deep.</h2>
+          </div>
+          <p class="perm-header-sub">Working sequentially limits your discovery space. Going wide first means you explore the whole landscape before committing.</p>
         </div>
 
-        <!-- Right: interactive card cascade -->
-        <div id="permStage" class="perm-stage fade-in fade-in-4"></div>
+        <!-- Two columns -->
+        <div class="perm-comparison">
 
+          <!-- Left: Sequential (bad) -->
+          <div class="perm-col perm-col-seq fade-in fade-in-2">
+            <div class="perm-col-header">
+              <span class="perm-col-icon">→</span>
+              <div>
+                <div class="perm-col-title">Sequential</div>
+                <div class="perm-col-desc">One step at a time. Small increments. Local maximum.</div>
+              </div>
+            </div>
+            <div id="permSeqStage" class="perm-seq-stage"></div>
+          </div>
+
+          <!-- Right: Wide & Deep (good) -->
+          <div class="perm-col perm-col-wide fade-in fade-in-3">
+            <div class="perm-col-header">
+              <span class="perm-col-icon" style="color:var(--color-signal);">⟡</span>
+              <div>
+                <div class="perm-col-title" style="color:var(--color-signal);">Wide &amp; Deep</div>
+                <div class="perm-col-desc">Explore broadly, then refine. You find what you'd never have searched for.</div>
+              </div>
+            </div>
+            <div id="permStage" class="perm-stage-v2"></div>
+          </div>
+
+        </div>
       </div>
     </section>
 
@@ -2183,7 +2196,8 @@
       </div>
     </section>
 
-    <!-- Design Partner - AI-powered design collaboration -->
+    <!-- Design Partner — HIDDEN: not approved for public discussion yet -->
+    <!--
     <section class="slide" data-beat="4" data-title="Design Partner" data-transition="fade" style="background: var(--color-bg-light-alt) !important;">
       <div class="slide-center" style="max-width: 900px;">
         <p class="label fade-in fade-in-1" style="color: var(--color-signal);">Your AI design collaborator</p>
@@ -2215,6 +2229,7 @@
         </p>
       </div>
     </section>
+    -->
 
 
     <!-- Right-Sized Tools - dinghy vs aircraft carrier -->
@@ -3115,6 +3130,44 @@
 
     </section><!-- /slide-garden -->
 
+    <!-- Slide: Case Study 2 — Design Editor evolution -->
+    <section class="slide slide-casestudy" data-beat="4" data-title="Case Study: Editor" data-transition="fade" style="background: #111315 !important;">
+
+      <div class="cs-header">
+        <div>
+          <p class="cs-beat-label">Case Study</p>
+          <h2 class="cs-title">Building a design editor, <span>with AI.</span></h2>
+        </div>
+        <div class="cs-controls">
+          <button class="cs-btn" id="cs2ResultBtn">Result</button>
+        </div>
+      </div>
+
+      <div class="cs-body">
+        <div class="cs-stage-info">
+          <span class="cs-stage-num" id="cs2StageNum">Gen 1</span>
+          <span class="cs-stage-name" id="cs2StageName">Layout Direction</span>
+        </div>
+        <div class="cs-tiles" id="cs2Tiles"></div>
+      </div>
+
+      <div class="cs-nav">
+        <button class="cs-nav-btn" id="cs2Prev" disabled>&larr;</button>
+        <div class="cs-dots">
+          <span class="cs-dot cs2-dot cs-dot--active"></span>
+          <span class="cs-dot cs2-dot"></span>
+          <span class="cs-dot cs2-dot"></span>
+        </div>
+        <button class="cs-nav-btn" id="cs2Next">&rarr;</button>
+      </div>
+
+      <div class="cs-result-overlay" id="cs2ResultOverlay">
+        <button class="cs-result-close" id="cs2ResultClose">&times;</button>
+        <iframe class="cs-result-frame" id="cs2ResultFrame" src="about:blank" frameborder="0"></iframe>
+      </div>
+
+    </section>
+
     <!-- Slide 16: What you're leaving with -->
     <!-- Section Intro: Wrapping Up -->
     <section class="slide" data-beat="5" data-title="Wrapping Up" data-transition="fade" style="background: var(--color-bg-dark) !important;">
@@ -3155,21 +3208,76 @@
     </section>
 
     <!-- Slide 17: Closing -->
-    <section class="slide" data-beat="5" data-title="Closing" data-transition="hard-cut" style="background: var(--color-bg-dark) !important;">
-      <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: flex-end; padding: var(--space-4xl); text-align: left;">
-        <h1 class="fade-in fade-in-1" style="font-size: 4.5rem; font-family: var(--font-display); font-weight: 400; letter-spacing: -0.04em; line-height: 1.0; color: var(--color-text);">
-          Go make something<br>that doesn't look like<br><span style="color: var(--color-signal);">everything else.</span>
-        </h1>
-        <p class="fade-in fade-in-2" style="margin-top: var(--space-xl); font-size: var(--font-size-xl); font-weight: 300; color: var(--color-text-dim);">
-          The tools are ready. The principles are learnable.<br>Happy Fix Hack Learn.
-        </p>
-        <div class="fade-in fade-in-3" style="margin-top: var(--space-3xl); display: flex; gap: var(--space-xl); font-size: var(--font-size-base); color: var(--color-text-muted);">
-          <span>🎨 Design Partner skill</span>
-          <span>🔗 Figma MCP guide</span>
-          <span>📖 Design glossary</span>
-          <span>💬 Nick McVey &amp; Greg Gonyea</span>
+    <section class="slide" data-beat="5" data-title="Closing" data-transition="hard-cut" style="background: #0a0908 !important; overflow: hidden;">
+      <canvas id="closingShader" style="position:absolute;inset:0;width:100%;height:100%;z-index:0;"></canvas>
+      <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:1;">
+        <div style="text-align:center;max-width:800px;padding:0 var(--space-2xl);">
+          <h1 class="fade-in fade-in-1" style="font-size: 3.8rem; font-family: var(--font-display); font-weight: 400; letter-spacing: -0.04em; line-height: 1.1; color: var(--color-text);">
+            Go make something<br>that doesn't look like<br><span style="color: var(--color-signal);">everything else.</span>
+          </h1>
+          <p class="fade-in fade-in-2" style="margin-top: var(--space-xl); font-size: var(--font-size-xl); font-weight: 300; color: var(--color-text-dim);">
+            Happy Fix Hack Learn.
+          </p>
         </div>
       </div>
+      <script>
+        (function() {
+          var c = document.getElementById('closingShader');
+          if (!c) return;
+          var gl = c.getContext('webgl');
+          if (!gl) return;
+          c.width = 1920; c.height = 1080;
+          gl.viewport(0, 0, 1920, 1080);
+
+          var vs = gl.createShader(gl.VERTEX_SHADER);
+          gl.shaderSource(vs, 'attribute vec2 p;void main(){gl_Position=vec4(p,0,1);}');
+          gl.compileShader(vs);
+
+          var fs = gl.createShader(gl.FRAGMENT_SHADER);
+          gl.shaderSource(fs, [
+            'precision mediump float;',
+            'uniform float t;',
+            'uniform vec2 r;',
+            'void main(){',
+            '  vec2 uv=(gl_FragCoord.xy/r)*2.0-1.0;',
+            '  uv.x*=r.x/r.y;',
+            '  float d=length(uv);',
+            '  float a=atan(uv.y,uv.x);',
+            '  float w=sin(d*3.0-t*0.4+a*2.0)*0.5+0.5;',
+            '  float w2=sin(d*5.0+t*0.3-a*1.5)*0.5+0.5;',
+            '  vec3 c1=vec3(0.12,0.06,0.02);',
+            '  vec3 c2=vec3(0.04,0.02,0.08);',
+            '  vec3 c3=vec3(0.08,0.04,0.01);',
+            '  vec3 col=mix(mix(c1,c2,w),c3,w2);',
+            '  col*=1.0-d*0.4;',
+            '  gl_FragColor=vec4(col,1);',
+            '}'
+          ].join('\n'));
+          gl.compileShader(fs);
+
+          var pg = gl.createProgram();
+          gl.attachShader(pg, vs); gl.attachShader(pg, fs);
+          gl.linkProgram(pg); gl.useProgram(pg);
+
+          var buf = gl.createBuffer();
+          gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+          gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
+          var p = gl.getAttribLocation(pg, 'p');
+          gl.enableVertexAttribArray(p);
+          gl.vertexAttribPointer(p, 2, gl.FLOAT, false, 0, 0);
+
+          var tU = gl.getUniformLocation(pg, 't');
+          var rU = gl.getUniformLocation(pg, 'r');
+
+          function draw(now) {
+            gl.uniform1f(tU, now * 0.001);
+            gl.uniform2f(rU, 1920, 1080);
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+            requestAnimationFrame(draw);
+          }
+          requestAnimationFrame(draw);
+        })();
+      </script>
     </section>
 
   </div><!-- /slides-container -->
@@ -3559,7 +3667,7 @@
   <!-- Live Design Editor - toggle with 'D' key -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="js/annotate.js"></script>
-  <script src="js/design-editor-v4.js"></script>
+  <script src="js/design-editor-v5.js"></script>
   <script src="js/layout-compose.js"></script>
   <script src="js/fly.js"></script>
   <script src="js/interactive-doc.js"></script>
@@ -3567,6 +3675,7 @@
   <script src="js/garden.js?v=4"></script>
   <script src="js/permutations.js?v=2"></script>
   <script src="js/casestudy.js?v=5"></script>
+  <script src="js/casestudy-panel.js?v=1"></script>
   <script src="js/gsap-enhance.js?v=7"></script>
 
   <!-- Tooltip card for interactive doc (lives outside slides container, fixed positioning) -->

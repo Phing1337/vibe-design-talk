@@ -1,0 +1,1816 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design Panel — Visual Mockup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Azeret+Mono:wght@400;500;600;700&family=Figtree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ── Reset ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      /* Surface palette — warm charcoal tinted toward violet */
+      --surf-0: oklch(0.12 0.012 285);   /* deepest bg */
+      --surf-1: oklch(0.155 0.014 285);  /* panel bg */
+      --surf-2: oklch(0.19 0.016 285);   /* raised surface */
+      --surf-3: oklch(0.24 0.018 285);   /* hover / input bg */
+      --surf-4: oklch(0.30 0.020 285);   /* active / pressed */
+
+      /* Borders */
+      --border-subtle: oklch(0.28 0.012 285);
+      --border-dim: oklch(0.22 0.010 285);
+
+      /* Text */
+      --text-primary: oklch(0.92 0.008 285);
+      --text-secondary: oklch(0.62 0.010 285);
+      --text-tertiary: oklch(0.45 0.008 285);
+
+      /* Accent — violet */
+      --accent: oklch(0.72 0.18 285);
+      --accent-dim: oklch(0.55 0.14 285);
+      --accent-bg: oklch(0.25 0.06 285);
+      --accent-bg-hover: oklch(0.30 0.08 285);
+
+      /* Semantic */
+      --signal-amber: oklch(0.78 0.16 75);
+      --signal-teal: oklch(0.72 0.12 180);
+      --signal-red: oklch(0.68 0.20 25);
+      --signal-green: oklch(0.72 0.16 145);
+
+      /* Type */
+      --font-ui: 'Figtree', system-ui, sans-serif;
+      --font-mono: 'Azeret Mono', 'SF Mono', monospace;
+
+      /* Spacing — 4pt scale */
+      --sp-1: 4px;
+      --sp-2: 8px;
+      --sp-3: 12px;
+      --sp-4: 16px;
+      --sp-5: 24px;
+      --sp-6: 32px;
+      --sp-7: 48px;
+
+      /* Radii */
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+    }
+
+    body {
+      background: var(--surf-0);
+      color: var(--text-primary);
+      font-family: var(--font-ui);
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: var(--sp-7);
+      gap: var(--sp-7);
+      position: relative;
+    }
+
+    /* ── Wallpaper layer ──────────────────────────────────── */
+    .wallpaper {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background:
+        url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920&q=80')
+        center / cover no-repeat;
+      filter: saturate(0.7) brightness(0.5);
+    }
+
+    .wallpaper-smoke {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      background: oklch(0.12 0.012 285 / 0.72);
+      backdrop-filter: blur(40px) saturate(1.4);
+      -webkit-backdrop-filter: blur(40px) saturate(1.4);
+    }
+
+    /* Float everything above the wallpaper */
+    body > *:not(.wallpaper):not(.wallpaper-smoke) {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ── Simulated slide — hidden, wallpaper replaces it ──── */
+    .slide-preview {
+      display: none;
+    }
+
+    /* ── Panel ─────────────────────────────────────────────── */
+    .panel {
+      width: 288px;
+      background: var(--surf-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow:
+        0 1px 2px oklch(0 0 0 / 0.3),
+        0 8px 32px oklch(0 0 0 / 0.4),
+        0 0 0 1px oklch(0 0 0 / 0.15);
+    }
+
+    /* ── Panel header ────────────────────────────────────── */
+    .panel-header {
+      padding: var(--sp-3) var(--sp-4);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-dim);
+      background: var(--surf-2);
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+    }
+
+    .panel-title-icon {
+      width: 18px;
+      height: 18px;
+      border-radius: 5px;
+      background: linear-gradient(135deg, var(--accent), oklch(0.65 0.20 310));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+    }
+
+    .panel-title-text {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.01em;
+    }
+
+    .panel-title-tag {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      background: var(--surf-0);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border-dim);
+    }
+
+    .panel-actions {
+      display: flex;
+      gap: var(--sp-1);
+    }
+
+    .panel-action-btn {
+      background: none;
+      border: 1px solid transparent;
+      color: var(--text-tertiary);
+      font-size: 11px;
+      padding: 3px 6px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.12s ease;
+      font-family: var(--font-ui);
+    }
+
+    .panel-action-btn:hover {
+      color: var(--text-secondary);
+      background: var(--surf-3);
+      border-color: var(--border-dim);
+    }
+
+    /* ── Tabs ─────────────────────────────────────────────── */
+    .tabs {
+      display: flex;
+      padding: var(--sp-1) var(--sp-3);
+      gap: 2px;
+      background: var(--surf-1);
+      border-bottom: 1px solid var(--border-dim);
+    }
+
+    .tab {
+      flex: 1;
+      padding: var(--sp-2) 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      background: none;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: var(--font-ui);
+      text-align: center;
+      position: relative;
+    }
+
+    .tab:hover {
+      color: var(--text-secondary);
+      background: var(--surf-2);
+    }
+
+    .tab.active {
+      color: var(--accent);
+      background: var(--accent-bg);
+    }
+
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 20%;
+      right: 20%;
+      height: 2px;
+      background: var(--accent);
+      border-radius: 1px;
+    }
+
+    /* ── Tab content ──────────────────────────────────────── */
+    .tab-content {
+      padding: var(--sp-4);
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    /* ── Section labels ──────────────────────────────────── */
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: var(--sp-2);
+    }
+
+    .section-label:not(:first-child) {
+      margin-top: var(--sp-5);
+      padding-top: var(--sp-4);
+      border-top: 1px solid var(--border-dim);
+    }
+
+    /* ── Tool row (pen/marker toggle) ─────────────────────── */
+    .tool-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      margin-bottom: var(--sp-3);
+    }
+
+    .tool-row-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      min-width: 36px;
+    }
+
+    .tool-toggle {
+      display: flex;
+      background: var(--surf-0);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-dim);
+      overflow: hidden;
+      flex: 1;
+    }
+
+    .tool-toggle-btn {
+      flex: 1;
+      padding: 6px var(--sp-3);
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      font-family: var(--font-ui);
+      text-align: center;
+    }
+
+    .tool-toggle-btn:hover {
+      color: var(--text-secondary);
+    }
+
+    .tool-toggle-btn.active {
+      color: var(--accent);
+      background: var(--accent-bg);
+    }
+
+    /* ── Color swatches ───────────────────────────────────── */
+    .swatch-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .swatch {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: transform 0.1s ease, outline-offset 0.1s ease;
+      border: 1.5px solid oklch(0 0 0 / 0.3);
+      position: relative;
+    }
+
+    .swatch:hover {
+      transform: scale(1.12);
+    }
+
+    .swatch.active {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    .swatch.swatch-white {
+      border-color: var(--border-subtle);
+    }
+
+    /* ── Size pips ────────────────────────────────────────── */
+    .size-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .size-pip {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.12s ease;
+      position: relative;
+    }
+
+    .size-pip-dot {
+      border-radius: 50%;
+      background: var(--text-tertiary);
+      transition: all 0.12s ease;
+    }
+
+    .size-pip:hover .size-pip-dot {
+      background: var(--text-secondary);
+    }
+
+    .size-pip.active .size-pip-dot {
+      background: var(--accent);
+    }
+
+    .size-pip-label {
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      font-family: var(--font-mono);
+      margin-top: 4px;
+    }
+
+    .size-pip.active .size-pip-label {
+      color: var(--accent);
+    }
+
+    /* ── Action buttons ───────────────────────────────────── */
+    .action-row {
+      display: flex;
+      gap: var(--sp-2);
+      margin-top: var(--sp-4);
+    }
+
+    .action-btn {
+      flex: 1;
+      padding: 8px 0;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--surf-2);
+      border: 1px solid var(--border-dim);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.12s ease;
+      font-family: var(--font-ui);
+      text-align: center;
+    }
+
+    .action-btn:hover {
+      color: var(--text-primary);
+      background: var(--surf-3);
+      border-color: var(--border-subtle);
+    }
+
+    .action-btn.primary {
+      background: var(--accent-bg);
+      border-color: oklch(0.72 0.18 285 / 0.25);
+      color: var(--accent);
+    }
+
+    .action-btn.primary:hover {
+      background: var(--accent-bg-hover);
+    }
+
+    /* ── Toggles / Checkboxes ─────────────────────────────── */
+    .toggle-section {
+      margin-top: var(--sp-5);
+      padding-top: var(--sp-4);
+      border-top: 1px solid var(--border-dim);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-3);
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-3);
+    }
+
+    .toggle-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .toggle-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .toggle-desc {
+      font-size: 10px;
+      color: var(--text-tertiary);
+      margin-top: 1px;
+      line-height: 1.3;
+    }
+
+    /* Custom switch */
+    .switch {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .switch-track {
+      position: absolute;
+      inset: 0;
+      background: var(--surf-3);
+      border-radius: 10px;
+      border: 1px solid var(--border-subtle);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .switch-track::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 14px;
+      height: 14px;
+      background: var(--text-tertiary);
+      border-radius: 50%;
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .switch input:checked + .switch-track {
+      background: var(--accent-bg);
+      border-color: oklch(0.72 0.18 285 / 0.3);
+    }
+
+    .switch input:checked + .switch-track::after {
+      transform: translateX(16px);
+      background: var(--accent);
+    }
+
+    /* ── Layers tree ─────────────────────────────────────── */
+    .layer-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 6px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.1s ease;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .layer-row:hover {
+      background: var(--surf-3);
+      color: var(--text-primary);
+    }
+
+    .layer-row.selected {
+      background: var(--accent-bg);
+      color: var(--accent);
+    }
+
+    .layer-caret {
+      width: 12px;
+      flex-shrink: 0;
+      font-size: 8px;
+      color: var(--text-tertiary);
+      text-align: center;
+      transition: transform 0.15s ease;
+    }
+
+    .layer-caret.open {
+      transform: rotate(90deg);
+    }
+
+    .layer-icon {
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      font-weight: 700;
+      color: var(--text-tertiary);
+      border: 1px solid var(--border-dim);
+    }
+
+    .layer-icon.type-section { background: oklch(0.25 0.06 285); color: var(--accent-dim); border-color: oklch(0.35 0.06 285); }
+    .layer-icon.type-div { background: oklch(0.22 0.04 180); color: oklch(0.55 0.08 180); border-color: oklch(0.30 0.04 180); }
+    .layer-icon.type-img { background: oklch(0.22 0.05 75); color: oklch(0.55 0.08 75); border-color: oklch(0.30 0.04 75); }
+    .layer-icon.type-h1 { background: oklch(0.22 0.05 25); color: oklch(0.55 0.10 25); border-color: oklch(0.30 0.04 25); }
+    .layer-icon.type-p { background: oklch(0.22 0.04 145); color: oklch(0.55 0.08 145); border-color: oklch(0.30 0.04 145); }
+
+    .layer-name {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .layer-eye {
+      flex-shrink: 0;
+      font-size: 10px;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.1s ease;
+      padding: 0 2px;
+    }
+
+    .layer-row:hover .layer-eye {
+      opacity: 1;
+    }
+
+    .layer-children {
+      padding-left: 16px;
+    }
+
+    /* ── Token rows ──────────────────────────────────────── */
+    .token-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sp-2);
+      padding: 4px 6px;
+      border-radius: 4px;
+      transition: background 0.1s ease;
+      margin-bottom: 2px;
+    }
+
+    .token-row:hover {
+      background: var(--surf-2);
+    }
+
+    .token-swatch {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      border: 1px solid oklch(1 0 0 / 0.1);
+      cursor: pointer;
+    }
+
+    .token-swatch:hover {
+      outline: 1.5px solid var(--accent);
+      outline-offset: 1px;
+    }
+
+    .token-name {
+      flex: 1;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-tertiary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .token-value {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    /* ── Slide diagnostic ─────────────────────────────────── */
+    .diag-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--sp-2);
+      margin-bottom: var(--sp-3);
+    }
+
+    .diag-card {
+      background: var(--surf-0);
+      border: 1px solid var(--border-dim);
+      border-radius: var(--radius-sm);
+      padding: var(--sp-2) var(--sp-3);
+    }
+
+    .diag-card-label {
+      font-size: 9px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .diag-card-value {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-top: 2px;
+    }
+
+    /* ── Mode indicator pill ──────────────────────────────── */
+    .mode-pill {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      color: oklch(0.12 0.012 285);
+      font-family: var(--font-ui);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      padding: 6px 20px;
+      border-radius: 20px;
+      box-shadow:
+        0 2px 8px oklch(0.72 0.18 285 / 0.35),
+        0 0 0 1px oklch(0.72 0.18 285 / 0.15);
+    }
+
+    /* ── Second panel (annotate tab) ──────────────────────── */
+    .panel-pair {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sp-5);
+    }
+
+    .panel-variant-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: var(--sp-2);
+      text-align: center;
+    }
+
+    /* ── Spider Graph Dock ──────────────────────────────────── */
+    .spider-dock {
+      width: 320px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--sp-3);
+    }
+
+    #spiderCanvas {
+      cursor: crosshair;
+      border-radius: var(--radius-lg);
+      background: var(--surf-1);
+      border: 1px solid var(--border-subtle);
+      box-shadow:
+        0 1px 2px oklch(0 0 0 / 0.3),
+        0 8px 32px oklch(0 0 0 / 0.4);
+    }
+
+    .spider-readout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px 12px;
+      width: 100%;
+      padding: 0 var(--sp-2);
+    }
+
+    .spider-readout-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sp-2);
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      background: var(--surf-1);
+      border: 1px solid var(--border-dim);
+    }
+
+    .spider-readout-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .spider-readout-name {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      flex: 1;
+    }
+
+    .spider-readout-val {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent);
+      min-width: 28px;
+      text-align: right;
+    }
+
+    .spider-presets {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .spider-preset-btn {
+      padding: 5px 12px;
+      font-size: 10px;
+      font-weight: 600;
+      font-family: var(--font-ui);
+      color: var(--text-tertiary);
+      background: var(--surf-1);
+      border: 1px solid var(--border-dim);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .spider-preset-btn:hover {
+      color: var(--text-secondary);
+      background: var(--surf-2);
+      border-color: var(--border-subtle);
+    }
+
+    .spider-preset-btn.active {
+      color: var(--accent);
+      background: var(--accent-bg);
+      border-color: oklch(0.72 0.18 285 / 0.25);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Wallpaper + smoke overlay -->
+  <div class="wallpaper" id="wallpaper"></div>
+  <div class="wallpaper-smoke"></div>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       SPIDER GRAPH — Token Editor
+       ═══════════════════════════════════════════════════════════ -->
+  <div class="spider-dock" id="spiderDock">
+    <canvas id="spiderCanvas" width="320" height="320"></canvas>
+    <div class="spider-readout" id="spiderReadout"></div>
+    <div class="spider-presets">
+      <button class="spider-preset-btn active" data-shape="default">Default</button>
+      <button class="spider-preset-btn" data-shape="compact">Compact</button>
+      <button class="spider-preset-btn" data-shape="airy">Airy</button>
+      <button class="spider-preset-btn" data-shape="sharp">Sharp</button>
+      <button class="spider-preset-btn" data-shape="soft">Soft</button>
+    </div>
+  </div>
+
+  <!-- Simulated slide -->
+  <div class="slide-preview">
+    <div class="fake-outline fo-1"></div>
+    <div class="fake-outline fo-2"></div>
+    <div class="fake-label fl-1">img.hero-visual</div>
+    <div class="fake-label fl-2">div.content-block</div>
+  </div>
+
+  <!-- Two panels side by side to show different tabs -->
+  <div class="panel-pair">
+
+    <!-- Panel: Annotate tab active -->
+    <div>
+      <div class="panel-variant-label">Annotate tab</div>
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <div class="panel-title-icon">◆</div>
+            <span class="panel-title-text">Design Editor</span>
+            <span class="panel-title-tag">section</span>
+          </div>
+          <div class="panel-actions">
+            <button class="panel-action-btn">Copy CSS</button>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <button class="tab">Slide</button>
+          <button class="tab">Layers</button>
+          <button class="tab active">Annotate</button>
+        </div>
+
+        <div class="tab-content">
+          <!-- Tool toggle -->
+          <div class="section-label">Tool</div>
+          <div class="tool-row">
+            <div class="tool-toggle">
+              <button class="tool-toggle-btn active">Pen</button>
+              <button class="tool-toggle-btn">Marker</button>
+            </div>
+          </div>
+
+          <!-- Color swatches -->
+          <div class="section-label">Color</div>
+          <div class="tool-row">
+            <div class="swatch-row">
+              <div class="swatch active" style="background: oklch(0.63 0.26 25);"></div>
+              <div class="swatch" style="background: oklch(0.65 0.20 260);"></div>
+              <div class="swatch" style="background: oklch(0.70 0.18 150);"></div>
+              <div class="swatch" style="background: oklch(0.82 0.18 95);"></div>
+              <div class="swatch swatch-white" style="background: oklch(0.96 0.005 285);"></div>
+              <div class="swatch" style="background: oklch(0.72 0.18 285);"></div>
+            </div>
+          </div>
+
+          <!-- Stroke size -->
+          <div class="section-label">Size</div>
+          <div class="tool-row">
+            <div class="size-row">
+              <div class="size-pip" style="width: 28px; text-align: center;">
+                <div style="display:flex;flex-direction:column;align-items:center;">
+                  <div class="size-pip-dot" style="width: 5px; height: 5px;"></div>
+                  <div class="size-pip-label">S</div>
+                </div>
+              </div>
+              <div class="size-pip active" style="width: 28px; text-align: center;">
+                <div style="display:flex;flex-direction:column;align-items:center;">
+                  <div class="size-pip-dot" style="width: 9px; height: 9px;"></div>
+                  <div class="size-pip-label">M</div>
+                </div>
+              </div>
+              <div class="size-pip" style="width: 28px; text-align: center;">
+                <div style="display:flex;flex-direction:column;align-items:center;">
+                  <div class="size-pip-dot" style="width: 14px; height: 14px;"></div>
+                  <div class="size-pip-label">L</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="action-row">
+            <button class="action-btn">↩ Undo</button>
+            <button class="action-btn">✕ Clear</button>
+            <button class="action-btn primary">Copy</button>
+          </div>
+
+          <!-- Overlay toggles -->
+          <div class="toggle-section">
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <div class="toggle-label">Element labels</div>
+                <div class="toggle-desc">Show tag &amp; class names on elements</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="switch-track"></span>
+              </label>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <div class="toggle-label">Outlines</div>
+                <div class="toggle-desc">Draw bounding boxes around elements</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" checked>
+                <span class="switch-track"></span>
+              </label>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <div class="toggle-label">Spacing guides</div>
+                <div class="toggle-desc">Visualize margin &amp; padding</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox">
+                <span class="switch-track"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Panel: Layers tab active -->
+    <div>
+      <div class="panel-variant-label">Layers tab</div>
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <div class="panel-title-icon">◆</div>
+            <span class="panel-title-text">Design Editor</span>
+            <span class="panel-title-tag">div.content</span>
+          </div>
+          <div class="panel-actions">
+            <button class="panel-action-btn">Copy CSS</button>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <button class="tab">Slide</button>
+          <button class="tab active">Layers</button>
+          <button class="tab">Annotate</button>
+        </div>
+
+        <div class="tab-content">
+          <!-- Layers tree -->
+          <div class="layer-row selected">
+            <span class="layer-caret open">▶</span>
+            <span class="layer-icon type-section">S</span>
+            <span class="layer-name">section.slide</span>
+            <span class="layer-eye">👁</span>
+          </div>
+          <div class="layer-children">
+            <div class="layer-row">
+              <span class="layer-caret">▶</span>
+              <span class="layer-icon type-img">I</span>
+              <span class="layer-name">img.hero-visual</span>
+              <span class="layer-eye">👁</span>
+            </div>
+            <div class="layer-row">
+              <span class="layer-caret open">▶</span>
+              <span class="layer-icon type-div">D</span>
+              <span class="layer-name">div.content-block</span>
+              <span class="layer-eye">👁</span>
+            </div>
+            <div class="layer-children">
+              <div class="layer-row">
+                <span class="layer-caret" style="visibility:hidden">▶</span>
+                <span class="layer-icon type-p">P</span>
+                <span class="layer-name">p.fade-in-1</span>
+                <span class="layer-eye">👁</span>
+              </div>
+              <div class="layer-row">
+                <span class="layer-caret" style="visibility:hidden">▶</span>
+                <span class="layer-icon type-h1">H</span>
+                <span class="layer-name">h1.fade-in-2</span>
+                <span class="layer-eye">👁</span>
+              </div>
+              <div class="layer-row">
+                <span class="layer-caret" style="visibility:hidden">▶</span>
+                <span class="layer-icon type-p">P</span>
+                <span class="layer-name">p.fade-in-3</span>
+                <span class="layer-eye">👁</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Third column: Slide tab -->
+  <div class="panel-pair">
+    <div>
+      <div class="panel-variant-label">Slide tab</div>
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <div class="panel-title-icon">◆</div>
+            <span class="panel-title-text">Design Editor</span>
+            <span class="panel-title-tag">5 / 40</span>
+          </div>
+          <div class="panel-actions">
+            <button class="panel-action-btn">↻</button>
+          </div>
+        </div>
+
+        <div class="tabs">
+          <button class="tab active">Slide</button>
+          <button class="tab">Layers</button>
+          <button class="tab">Annotate</button>
+        </div>
+
+        <div class="tab-content">
+          <!-- Diagnostic grid -->
+          <div class="section-label">Slide Info</div>
+          <div class="diag-grid">
+            <div class="diag-card">
+              <div class="diag-card-label">Beat</div>
+              <div class="diag-card-value">1</div>
+            </div>
+            <div class="diag-card">
+              <div class="diag-card-label">Transition</div>
+              <div class="diag-card-value">fade</div>
+            </div>
+            <div class="diag-card">
+              <div class="diag-card-label">Elements</div>
+              <div class="diag-card-value">5</div>
+            </div>
+            <div class="diag-card">
+              <div class="diag-card-label">BG</div>
+              <div class="diag-card-value" style="display:flex;align-items:center;gap:6px;">
+                <div style="width:12px;height:12px;border-radius:3px;background:oklch(0.92 0.01 75);border:1px solid var(--border-dim);"></div>
+                light-alt
+              </div>
+            </div>
+          </div>
+
+          <!-- Token controls -->
+          <div class="section-label">CSS Tokens</div>
+          <div class="token-row">
+            <div class="token-swatch" style="background: oklch(0.92 0.01 75);"></div>
+            <span class="token-name">--color-bg-light-alt</span>
+            <span class="token-value">#f4efe6</span>
+          </div>
+          <div class="token-row">
+            <div class="token-swatch" style="background: oklch(0.93 0.008 285);"></div>
+            <span class="token-name">--color-text</span>
+            <span class="token-value">#f0ede8</span>
+          </div>
+          <div class="token-row">
+            <div class="token-swatch" style="background: oklch(0.55 0.22 25);"></div>
+            <span class="token-name">--color-signal</span>
+            <span class="token-value">#c43e1c</span>
+          </div>
+          <div class="token-row">
+            <div class="token-swatch" style="background: oklch(0.62 0.010 285);"></div>
+            <span class="token-name">--color-text-dim</span>
+            <span class="token-value">#888</span>
+          </div>
+          <div class="token-row">
+            <div class="token-swatch" style="background: oklch(0.14 0.01 285);"></div>
+            <span class="token-name">--color-bg-dark</span>
+            <span class="token-value">#0f0d0b</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mode pill -->
+  <div class="mode-pill">Design Mode — D to toggle</div>
+
+  <!-- Spider Graph Script -->
+  <script>
+  (function() {
+    'use strict';
+
+    var canvas = document.getElementById('spiderCanvas');
+    var ctx = canvas.getContext('2d');
+    var W = canvas.width, H = canvas.height;
+    var CX = W / 2, CY = H / 2;
+    var R = 120;
+    var root = document.documentElement;
+
+    var AXES = [
+      { key: 'spacing',   label: 'Spacing',  color: '#b694fa' },
+      { key: 'padding',   label: 'Padding',  color: '#6da1ed' },
+      { key: 'radius',    label: 'Radius',   color: '#5ec9a0' },
+      { key: 'border',    label: 'Border',   color: '#d4b85c' },
+      { key: 'shadow',    label: 'Shadow',   color: '#e07a5f' },
+      { key: 'typeScale', label: 'Type',      color: '#d17bb5' }
+    ];
+    var N = AXES.length;
+
+    var values = [0.50, 0.50, 0.50, 0.40, 0.50, 0.50];
+
+    var PRESETS = {
+      'default': [0.50, 0.50, 0.50, 0.40, 0.50, 0.50],
+      'compact': [0.25, 0.20, 0.30, 0.30, 0.25, 0.35],
+      'airy':    [0.80, 0.75, 0.60, 0.50, 0.65, 0.60],
+      'sharp':   [0.45, 0.40, 0.08, 0.70, 0.40, 0.50],
+      'soft':    [0.55, 0.60, 0.90, 0.20, 0.70, 0.55]
+    };
+
+    var dragging = -1;
+    var hovered = -1;
+
+    function angle(i) {
+      return (Math.PI * 2 * i / N) - Math.PI / 2;
+    }
+
+    function axisPoint(i, val) {
+      var a = angle(i);
+      var r = val * R;
+      return { x: CX + Math.cos(a) * r, y: CY + Math.sin(a) * r };
+    }
+
+    function applyToCSS() {
+      var sp = 0.4 + values[0] * 1.2;
+      var pd = 0.4 + values[1] * 1.2;
+      var rd = Math.round(values[2] * 24);
+      var bw = values[3];
+      var sh = values[4];
+      var ts = 0.7 + values[5] * 0.6;
+
+      root.style.setProperty('--sp-1', Math.round(4 * sp) + 'px');
+      root.style.setProperty('--sp-2', Math.round(8 * sp) + 'px');
+      root.style.setProperty('--sp-3', Math.round(12 * sp) + 'px');
+      root.style.setProperty('--sp-4', Math.round(16 * sp) + 'px');
+      root.style.setProperty('--sp-5', Math.round(24 * sp) + 'px');
+      root.style.setProperty('--sp-6', Math.round(32 * sp) + 'px');
+      root.style.setProperty('--sp-7', Math.round(48 * sp) + 'px');
+
+      root.style.setProperty('--radius-sm', Math.round(rd * 0.43) + 'px');
+      root.style.setProperty('--radius-md', Math.round(rd * 0.71) + 'px');
+      root.style.setProperty('--radius-lg', rd + 'px');
+
+      // Panels shadow
+      var shVal = '0 ' + Math.round(1 + sh * 7) + 'px ' + Math.round(4 + sh * 28) + 'px rgba(0,0,0,' + (0.1 + sh * 0.5).toFixed(2) + ')';
+      document.querySelectorAll('.panel').forEach(function(p) { p.style.boxShadow = shVal; });
+
+      // Padding
+      document.querySelectorAll('.tab-content').forEach(function(tc) { tc.style.padding = Math.round(16 * pd) + 'px'; });
+      document.querySelectorAll('.panel-header').forEach(function(ph) { ph.style.padding = Math.round(12 * pd) + 'px ' + Math.round(16 * pd) + 'px'; });
+
+      // Type scale
+      document.querySelectorAll('.panel').forEach(function(p) { p.style.fontSize = (12 * ts).toFixed(1) + 'px'; });
+      document.querySelectorAll('.panel-title-text').forEach(function(t) { t.style.fontSize = (12 * ts).toFixed(1) + 'px'; });
+      document.querySelectorAll('.section-label').forEach(function(s) { s.style.fontSize = (10 * ts).toFixed(1) + 'px'; });
+
+      // Border opacity
+      var ba = (0.3 + bw * 0.7).toFixed(2);
+      document.querySelectorAll('.panel').forEach(function(p) {
+        p.style.borderColor = 'rgba(255,255,255,' + (0.04 + bw * 0.12).toFixed(2) + ')';
+      });
+
+      updateReadout();
+    }
+
+    function updateReadout() {
+      var el = document.getElementById('spiderReadout');
+      var sp = 0.4 + values[0] * 1.2;
+      var pd = 0.4 + values[1] * 1.2;
+      var rd = Math.round(values[2] * 24);
+      var bw = values[3];
+      var sh = values[4];
+      var ts = 0.7 + values[5] * 0.6;
+
+      var labels = [sp.toFixed(1)+'x', pd.toFixed(1)+'x', rd+'px', Math.round(bw*100)+'%', Math.round(sh*100)+'%', ts.toFixed(1)+'x'];
+      var html = '';
+      for (var i = 0; i < N; i++) {
+        html += '<div class="spider-readout-item">' +
+          '<div class="spider-readout-dot" style="background:'+AXES[i].color+'"></div>' +
+          '<span class="spider-readout-name">'+AXES[i].label+'</span>' +
+          '<span class="spider-readout-val">'+labels[i]+'</span></div>';
+      }
+      el.innerHTML = html;
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, W, H);
+
+      // Grid rings
+      for (var ring = 1; ring <= 4; ring++) {
+        var rr = (ring / 4) * R;
+        ctx.beginPath();
+        for (var gi = 0; gi < N; gi++) {
+          var a = angle(gi);
+          var gx = CX + Math.cos(a) * rr;
+          var gy = CY + Math.sin(a) * rr;
+          if (gi === 0) ctx.moveTo(gx, gy); else ctx.lineTo(gx, gy);
+        }
+        ctx.closePath();
+        ctx.strokeStyle = 'rgba(255,255,255,' + (ring === 2 ? 0.08 : 0.04) + ')';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+
+      // Axis lines
+      for (var ai = 0; ai < N; ai++) {
+        var ap = axisPoint(ai, 1);
+        ctx.beginPath(); ctx.moveTo(CX, CY); ctx.lineTo(ap.x, ap.y);
+        ctx.strokeStyle = 'rgba(255,255,255,0.06)'; ctx.lineWidth = 1; ctx.stroke();
+      }
+
+      // Labels
+      ctx.font = '600 10px Figtree, system-ui, sans-serif';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      for (var li = 0; li < N; li++) {
+        var lp = axisPoint(li, 1.22);
+        ctx.fillStyle = li === hovered ? 'rgba(255,255,255,0.9)' : 'rgba(255,255,255,0.35)';
+        ctx.fillText(AXES[li].label, lp.x, lp.y);
+      }
+
+      // Filled shape
+      ctx.beginPath();
+      for (var si = 0; si < N; si++) {
+        var sp = axisPoint(si, values[si]);
+        if (si === 0) ctx.moveTo(sp.x, sp.y); else ctx.lineTo(sp.x, sp.y);
+      }
+      ctx.closePath();
+      var grad = ctx.createRadialGradient(CX, CY, 0, CX, CY, R);
+      grad.addColorStop(0, 'rgba(167,139,250,0.14)');
+      grad.addColorStop(1, 'rgba(167,139,250,0.03)');
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Edge segments colored per-axis
+      for (var ei = 0; ei < N; ei++) {
+        var e1 = axisPoint(ei, values[ei]);
+        var e2 = axisPoint((ei + 1) % N, values[(ei + 1) % N]);
+        ctx.beginPath(); ctx.moveTo(e1.x, e1.y); ctx.lineTo(e2.x, e2.y);
+        ctx.strokeStyle = AXES[ei].color;
+        ctx.globalAlpha = 0.55; ctx.lineWidth = 2; ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
+
+      // Handle dots
+      for (var di = 0; di < N; di++) {
+        var dp = axisPoint(di, values[di]);
+        var isActive = (di === dragging || di === hovered);
+
+        if (isActive) {
+          ctx.beginPath(); ctx.arc(dp.x, dp.y, 14, 0, Math.PI * 2);
+          ctx.fillStyle = AXES[di].color + '33';
+          ctx.fill();
+        }
+
+        ctx.beginPath(); ctx.arc(dp.x, dp.y, isActive ? 7 : 5, 0, Math.PI * 2);
+        ctx.fillStyle = AXES[di].color; ctx.fill();
+
+        ctx.beginPath(); ctx.arc(dp.x, dp.y, isActive ? 3 : 2, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,0.9)'; ctx.fill();
+      }
+    }
+
+    function getClosestAxis(mx, my) {
+      var best = -1, bestDist = 25;
+      for (var i = 0; i < N; i++) {
+        var p = axisPoint(i, values[i]);
+        var dx = mx - p.x, dy = my - p.y;
+        var d = Math.sqrt(dx * dx + dy * dy);
+        if (d < bestDist) { bestDist = d; best = i; }
+      }
+      return best;
+    }
+
+    function projectOnAxis(i, mx, my) {
+      var a = angle(i);
+      var dx = mx - CX, dy = my - CY;
+      var dot = dx * Math.cos(a) + dy * Math.sin(a);
+      return Math.max(0.02, Math.min(1, dot / R));
+    }
+
+    canvas.addEventListener('pointerdown', function(e) {
+      var rect = canvas.getBoundingClientRect();
+      var mx = (e.clientX - rect.left) * (W / rect.width);
+      var my = (e.clientY - rect.top) * (H / rect.height);
+      var idx = getClosestAxis(mx, my);
+      if (idx >= 0) { dragging = idx; canvas.setPointerCapture(e.pointerId); e.preventDefault(); }
+    });
+
+    canvas.addEventListener('pointermove', function(e) {
+      var rect = canvas.getBoundingClientRect();
+      var mx = (e.clientX - rect.left) * (W / rect.width);
+      var my = (e.clientY - rect.top) * (H / rect.height);
+      if (dragging >= 0) {
+        values[dragging] = projectOnAxis(dragging, mx, my);
+        applyToCSS(); draw();
+        document.querySelectorAll('.spider-preset-btn').forEach(function(b) { b.classList.remove('active'); });
+      } else {
+        var oldH = hovered;
+        hovered = getClosestAxis(mx, my);
+        if (hovered !== oldH) draw();
+        canvas.style.cursor = hovered >= 0 ? 'grab' : 'crosshair';
+      }
+    });
+
+    canvas.addEventListener('pointerup', function() { dragging = -1; });
+    canvas.addEventListener('pointerleave', function() { hovered = -1; dragging = -1; draw(); });
+
+    // Presets with animated transition
+    document.querySelectorAll('.spider-preset-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var shape = PRESETS[btn.dataset.shape];
+        if (!shape) return;
+        var start = values.slice();
+        var t0 = performance.now();
+        function anim(now) {
+          var t = Math.min(1, (now - t0) / 350);
+          var e = 1 - Math.pow(1 - t, 3);
+          for (var i = 0; i < N; i++) values[i] = start[i] + (shape[i] - start[i]) * e;
+          applyToCSS(); draw();
+          if (t < 1) requestAnimationFrame(anim);
+        }
+        requestAnimationFrame(anim);
+        document.querySelectorAll('.spider-preset-btn').forEach(function(b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+      });
+    });
+
+    applyToCSS(); draw();
+  })();
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════
+       THEME SELECTOR
+       ═══════════════════════════════════════════════════════════ -->
+  <div class="theme-dock" id="themeDock">
+    <div class="theme-dock-header">
+      <span class="theme-dock-title">Theme</span>
+      <button class="theme-dock-collapse" id="themeCollapseBtn" title="Collapse">▾</button>
+    </div>
+
+    <div class="theme-dock-body" id="themeDockBody">
+      <!-- Preset strip -->
+      <div class="theme-presets" id="themePresets">
+        <button class="theme-preset active" data-preset="violet" title="Violet">
+          <span class="theme-preset-dot" style="background: oklch(0.72 0.18 285);"></span>
+        </button>
+        <button class="theme-preset" data-preset="ember" title="Ember">
+          <span class="theme-preset-dot" style="background: oklch(0.68 0.20 30);"></span>
+        </button>
+        <button class="theme-preset" data-preset="ocean" title="Ocean">
+          <span class="theme-preset-dot" style="background: oklch(0.70 0.14 230);"></span>
+        </button>
+        <button class="theme-preset" data-preset="mint" title="Mint">
+          <span class="theme-preset-dot" style="background: oklch(0.75 0.14 165);"></span>
+        </button>
+        <button class="theme-preset" data-preset="gold" title="Gold">
+          <span class="theme-preset-dot" style="background: oklch(0.78 0.15 85);"></span>
+        </button>
+        <button class="theme-preset" data-preset="rose" title="Rose">
+          <span class="theme-preset-dot" style="background: oklch(0.70 0.16 350);"></span>
+        </button>
+        <button class="theme-preset" data-preset="mono" title="Mono">
+          <span class="theme-preset-dot" style="background: oklch(0.70 0.00 0);"></span>
+        </button>
+      </div>
+
+      <div class="theme-divider"></div>
+
+      <!-- Sliders -->
+      <div class="theme-slider-group">
+        <label class="theme-slider-label">
+          <span>Accent Hue</span>
+          <span class="theme-slider-value" id="hueVal">285°</span>
+        </label>
+        <input type="range" class="theme-slider" id="sliderHue" min="0" max="360" value="285">
+      </div>
+
+      <div class="theme-slider-group">
+        <label class="theme-slider-label">
+          <span>Chroma</span>
+          <span class="theme-slider-value" id="chromaVal">0.18</span>
+        </label>
+        <input type="range" class="theme-slider" id="sliderChroma" min="0" max="30" value="18">
+      </div>
+
+      <div class="theme-slider-group">
+        <label class="theme-slider-label">
+          <span>Surface Lightness</span>
+          <span class="theme-slider-value" id="surfVal">12%</span>
+        </label>
+        <input type="range" class="theme-slider" id="sliderSurf" min="5" max="30" value="12">
+      </div>
+
+      <div class="theme-slider-group">
+        <label class="theme-slider-label">
+          <span>Surface Tint</span>
+          <span class="theme-slider-value" id="tintVal">0.012</span>
+        </label>
+        <input type="range" class="theme-slider" id="sliderTint" min="0" max="30" value="12">
+      </div>
+
+      <div class="theme-slider-group">
+        <label class="theme-slider-label">
+          <span>Accent Lightness</span>
+          <span class="theme-slider-value" id="accLVal">72%</span>
+        </label>
+        <input type="range" class="theme-slider" id="sliderAccL" min="45" max="88" value="72">
+      </div>
+
+      <div class="theme-divider"></div>
+
+      <!-- Export -->
+      <button class="theme-export-btn" id="themeExportBtn">Copy CSS Variables</button>
+    </div>
+  </div>
+
+  <style>
+    /* ── Theme Dock ─────────────────────────────────────────── */
+    .theme-dock {
+      position: fixed;
+      bottom: 60px;
+      right: 24px;
+      width: 260px;
+      background: var(--surf-1);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      box-shadow:
+        0 4px 24px oklch(0 0 0 / 0.5),
+        0 0 0 1px oklch(0 0 0 / 0.2);
+      font-family: var(--font-ui);
+      z-index: 200000;
+      overflow: hidden;
+    }
+
+    .theme-dock-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: var(--surf-2);
+      border-bottom: 1px solid var(--border-dim);
+      cursor: pointer;
+    }
+
+    .theme-dock-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: 0.02em;
+    }
+
+    .theme-dock-collapse {
+      background: none;
+      border: none;
+      color: var(--text-tertiary);
+      font-size: 12px;
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 4px;
+      transition: all 0.15s ease;
+      line-height: 1;
+    }
+
+    .theme-dock-collapse:hover {
+      color: var(--text-secondary);
+      background: var(--surf-3);
+    }
+
+    .theme-dock.collapsed .theme-dock-collapse {
+      transform: rotate(-90deg);
+    }
+
+    .theme-dock-body {
+      padding: 12px 14px 14px;
+      transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+      max-height: 500px;
+      overflow: hidden;
+    }
+
+    .theme-dock.collapsed .theme-dock-body {
+      max-height: 0;
+      padding-top: 0;
+      padding-bottom: 0;
+      opacity: 0;
+    }
+
+    /* ── Presets ──────────────────────────────────────────── */
+    .theme-presets {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+      margin-bottom: 4px;
+    }
+
+    .theme-preset {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: var(--surf-0);
+      border: 1.5px solid var(--border-dim);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s ease;
+      padding: 0;
+    }
+
+    .theme-preset:hover {
+      border-color: var(--border-subtle);
+      transform: scale(1.08);
+    }
+
+    .theme-preset.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .theme-preset-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      display: block;
+    }
+
+    .theme-divider {
+      height: 1px;
+      background: var(--border-dim);
+      margin: 12px 0;
+    }
+
+    /* ── Sliders ──────────────────────────────────────────── */
+    .theme-slider-group {
+      margin-bottom: 10px;
+    }
+
+    .theme-slider-group:last-of-type {
+      margin-bottom: 0;
+    }
+
+    .theme-slider-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .theme-slider-value {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent);
+      min-width: 40px;
+      text-align: right;
+    }
+
+    .theme-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: var(--surf-0);
+      border: 1px solid var(--border-dim);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .theme-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--surf-1);
+      box-shadow: 0 1px 4px oklch(0 0 0 / 0.4);
+      cursor: grab;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    .theme-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+      box-shadow: 0 2px 8px oklch(0 0 0 / 0.5);
+    }
+
+    .theme-slider::-webkit-slider-thumb:active {
+      cursor: grabbing;
+      transform: scale(1.05);
+    }
+
+    .theme-slider::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid var(--surf-1);
+      box-shadow: 0 1px 4px oklch(0 0 0 / 0.4);
+      cursor: grab;
+    }
+
+    /* Hue slider — rainbow track */
+    #sliderHue {
+      background: linear-gradient(to right,
+        oklch(0.65 0.18 0),
+        oklch(0.65 0.18 60),
+        oklch(0.65 0.18 120),
+        oklch(0.65 0.18 180),
+        oklch(0.65 0.18 240),
+        oklch(0.65 0.18 300),
+        oklch(0.65 0.18 360)
+      );
+      border-color: transparent;
+    }
+
+    /* ── Export button ────────────────────────────────────── */
+    .theme-export-btn {
+      width: 100%;
+      padding: 8px 0;
+      font-size: 11px;
+      font-weight: 600;
+      font-family: var(--font-ui);
+      color: var(--accent);
+      background: var(--accent-bg);
+      border: 1px solid oklch(0.72 0.18 285 / 0.2);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.12s ease;
+      text-align: center;
+    }
+
+    .theme-export-btn:hover {
+      background: var(--accent-bg-hover);
+    }
+
+    .theme-export-btn.copied {
+      color: var(--signal-green);
+      border-color: oklch(0.72 0.16 145 / 0.3);
+      background: oklch(0.20 0.04 145);
+    }
+  </style>
+
+  <script>
+    (function() {
+      'use strict';
+
+      var root = document.documentElement;
+
+      var state = {
+        hue: 285,
+        chroma: 0.18,
+        surfL: 0.12,
+        surfTint: 0.012,
+        accL: 0.72
+      };
+
+      var PRESETS = {
+        violet: { hue: 285, chroma: 0.18, surfL: 0.12, surfTint: 0.012, accL: 0.72 },
+        ember:  { hue: 30,  chroma: 0.20, surfL: 0.11, surfTint: 0.014, accL: 0.68 },
+        ocean:  { hue: 230, chroma: 0.14, surfL: 0.13, surfTint: 0.010, accL: 0.70 },
+        mint:   { hue: 165, chroma: 0.14, surfL: 0.11, surfTint: 0.010, accL: 0.75 },
+        gold:   { hue: 85,  chroma: 0.15, surfL: 0.12, surfTint: 0.012, accL: 0.78 },
+        rose:   { hue: 350, chroma: 0.16, surfL: 0.12, surfTint: 0.012, accL: 0.70 },
+        mono:   { hue: 0,   chroma: 0.00, surfL: 0.14, surfTint: 0.000, accL: 0.70 }
+      };
+
+      var sliderHue    = document.getElementById('sliderHue');
+      var sliderChroma = document.getElementById('sliderChroma');
+      var sliderSurf   = document.getElementById('sliderSurf');
+      var sliderTint   = document.getElementById('sliderTint');
+      var sliderAccL   = document.getElementById('sliderAccL');
+
+      var hueVal    = document.getElementById('hueVal');
+      var chromaVal = document.getElementById('chromaVal');
+      var surfVal   = document.getElementById('surfVal');
+      var tintVal   = document.getElementById('tintVal');
+      var accLVal   = document.getElementById('accLVal');
+
+      function apply() {
+        var h  = state.hue;
+        var c  = state.chroma;
+        var sL = state.surfL;
+        var sT = state.surfTint;
+        var aL = state.accL;
+
+        // Surfaces
+        root.style.setProperty('--surf-0', 'oklch(' + sL + ' ' + sT + ' ' + h + ')');
+        root.style.setProperty('--surf-1', 'oklch(' + (sL + 0.035).toFixed(3) + ' ' + (sT + 0.002).toFixed(3) + ' ' + h + ')');
+        root.style.setProperty('--surf-2', 'oklch(' + (sL + 0.07).toFixed(3) + ' ' + (sT + 0.004).toFixed(3) + ' ' + h + ')');
+        root.style.setProperty('--surf-3', 'oklch(' + (sL + 0.12).toFixed(3) + ' ' + (sT + 0.006).toFixed(3) + ' ' + h + ')');
+        root.style.setProperty('--surf-4', 'oklch(' + (sL + 0.18).toFixed(3) + ' ' + (sT + 0.008).toFixed(3) + ' ' + h + ')');
+
+        // Borders
+        root.style.setProperty('--border-subtle', 'oklch(' + (sL + 0.16).toFixed(3) + ' ' + sT.toFixed(3) + ' ' + h + ')');
+        root.style.setProperty('--border-dim', 'oklch(' + (sL + 0.10).toFixed(3) + ' ' + (sT * 0.8).toFixed(3) + ' ' + h + ')');
+
+        // Text
+        root.style.setProperty('--text-primary', 'oklch(0.92 0.008 ' + h + ')');
+        root.style.setProperty('--text-secondary', 'oklch(0.62 0.010 ' + h + ')');
+        root.style.setProperty('--text-tertiary', 'oklch(0.45 0.008 ' + h + ')');
+
+        // Accent
+        root.style.setProperty('--accent', 'oklch(' + aL + ' ' + c + ' ' + h + ')');
+        root.style.setProperty('--accent-dim', 'oklch(' + (aL - 0.17).toFixed(2) + ' ' + (c * 0.78).toFixed(3) + ' ' + h + ')');
+        root.style.setProperty('--accent-bg', 'oklch(' + (sL + 0.13).toFixed(3) + ' ' + (c * 0.33).toFixed(3) + ' ' + h + ')');
+        root.style.setProperty('--accent-bg-hover', 'oklch(' + (sL + 0.18).toFixed(3) + ' ' + (c * 0.44).toFixed(3) + ' ' + h + ')');
+
+        // Labels
+        hueVal.textContent   = Math.round(h) + '°';
+        chromaVal.textContent = c.toFixed(2);
+        surfVal.textContent   = Math.round(sL * 100) + '%';
+        tintVal.textContent   = sT.toFixed(3);
+        accLVal.textContent   = Math.round(aL * 100) + '%';
+      }
+
+      function syncFromSliders() {
+        state.hue      = Number(sliderHue.value);
+        state.chroma   = Number(sliderChroma.value) / 100;
+        state.surfL    = Number(sliderSurf.value) / 100;
+        state.surfTint = Number(sliderTint.value) / 1000;
+        state.accL     = Number(sliderAccL.value) / 100;
+        apply();
+      }
+
+      function syncToSliders() {
+        sliderHue.value    = state.hue;
+        sliderChroma.value = Math.round(state.chroma * 100);
+        sliderSurf.value   = Math.round(state.surfL * 100);
+        sliderTint.value   = Math.round(state.surfTint * 1000);
+        sliderAccL.value   = Math.round(state.accL * 100);
+      }
+
+      // Wire sliders
+      [sliderHue, sliderChroma, sliderSurf, sliderTint, sliderAccL].forEach(function(s) {
+        s.addEventListener('input', function() {
+          document.querySelectorAll('.theme-preset').forEach(function(b) { b.classList.remove('active'); });
+          syncFromSliders();
+        });
+      });
+
+      // Wire presets
+      document.querySelectorAll('.theme-preset').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          var p = PRESETS[btn.dataset.preset];
+          if (!p) return;
+          state.hue      = p.hue;
+          state.chroma   = p.chroma;
+          state.surfL    = p.surfL;
+          state.surfTint = p.surfTint;
+          state.accL     = p.accL;
+          syncToSliders();
+          apply();
+          document.querySelectorAll('.theme-preset').forEach(function(b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+        });
+      });
+
+      // Collapse
+      var dock = document.getElementById('themeDock');
+      document.getElementById('themeCollapseBtn').addEventListener('click', function(e) {
+        e.stopPropagation();
+        dock.classList.toggle('collapsed');
+      });
+      document.querySelector('.theme-dock-header').addEventListener('click', function() {
+        dock.classList.toggle('collapsed');
+      });
+
+      // Copy CSS
+      document.getElementById('themeExportBtn').addEventListener('click', function() {
+        var h  = state.hue;
+        var c  = state.chroma;
+        var sL = state.surfL;
+        var sT = state.surfTint;
+        var aL = state.accL;
+
+        var css = ':root {\n' +
+          '  /* Surface */\n' +
+          '  --surf-0: oklch(' + sL + ' ' + sT + ' ' + h + ');\n' +
+          '  --surf-1: oklch(' + (sL+0.035).toFixed(3) + ' ' + (sT+0.002).toFixed(3) + ' ' + h + ');\n' +
+          '  --surf-2: oklch(' + (sL+0.07).toFixed(3) + ' ' + (sT+0.004).toFixed(3) + ' ' + h + ');\n' +
+          '  --surf-3: oklch(' + (sL+0.12).toFixed(3) + ' ' + (sT+0.006).toFixed(3) + ' ' + h + ');\n' +
+          '  --surf-4: oklch(' + (sL+0.18).toFixed(3) + ' ' + (sT+0.008).toFixed(3) + ' ' + h + ');\n\n' +
+          '  /* Accent */\n' +
+          '  --accent: oklch(' + aL + ' ' + c + ' ' + h + ');\n' +
+          '  --accent-dim: oklch(' + (aL-0.17).toFixed(2) + ' ' + (c*0.78).toFixed(3) + ' ' + h + ');\n' +
+          '  --accent-bg: oklch(' + (sL+0.13).toFixed(3) + ' ' + (c*0.33).toFixed(3) + ' ' + h + ');\n' +
+          '  --accent-bg-hover: oklch(' + (sL+0.18).toFixed(3) + ' ' + (c*0.44).toFixed(3) + ' ' + h + ');\n' +
+          '}';
+
+        navigator.clipboard.writeText(css).then(function() {
+          var btn = document.getElementById('themeExportBtn');
+          btn.textContent = '✓ Copied';
+          btn.classList.add('copied');
+          setTimeout(function() {
+            btn.textContent = 'Copy CSS Variables';
+            btn.classList.remove('copied');
+          }, 1800);
+        });
+      });
+
+      apply();
+    })();
+  </script>
+
+</body>
+</html>

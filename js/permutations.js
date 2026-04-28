@@ -19,6 +19,15 @@
     { h: 202, s: 22, l: 48 },
   ];
 
+  // Sequential: 5 cards, gradual drift from blue toward green
+  var SEQ_COLORS = [
+    { h: 210, s: 68, l: 44 },
+    { h: 200, s: 64, l: 46 },
+    { h: 188, s: 60, l: 44 },
+    { h: 172, s: 56, l: 42 },
+    { h: 156, s: 52, l: 40 },
+  ];
+
   function hsl(h, s, l) {
     var hh = ((h % 360) + 360) % 360;
     return 'hsl(' + hh + ',' + s + '%,' + l + '%)';
@@ -39,8 +48,8 @@
     ];
   }
 
-  function makeCard(color) {
-    var rot = (Math.random() * 5.4 - 2.7).toFixed(1);
+  function makeCard(color, noRotation) {
+    var rot = noRotation ? 0 : (Math.random() * 5.4 - 2.7).toFixed(1);
     var el = document.createElement('div');
     el.className = 'perm-card';
     el.style.cssText = '--rot:' + rot + 'deg;background:' + hsl(color.h, color.s, color.l) + ';';
@@ -58,12 +67,97 @@
 
   function initPermutations() {
     var stage = document.getElementById('permStage');
+    var seqStage = document.getElementById('permSeqStage');
     if (!stage) return;
 
     var isExpanded = false;
     var wideCards = [];
 
-    // ── Wide section ──
+    // ── Sequential side (click-through, one at a time) ──
+    if (seqStage) {
+      var seqStep = 0;
+      var seqRows = [];
+      var seqArrows = [];
+
+      // Build all rows + arrows but hide everything after the first
+      SEQ_COLORS.forEach(function (color, i) {
+        var row = document.createElement('div');
+        row.className = 'perm-row perm-row-seq';
+        if (i > 0) row.style.display = 'none';
+
+        var card = makeCard(color, true);
+        if (i === 0) card.classList.add('perm-card--in'); // first one visible immediately
+        row.appendChild(card);
+
+        var stepLabel = document.createElement('div');
+        stepLabel.className = 'perm-seq-step-label';
+        stepLabel.textContent = 'v' + (i + 1);
+        row.appendChild(stepLabel);
+
+        seqStage.appendChild(row);
+        seqRows.push({ row: row, card: card });
+
+        if (i < SEQ_COLORS.length - 1) {
+          var arrow = document.createElement('div');
+          arrow.className = 'perm-seq-arrow-v2';
+          arrow.textContent = '↓';
+          arrow.style.display = 'none';
+          seqStage.appendChild(arrow);
+          seqArrows.push(arrow);
+        }
+      });
+
+      // Hint
+      var seqHint = document.createElement('div');
+      seqHint.className = 'perm-hint';
+      seqHint.textContent = 'click to iterate →';
+      seqStage.appendChild(seqHint);
+
+      // Counter (updates as you click)
+      var seqCounter = document.createElement('div');
+      seqCounter.className = 'perm-counter';
+      seqCounter.innerHTML = 'Total explorations: <strong>1</strong>';
+      seqStage.appendChild(seqCounter);
+
+      var seqNote = document.createElement('div');
+      seqNote.className = 'perm-note';
+      seqNote.style.opacity = '0';
+      seqNote.style.transition = 'opacity 0.3s ease';
+      seqNote.textContent = 'Local maximum. You never searched beyond this narrow range.';
+      seqStage.appendChild(seqNote);
+
+      // Click the last visible card to reveal the next one
+      seqStage.addEventListener('click', function () {
+        if (seqStep >= SEQ_COLORS.length - 1) return; // all shown
+
+        // Show arrow
+        if (seqArrows[seqStep]) {
+          seqArrows[seqStep].style.display = '';
+        }
+
+        seqStep++;
+
+        // Show next row and animate card in
+        var next = seqRows[seqStep];
+        next.row.style.display = '';
+        requestAnimationFrame(function () {
+          next.card.classList.add('perm-card--in');
+        });
+
+        // Update counter
+        seqCounter.innerHTML = 'Total explorations: <strong>' + (seqStep + 1) + '</strong>';
+
+        // If all done, show the note and hide hint
+        if (seqStep >= SEQ_COLORS.length - 1) {
+          seqHint.classList.add('perm-hint--hidden');
+          seqNote.style.opacity = '1';
+        }
+      });
+    }
+
+    // ── Wide & Deep side ──
+
+    // Wide section (Generation 1)
     var wideSection = document.createElement('div');
     wideSection.className = 'perm-wide-section';
 
@@ -88,10 +182,17 @@
 
     var hint = document.createElement('div');
     hint.className = 'perm-hint';
-    hint.textContent = 'click any card to go deep \u2192';
+    hint.textContent = 'click any card to go deep →';
     wideSection.appendChild(hint);
 
-    // ── Connector (hidden until click) ──
+    // Counter for wide side — total solution space
+    var wideCounter = document.createElement('div');
+    wideCounter.className = 'perm-counter perm-counter-wide';
+    wideCounter.id = 'permWideCounter';
+    wideCounter.innerHTML = 'Total explorations: <strong>15</strong>';
+    wideSection.appendChild(wideCounter);
+
+    // Connector
     var connector = document.createElement('div');
     connector.className = 'perm-connector';
     var connLine1 = document.createElement('div');
@@ -105,7 +206,7 @@
     connector.appendChild(connLabel);
     connector.appendChild(connLine2);
 
-    // ── Deep section ──
+    // Deep section (Generation 2)
     var deepSection = document.createElement('div');
     deepSection.className = 'perm-deep-section';
 
@@ -122,11 +223,11 @@
     stage.appendChild(connector);
     stage.appendChild(deepSection);
 
-    // ── Card click handler ──
+    // Card click → go deep
     wideCards.forEach(function (card) {
       card.addEventListener('click', function () {
         var h = parseInt(card.dataset.h);
-        deepLabel.textContent = 'Generation 2 — deep (same direction)';
+        deepLabel.textContent = 'Generation 2 — deep';
 
         wideCards.forEach(function (c) {
           c.classList.remove('perm-card--selected');
@@ -136,7 +237,6 @@
         hint.classList.add('perm-hint--hidden');
         connector.classList.add('perm-connector--visible');
 
-        // Build deep cards
         var dc = deepColors(h);
         var newCards = [];
         deepRow1.innerHTML = '';
@@ -151,6 +251,10 @@
         deepSection.appendChild(deepRow1);
         deepSection.appendChild(deepRow2);
 
+        // Update counter — 15 wide + 10 deep = 25, but each of the 15 could go deep (150 total solution space)
+        var counter = document.getElementById('permWideCounter');
+        if (counter) counter.innerHTML = 'Total explorations: <strong>25</strong><span class="perm-counter-sub">Solution space: 15 directions × 10 variations = <strong>150</strong></span>';
+
         requestAnimationFrame(function () {
           deepSection.classList.add('perm-deep--visible');
           cascadeIn(newCards, isExpanded ? 0 : 160);
@@ -160,7 +264,7 @@
       });
     });
 
-    // ── Trigger cascade when slide enters viewport ──
+    // Trigger wide cascade on slide enter
     var slide = stage.closest('.slide');
     var target = slide || stage;
 
