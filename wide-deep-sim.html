@@ -147,7 +147,12 @@
     </div>
     <div style="display:flex;gap:20px;align-items:center;">
       <div class="slider-row">
-        <label class="slider-label">Radius</label>
+        <label class="slider-label">Min R</label>
+        <input type="range" id="minRadiusSlider" class="constraint-slider" min="0" max="80" value="0" step="1">
+        <span class="slider-value" id="minRadiusVal">0%</span>
+      </div>
+      <div class="slider-row">
+        <label class="slider-label">Max R</label>
         <input type="range" id="constraintSlider" class="constraint-slider" min="0" max="80" value="0" step="1">
         <span class="slider-value" id="constraintVal">100%</span>
       </div>
@@ -264,23 +269,57 @@
   scene.add(constraintFill);
 
   function getConstraintRadius() {
-    // 0% constraint = full disc, 80% = 20% of disc
     return DISC_R * (1 - constraintPct / 100);
+  }
+
+  // ── Min radius constraint ──
+  var minRadiusPct = 0; // 0 = no inner exclusion, 80 = huge inner hole
+
+  var minRing = new THREE.Mesh(
+    new THREE.TorusGeometry(0.01, 0.025, 12, 128),
+    new THREE.MeshBasicMaterial({ color: 0xf0ede8, transparent: true, opacity: 0 })
+  );
+  minRing.rotation.x = Math.PI / 2;
+  minRing.position.y = 0.06;
+  scene.add(minRing);
+
+  var minFill = new THREE.Mesh(
+    new THREE.CircleGeometry(0.01, 64),
+    new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0, side: THREE.DoubleSide })
+  );
+  minFill.rotation.x = -Math.PI / 2;
+  minFill.position.y = 0.056;
+  scene.add(minFill);
+
+  function getMinRadius() {
+    return DISC_R * (minRadiusPct / 100);
   }
 
   function updateConstraintVisuals() {
     var cr = getConstraintRadius();
-    var t = constraintPct / 80; // 0..1
+    var mr = getMinRadius();
+    var tMax = constraintPct / 80;
+    var tMin = minRadiusPct / 80;
 
-    // Boundary ring — subtle white line showing the spawnable edge
+    // Max boundary ring
     constraintRing.geometry.dispose();
     constraintRing.geometry = new THREE.TorusGeometry(cr, 0.025, 12, 128);
-    constraintRing.material.opacity = t * 0.4;
+    constraintRing.material.opacity = tMax * 0.4;
 
-    // Dark overlay on excluded outer area
+    // Dark overlay outside max radius
     constraintFill.geometry.dispose();
     constraintFill.geometry = new THREE.RingGeometry(cr, DISC_R, 64);
-    constraintFill.material.opacity = t * 0.55;
+    constraintFill.material.opacity = tMax * 0.55;
+
+    // Min boundary ring
+    minRing.geometry.dispose();
+    minRing.geometry = new THREE.TorusGeometry(Math.max(0.01, mr), 0.025, 12, 128);
+    minRing.material.opacity = tMin * 0.4;
+
+    // Dark overlay inside min radius
+    minFill.geometry.dispose();
+    minFill.geometry = new THREE.CircleGeometry(Math.max(0.01, mr), 64);
+    minFill.material.opacity = tMin * 0.55;
   }
 
   // ── Angle cone constraint ──
@@ -443,7 +482,9 @@
   function getCoveragePct() {
     // Count buckets inside the available area (constraint radius + cone angle)
     var cr = getConstraintRadius();
-    var crNorm = cr / DISC_R; // normalized 0..1
+    var mr = getMinRadius();
+    var crNorm = cr / DISC_R;
+    var mrNorm = mr / DISC_R;
     var cone = getConeAngles();
     var useCone = coneAngleDeg < 360;
 
@@ -455,14 +496,11 @@
         var nz = (bz / COVERAGE_GRID * 2 - 1);
         var r = Math.sqrt(nx * nx + nz * nz);
 
-        // Must be inside the disc
         if (r > 1) continue;
-        // Must be inside the constraint radius
         if (r > crNorm) continue;
-        // Must be inside the cone angle
+        if (r < mrNorm) continue;
         if (useCone && r > 0.05) {
           var angle = Math.atan2(nz, nx);
-          // Normalize angle difference to -PI..PI
           var diff = angle - coneCenterAngle;
           diff = ((diff + Math.PI * 3) % (Math.PI * 2)) - Math.PI;
           if (Math.abs(diff) > cone.half) continue;
@@ -540,19 +578,17 @@
     this.idx = idx;
     this.phase = 'wide';
     this.maxR = getConstraintRadius();
+    this.minR = getMinRadius();
 
     // Start from given position or center
     this.startX = startPos ? startPos.x : 0;
     this.startZ = startPos ? startPos.z : 0;
 
     this.wAngle = randomAngleInCone();
-    // Random distance from the start position — ranges from short to the constraint edge
-    // Compute how far we CAN go from startX/startZ in this direction before hitting the boundary
-    var testX = this.startX + Math.cos(this.wAngle) * this.maxR;
-    var testZ = this.startZ + Math.sin(this.wAngle) * this.maxR;
-    var testR = Math.sqrt(testX * testX + testZ * testZ);
-    var maxReach = testR > this.maxR * 0.93 ? (this.maxR * 0.93 / testR) * this.maxR : this.maxR;
-    this.wDist = (0.15 + Math.random() * 0.85) * maxReach * 0.93;
+    // Distance ranges between minR and maxR
+    var innerR = this.minR;
+    var outerR = this.maxR * 0.93;
+    this.wDist = innerR + Math.random() * Math.max(0.1, outerR - innerR);
     this.wSpeed = 0.028 + Math.random() * 0.014;
     this.wProg = 0;
     this.trail = [{ x: this.startX, z: this.startZ }];
@@ -853,16 +889,24 @@
 
   document.getElementById('btnReset').addEventListener('click', resetAll);
 
-  // ── Constraint slider ──
+  // ── Constraint slider (max radius) ──
   var slider = document.getElementById('constraintSlider');
   var valLabel = document.getElementById('constraintVal');
   slider.addEventListener('input', function () {
     constraintPct = parseInt(slider.value);
-    // Show as spawnable area percentage (inverted)
     var spawnable = Math.round(100 - constraintPct);
     valLabel.textContent = spawnable + '%';
     updateConstraintVisuals();
     updateConeVisuals();
+  });
+
+  // ── Min radius slider ──
+  var minSlider = document.getElementById('minRadiusSlider');
+  var minLabel = document.getElementById('minRadiusVal');
+  minSlider.addEventListener('input', function () {
+    minRadiusPct = parseInt(minSlider.value);
+    minLabel.textContent = minRadiusPct + '%';
+    updateConstraintVisuals();
   });
 
   // ── Angle slider ──
