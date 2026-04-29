@@ -79,10 +79,10 @@
 .idoc-right {
   flex: 1;
   position: relative;
-  overflow: hidden; /* clips paper bottom and edges; shadows stay fixed */
+  overflow: hidden;
   perspective: 1600px;
   perspective-origin: 50% 36%;
-  /* Warm desert gradient — always visible. PNG overlays on top if it loads. */
+  will-change: contents;
   background: linear-gradient(
     168deg,
     #e8d8b8 0%,
@@ -273,6 +273,7 @@
   height: calc( 100vh - var(--header-height) + 100px);
   transform-style: preserve-3d;
   transition: transform 0.75s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
 }
 
 /* (flip class no longer used — analytics panel is shown via opacity overlay) */
@@ -286,6 +287,7 @@
   border-radius: 10px;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  will-change: transform;
   overflow: hidden;
   /* Stacked doubling shadows — simulates natural light falloff from overhead */
   box-shadow:

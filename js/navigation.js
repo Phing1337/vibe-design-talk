@@ -235,18 +235,32 @@
       }
     }
 
-    // (Arrow keys always navigate slides — use on-screen buttons for in-slide dials)
+    // On game slide: don't intercept Space (let it jump)
+    if (currentSlide && currentSlide.classList.contains('slide-game')) {
+      if (e.key === ' ') {
+        return;
+      }
+    }
+
+    // Blur any focused interactive element so arrows always navigate slides
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+      if (document.activeElement && document.activeElement !== document.body) {
+        document.activeElement.blur();
+      }
+    }
 
     switch (e.key) {
       case 'ArrowRight':
       case 'ArrowDown':
       case ' ':
         e.preventDefault();
+        e.stopPropagation();
         next();
         break;
       case 'ArrowLeft':
       case 'ArrowUp':
         e.preventDefault();
+        e.stopPropagation();
         prev();
         break;
       case 'Home':
@@ -258,7 +272,7 @@
         goToSlide(totalSlides - 1);
         break;
     }
-  });
+  }, true);
 
   // Touch/swipe support
   var touchStartX = 0;
@@ -291,6 +305,17 @@
     // Check if first slide has 3D
     if (PRES.update3DVisibility) PRES.update3DVisibility(0);
   }
+
+  // Listen for arrow key messages from iframes
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'keydown') {
+      if (e.data.key === 'ArrowRight' || e.data.key === 'ArrowDown') {
+        next();
+      } else if (e.data.key === 'ArrowLeft' || e.data.key === 'ArrowUp') {
+        prev();
+      }
+    }
+  });
 
   // Export to PRES
   PRES.slides = slides;

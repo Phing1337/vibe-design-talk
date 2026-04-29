@@ -17,158 +17,248 @@
       background: var(--bg); color: var(--text); font-family: var(--font-body);
       margin: 0; padding: 0; overflow: hidden; width: 100vw; height: 100vh;
     }
-    #viewer {
-      position: absolute; inset: 0; width: 100%; height: 100%; cursor: grab;
+
+    .layout {
+      display: grid; grid-template-columns: 400px 1fr;
+      width: 100%; height: 100%;
     }
+
+    .left-panel {
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 60px 28px 28px;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      overflow-y: auto; gap: 0;
+    }
+
+    #viewer { width: 100%; height: 100%; cursor: grab; }
     #viewer:active { cursor: grabbing; }
 
-    /* Floating header */
-    .sim-header {
-      position: absolute; top: 16px; left: 0; right: 0; text-align: center;
-      z-index: 10; pointer-events: none;
+    /* ── Panel typography ── */
+    .panel-label {
+      font-size: 0.85rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: rgba(255,255,255,0.2);
+      margin-bottom: 6px;
     }
-    .sim-label {
-      font-size: 0.6rem; font-weight: 700; letter-spacing: 0.16em;
-      text-transform: uppercase; color: var(--signal); margin-bottom: 4px;
-    }
-    .sim-title {
-      font-family: var(--font-display); font-size: 1.6rem;
+    .panel-title {
+      font-family: var(--font-display); font-size: 1.8rem;
       font-weight: 400; color: var(--text); letter-spacing: -0.02em;
     }
-
-    /* Floating bottom panel */
-    .bottom-panel {
-      position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
-      z-index: 10; display: flex; flex-direction: column; align-items: center; gap: 8px;
-      background: rgba(15, 13, 11, 0.8); backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.08); border-radius: 14px;
-      padding: 12px 20px;
+    .panel-sub {
+      font-size: 0.6rem; color: rgba(255,255,255,0.25); line-height: 1.5;
+      margin-top: 4px;
     }
 
-    .sim-controls {
-      display: flex; align-items: center; gap: 12px;
-      justify-content: center; flex-wrap: wrap;
+    /* ── Sections ── */
+    .panel-section {
+      padding: 12px 0;
+      border-top: 1px solid rgba(255,255,255,0.05);
     }
+    .section-label {
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: rgba(255,255,255,0.18);
+      margin-bottom: 8px;
+    }
+
+    /* ── Action buttons ── */
+    .action-row { display: flex; gap: 6px; flex-wrap: wrap; }
     .sim-btn {
-      font-family: var(--font-body); font-size: 0.72rem; font-weight: 600;
-      letter-spacing: 0.03em; color: rgba(255,255,255,0.5);
+      font-family: var(--font-body); font-size: 0.9rem; font-weight: 600;
+      letter-spacing: 0.02em; color: rgba(255,255,255,0.5);
       background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
-      border-radius: 8px; padding: 8px 16px; cursor: pointer;
+      border-radius: 6px; padding: 10px 18px; cursor: pointer;
       transition: all 0.18s ease; user-select: none;
     }
     .sim-btn:hover {
       color: var(--signal); background: rgba(196,62,28,0.06);
       border-color: rgba(196,62,28,0.25);
     }
-    .sim-btn--primary {
-      color: #fff; background: var(--signal); border-color: var(--signal);
+
+    /* ── Checkboxes ── */
+    .ck-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 12px; }
+    .ck-row {
+      display: flex; align-items: center; gap: 6px; cursor: pointer;
+      padding: 3px 0; user-select: none;
     }
-    .sim-btn--primary:hover {
-      background: #d4502e; border-color: #d4502e; color: #fff;
+    .ck-input { display: none; }
+    .ck-box {
+      width: 16px; height: 16px; border-radius: 3px; flex-shrink: 0;
+      border: 1.5px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.02);
+      transition: all 0.2s ease;
+      display: flex; align-items: center; justify-content: center;
     }
-    .sim-divider { width: 1px; height: 20px; background: rgba(255,255,255,0.08); }
-    .sim-status {
-      font-size: 1rem; color: rgba(255,255,255,0.4);
-      letter-spacing: 0.04em; text-align: center;
+    .ck-box::after {
+      content: ''; width: 8px; height: 8px; border-radius: 1px;
+      background: var(--signal); transform: scale(0); transition: transform 0.18s ease;
     }
-    .sim-status strong { color: var(--signal); font-weight: 700; font-size: 1.3rem; }
-    .gen-counter {
-      font-size: 1rem; font-weight: 700; letter-spacing: 0.1em;
-      text-transform: uppercase; color: rgba(255,255,255,0.35);
-    }
-    .gen-counter strong { color: var(--signal); font-size: 1.5rem; }
-    .hint {
-      position: absolute; bottom: 12px; left: 0; right: 0; text-align: center;
-      font-size: 0.55rem; color: rgba(255,255,255,0.12); letter-spacing: 0.06em;
-      pointer-events: none;
-    }
-    /* ── Constraint slider ── */
-    .slider-row {
-      display: flex; align-items: center; gap: 8px;
-      justify-content: center;
-    }
+    .ck-input:checked + .ck-box { border-color: var(--signal); background: rgba(196,62,28,0.12); }
+    .ck-input:checked + .ck-box::after { transform: scale(1); }
+    .ck-text { font-size: 0.82rem; color: rgba(255,255,255,0.35); transition: color 0.15s ease; }
+    .ck-input:checked ~ .ck-text { color: rgba(255,255,255,0.7); }
+
+    /* ── Sliders ── */
+    .slider-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; }
+    .slider-row { display: flex; align-items: center; gap: 6px; }
     .slider-label {
-      font-size: 0.58rem; font-weight: 700; letter-spacing: 0.1em;
-      text-transform: uppercase; color: rgba(255,255,255,0.3); min-width: 42px;
-    }
-    .slider-tag {
-      font-size: 0.55rem; color: rgba(255,255,255,0.2);
-      letter-spacing: 0.04em; min-width: 28px; text-align: center;
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; color: rgba(255,255,255,0.25);
+      min-width: 32px;
     }
     .slider-value {
-      font-size: 0.65rem; font-weight: 700; color: var(--signal);
-      min-width: 32px; text-align: right; font-variant-numeric: tabular-nums;
+      font-size: 0.78rem; font-weight: 700; color: var(--signal);
+      min-width: 28px; text-align: right; font-variant-numeric: tabular-nums;
     }
     .constraint-slider {
       -webkit-appearance: none; appearance: none;
-      width: 120px; height: 3px; border-radius: 2px;
+      width: 100%; height: 4px; border-radius: 2px; flex: 1;
       background: rgba(255,255,255,0.08); outline: none; cursor: pointer;
+      transition: background 0.2s ease;
     }
     .constraint-slider::-webkit-slider-thumb {
-      -webkit-appearance: none; appearance: none;
-      width: 16px; height: 16px; border-radius: 50%;
-      background: var(--signal); border: 2px solid rgba(255,255,255,0.2);
-      cursor: pointer; transition: transform 0.12s ease;
-    }
-    .constraint-slider::-webkit-slider-thumb:hover { transform: scale(1.2); }
-    .constraint-slider::-moz-range-thumb {
-      width: 16px; height: 16px; border-radius: 50%;
-      background: var(--signal); border: 2px solid rgba(255,255,255,0.2);
+      -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%;
+      background: var(--signal); border: 2px solid rgba(255,255,255,0.15);
       cursor: pointer;
     }
+    .constraint-slider::-moz-range-thumb {
+      width: 16px; height: 16px; border-radius: 50%;
+      background: var(--signal); border: 2px solid rgba(255,255,255,0.15);
+      cursor: pointer;
+    }
+
+    /* ── Stats ── */
+    .stats-row {
+      display: flex; justify-content: space-between; align-items: baseline;
+    }
+    .stat-big {
+      font-size: 1.6rem; font-weight: 700; color: var(--signal);
+      font-variant-numeric: tabular-nums;
+    }
+    .stat-label {
+      font-size: 0.7rem; color: rgba(255,255,255,0.2);
+      text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .sim-status {
+      font-size: 0.82rem; color: rgba(255,255,255,0.3);
+      letter-spacing: 0.03em;
+    }
+    .sim-status strong { color: var(--signal); font-weight: 700; }
+
+    /* ── Slide nav ── */
+    .slide-nav {
+      display: flex; gap: 6px; padding-top: 8px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      margin-top: auto;
+    }
+    .nav-btn {
+      width: 32px; height: 32px; border-radius: 5px;
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: rgba(255,255,255,0.3); font-size: 16px;
+      transition: all 0.15s;
+    }
+    .nav-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
   </style>
 </head>
 <body>
 
-  <!-- 3D viewer fills entire page -->
-  <div id="viewer"></div>
+  <div class="layout">
+    <div class="left-panel">
 
-  <!-- Floating header -->
-  <div class="sim-header">
-    <div class="sim-label">Goals + Constraints</div>
-    <div class="sim-title">Wide, then deep.</div>
+      <div style="margin-bottom:4px;">
+        <div class="panel-label">Goals + Constraints</div>
+        <div class="panel-title">Wide, then deep.</div>
+      </div>
+
+      <div class="panel-section">
+        <div class="section-label">Explore</div>
+        <div class="action-row">
+          <button class="sim-btn" id="btnBreadth">↔ Breadth</button>
+          <button class="sim-btn" id="btnDepth">↕ Depth</button>
+          <button class="sim-btn" id="btnReset">Reset</button>
+        </div>
+        <div class="slider-row" style="margin-top:8px;">
+          <span class="slider-label">Count</span>
+          <input type="range" id="countSlider" class="constraint-slider" min="1" max="30" value="1" step="1">
+          <span class="slider-value" id="countVal">1</span>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <div class="section-label">Constraints</div>
+        <div class="ck-grid">
+          <label class="ck-row"><input type="checkbox" class="ck-input" data-preset="gestalt"><span class="ck-box"></span><span class="ck-text">Gestalt</span></label>
+          <label class="ck-row"><input type="checkbox" class="ck-input" data-preset="a11y"><span class="ck-box"></span><span class="ck-text">Accessible colors</span></label>
+          <label class="ck-row"><input type="checkbox" class="ck-input" data-preset="brand"><span class="ck-box"></span><span class="ck-text">Brand</span></label>
+          <label class="ck-row"><input type="checkbox" class="ck-input" data-preset="layout"><span class="ck-box"></span><span class="ck-text">Layout scope</span></label>
+          <label class="ck-row"><input type="checkbox" class="ck-input" data-preset="platform"><span class="ck-box"></span><span class="ck-text">Platform</span></label>
+          <label class="ck-row"><input type="checkbox" class="ck-input" data-preset="type"><span class="ck-box"></span><span class="ck-text">Typography</span></label>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <div class="section-label">Fine-tune</div>
+        <div class="slider-grid">
+          <div class="slider-row"><span class="slider-label">Min R</span><input type="range" id="minRadiusSlider" class="constraint-slider" min="0" max="80" value="0" step="1"><span class="slider-value" id="minRadiusVal">0%</span></div>
+          <div class="slider-row"><span class="slider-label">Max R</span><input type="range" id="constraintSlider" class="constraint-slider" min="0" max="80" value="0" step="1"><span class="slider-value" id="constraintVal">100%</span></div>
+          <div class="slider-row"><span class="slider-label">Angle</span><input type="range" id="angleSlider" class="constraint-slider" min="10" max="360" value="360" step="5"><span class="slider-value" id="angleVal">360°</span></div>
+          <div class="slider-row"><span class="slider-label">Dir</span><input type="range" id="dirSlider" class="constraint-slider" min="0" max="360" value="0" step="5"><span class="slider-value" id="dirVal">0°</span></div>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <div class="section-label">Discovery</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
+          <div><div class="stat-big" id="genCounter">0</div><div class="stat-label">clicks</div></div>
+          <div><div class="stat-big" id="coveragePct">0%</div><div class="stat-label">explored</div></div>
+          <div><div class="stat-big" id="efficiencyPct">—</div><div class="stat-label">per click</div></div>
+        </div>
+        <!-- Visual bar: explored vs unexplored -->
+        <div style="margin-top:10px;display:flex;align-items:center;gap:8px;">
+          <div style="flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,0.06);overflow:hidden;position:relative;">
+            <div id="coverageBar" style="height:100%;width:0%;background:var(--signal);border-radius:3px;transition:width 0.4s ease;"></div>
+          </div>
+          <span id="unexploredPct" style="font-size:0.65rem;color:rgba(255,255,255,0.2);min-width:50px;text-align:right;">100% left</span>
+        </div>
+        <div class="sim-status" id="status" style="margin-top:6px;">ready</div>
+      </div>
+
+      <div class="slide-nav">
+        <div class="nav-btn" id="slideNavPrev">‹</div>
+        <div class="nav-btn" id="slideNavNext">›</div>
+        <span style="font-size:0.45rem;color:rgba(255,255,255,0.12);margin-left:6px;">slides</span>
+      </div>
+
+    </div>
+    <div id="viewer"></div>
   </div>
 
-  <!-- Floating bottom panel -->
-  <div class="bottom-panel">
-    <div class="sim-controls">
-      <button class="sim-btn" id="btnBreadth">↔ Breadth</button>
-      <button class="sim-btn" id="btnDepth">↕ Depth</button>
-      <div class="sim-divider"></div>
-      <div class="slider-row">
-        <label class="slider-label">Count</label>
-        <input type="range" id="countSlider" class="constraint-slider" min="1" max="30" value="1" step="1">
-        <span class="slider-value" id="countVal">1</span>
-      </div>
-      <div class="sim-divider"></div>
-      <button class="sim-btn" id="btnReset">Reset</button>
-      <div class="sim-divider"></div>
-      <div class="gen-counter" id="genCounter">Generations <strong>0</strong></div>
-    </div>
-    <div style="display:flex;gap:20px;align-items:center;">
-      <div class="slider-row">
-        <label class="slider-label">Min R</label>
-        <input type="range" id="minRadiusSlider" class="constraint-slider" min="0" max="80" value="0" step="1">
-        <span class="slider-value" id="minRadiusVal">0%</span>
-      </div>
-      <div class="slider-row">
-        <label class="slider-label">Max R</label>
-        <input type="range" id="constraintSlider" class="constraint-slider" min="0" max="80" value="0" step="1">
-        <span class="slider-value" id="constraintVal">100%</span>
-      </div>
-      <div class="slider-row">
-        <label class="slider-label">Angle</label>
-        <input type="range" id="angleSlider" class="constraint-slider" min="10" max="360" value="360" step="5">
-        <span class="slider-value" id="angleVal">360°</span>
-      </div>
-      <div class="slider-row">
-        <label class="slider-label">Direction</label>
-        <input type="range" id="dirSlider" class="constraint-slider" min="0" max="360" value="0" step="5">
-        <span class="slider-value" id="dirVal">0°</span>
-      </div>
-    </div>
-    <div class="sim-status" id="status">Explore the idea space</div>
-  </div>
+  <script>
+    document.getElementById('slideNavPrev').addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'keydown', key: 'ArrowLeft' }, '*');
+      }
+    });
+    document.getElementById('slideNavNext').addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (window.parent && window.parent !== window) {
+        window.parent.postMessage({ type: 'keydown', key: 'ArrowRight' }, '*');
+      }
+    });
+  </script>
+
+  <!-- Forward ALL arrow keys to parent slide deck -->
+  <script>
+    window.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        e.stopPropagation();
+        if (window.parent && window.parent !== window) {
+          window.parent.postMessage({ type: 'keydown', key: e.key }, '*');
+        }
+      }
+    }, true);
+  </script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -613,10 +703,11 @@
       var r = Math.sqrt(x * x + z * z);
       if (r > this.maxR * 0.93) { x *= this.maxR * 0.93 / r; z *= this.maxR * 0.93 / r; }
       this.trail.push({ x: x, z: z });
+      addCoveragePoint(x, z);
 
       if (this.wProg >= 1) {
         this.landing = { x: x, z: z };
-        this.phase = 'landed'; // wait for user to choose breadth or depth
+        this.phase = 'landed';// wait for user to choose breadth or depth
       }
     } else if (this.phase === 'deep') {
       this.dProg += this.dSpeed;
@@ -735,6 +826,7 @@
   // ── State ──
   var agents = [];
   var totalGens = 0;
+  var totalClicks = 0;
   var running = false;
 
   // Sequential mode — tracks the last landing point and color index
@@ -805,7 +897,7 @@
   }
 
   function resetAll() {
-    agents = []; totalGens = 0; running = false;
+    agents = []; totalGens = 0; totalClicks = 0; running = false;
     seqLanding = null;
     seqColorIdx = Math.floor(Math.random() * 15);
     peakMeshes = [];
@@ -817,18 +909,31 @@
 
   function updateUI() {
     var counter = document.getElementById('genCounter');
+    var coverageEl = document.getElementById('coveragePct');
+    var effEl = document.getElementById('efficiencyPct');
+    var barEl = document.getElementById('coverageBar');
+    var unexpEl = document.getElementById('unexploredPct');
     var status = document.getElementById('status');
     var active = agents.filter(function (a) { return a.phase !== 'done'; }).length;
 
-    counter.innerHTML = 'Generations <strong>' + totalGens + '</strong>';
+    counter.textContent = totalClicks;
 
-    if (!running && totalGens === 0 && agents.length === 0) status.innerHTML = 'Explore the idea space';
-    else if (active > 0) status.innerHTML = '<strong>' + active + '</strong> agent' + (active !== 1 ? 's' : '') + ' active';
-    else if (agents.length > 0) status.innerHTML = 'Landed — choose <strong>breadth</strong> or <strong>depth</strong>';
-    else {
-      var cov = getCoveragePct();
-      status.innerHTML = '<strong>' + totalGens + '</strong> generations · <strong>' + cov + '%</strong> coverage';
+    var cov = getCoveragePct();
+    coverageEl.textContent = cov + '%';
+    if (barEl) barEl.style.width = cov + '%';
+    if (unexpEl) unexpEl.textContent = (100 - cov) + '% left';
+
+    if (totalClicks > 0) {
+      var eff = (cov / totalClicks).toFixed(1);
+      effEl.textContent = eff + '%';
+    } else {
+      effEl.textContent = '—';
     }
+
+    if (!running && totalGens === 0 && agents.length === 0) status.textContent = 'ready';
+    else if (active > 0) status.textContent = active + ' exploring';
+    else if (agents.length > 0) status.textContent = 'breadth or depth?';
+    else status.textContent = cov + '% of idea space covered';
   }
 
   // ── Loop ──
@@ -850,6 +955,7 @@
 
   // Breadth: spawns `spawnCount` agents. If count=1, sequential chain. If >1, from center.
   document.getElementById('btnBreadth').addEventListener('click', function () {
+    totalClicks++;
     // Bake any landed agents first
     var remaining = [];
     for (var i = 0; i < agents.length; i++) {
@@ -876,6 +982,7 @@
 
   // Depth: trigger deep on all landed agents
   document.getElementById('btnDepth').addEventListener('click', function () {
+    totalClicks++;
     var triggered = false;
     for (var i = 0; i < agents.length; i++) {
       if (agents[i].phase === 'landed') {
@@ -926,6 +1033,70 @@
     dirLabel.textContent = deg + '°';
     coneCenterAngle = deg * Math.PI / 180;
     updateConeVisuals();
+  });
+
+  // ── Constraint presets ──
+  var PRESETS = {
+    gestalt:  { angle: -60, dir: 0, minR: 0, maxR: 0 },
+    a11y:     { angle: 0, dir: 0, minR: 15, maxR: 0 },
+    brand:    { angle: -40, dir: 45, minR: 0, maxR: 10 },
+    layout:   { angle: 0, dir: 0, minR: 0, maxR: 15 },
+    platform: { angle: -30, dir: 0, minR: 5, maxR: 5 },
+    type:     { angle: 0, dir: 0, minR: 0, maxR: 12 }
+  };
+
+  function applyPresets() {
+    var checks = document.querySelectorAll('.ck-input');
+    var tAngle = 0, tDir = 0, tMinR = 0, tMaxR = 0;
+    checks.forEach(function(cb) {
+      if (cb.checked) {
+        var p = PRESETS[cb.dataset.preset];
+        if (p) { tAngle += p.angle; tDir += p.dir; tMinR += p.minR; tMaxR += p.maxR; }
+      }
+    });
+
+    var targetAngle = Math.max(10, 360 + tAngle);
+    var targetDir = ((tDir % 360) + 360) % 360;
+    var targetMinR = Math.min(80, tMinR);
+    var targetMaxR = Math.min(80, tMaxR);
+
+    // Animate from current values to targets
+    var startAngle = coneAngleDeg, startDir = coneCenterAngle * 180 / Math.PI;
+    var startMinR = minRadiusPct, startMaxR = constraintPct;
+    var duration = 400, startTime = performance.now();
+
+    function lerp(a, b, t) { return a + (b - a) * t; }
+    function ease(t) { return t < 0.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2; }
+
+    function step(now) {
+      var t = Math.min(1, (now - startTime) / duration);
+      var e = ease(t);
+
+      coneAngleDeg = lerp(startAngle, targetAngle, e);
+      coneCenterAngle = lerp(startDir, targetDir, e) * Math.PI / 180;
+      minRadiusPct = lerp(startMinR, targetMinR, e);
+      constraintPct = lerp(startMaxR, targetMaxR, e);
+
+      // Update slider positions
+      document.getElementById('angleSlider').value = Math.round(coneAngleDeg);
+      document.getElementById('angleVal').textContent = Math.round(coneAngleDeg) + '°';
+      document.getElementById('dirSlider').value = Math.round(coneCenterAngle * 180 / Math.PI);
+      document.getElementById('dirVal').textContent = Math.round(coneCenterAngle * 180 / Math.PI) + '°';
+      document.getElementById('minRadiusSlider').value = Math.round(minRadiusPct);
+      document.getElementById('minRadiusVal').textContent = Math.round(minRadiusPct) + '%';
+      document.getElementById('constraintSlider').value = Math.round(constraintPct);
+      document.getElementById('constraintVal').textContent = Math.round(100 - constraintPct) + '%';
+
+      updateConstraintVisuals();
+      updateConeVisuals();
+
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  document.querySelectorAll('.ck-input').forEach(function(cb) {
+    cb.addEventListener('change', applyPresets);
   });
 
   updateUI();

@@ -18,20 +18,20 @@
   var infoPoints = [
     {
       x: 1.87, y: 1.91, z: -3.63,
-      title: '🎨 Interactive UI',
-      body: 'Presentations can contain real, functional UI components — buttons, sliders, inputs that actually work. Not screenshots. Not mockups. The real thing, running live.',
+      title: '📋 The Design Spec',
+      body: 'Taped to the fridge — a one-pager for the kitchen redesign. Mood: "warm chaos." Font: whatever looks good on a Post-it. Stakeholder feedback: "needs more plants."',
       color: 0x4a9eff
     },
     {
       x: -2.61, y: 1.91, z: -1.43,
-      title: '📊 Live Data',
-      body: 'Pull real-time data from APIs — weather, analytics, databases — and visualize it on the fly. Your presentations can react to the world as it changes.',
+      title: '🔧 Behind the Wall',
+      body: 'Pull back the drywall and you\'d find the API layer — REST endpoints for the toaster, a WebSocket connection to the coffee maker, and a cron job that orders milk every Tuesday.',
       color: 0x2dd4bf
     },
     {
       x: -1.9, y: -3.24, z: 1.47,
-      title: '🌐 Spatial Communication',
-      body: 'Ideas don\'t have to live on flat slides. Place information in 3D space. Let people explore. Context becomes environment.',
+      title: '🎮 Easter Egg',
+      body: 'You found the basement. Down here is where we keep the deprecated features, the "temporary" workarounds from 2019, and a mass of CSS that nobody wants to touch.',
       color: 0xa78bfa
     }
   ];
@@ -44,6 +44,9 @@
     var scene = PRES.scene;
     var player = PRES.player;
     if (typeof THREE === 'undefined' || !scene || !player) return;
+
+    // Don't duplicate if already created
+    if (infoPointMeshes.length > 0) return;
 
     infoPoints.forEach(function(pt, i) {
       var geo = new THREE.SphereGeometry(0.2, 16, 16);

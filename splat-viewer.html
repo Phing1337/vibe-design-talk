@@ -114,11 +114,13 @@
   // ── Forward arrow keys to parent for slide navigation ──
   window.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      e.stopPropagation();
       if (window.parent && window.parent !== window) {
         window.parent.postMessage({ type: 'keydown', key: e.key }, '*');
       }
     }
-  });
+  }, true);
 
   // Load splat
   const loader = new SplatLoader();
@@ -140,10 +142,21 @@
     console.warn(err);
   });
 
-  window.addEventListener('resize', () => {
+  // Handle resize with debounce to avoid fullscreen glitches
+  let resizeTimer;
+  function handleResize() {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  }
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(handleResize, 100);
+  });
+  // Also handle fullscreen changes explicitly
+  document.addEventListener('fullscreenchange', () => {
+    setTimeout(handleResize, 200);
   });
 
   // Initial camera position

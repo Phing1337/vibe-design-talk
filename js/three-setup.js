@@ -644,9 +644,12 @@
       renderer.shadowMap.enabled = true;
       renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-      // Lighting
-      var ambient = new THREE.AmbientLight(0x303040, 1.2);
+      // Lighting — boosted for visibility with faux ambient occlusion
+      var ambient = new THREE.AmbientLight(0x404858, 1.8);
       scene.add(ambient);
+
+      // Subtle fog for depth/AO feel
+      scene.fog = new THREE.FogExp2(0x0a0a0e, 0.06);
 
       var dirLight = new THREE.DirectionalLight(0xfff4e6, 0.8);
       dirLight.position.set(5, 10, 7);
@@ -678,7 +681,7 @@
       pointLight3.position.set(2, 0, 2);
       scene.add(pointLight3);
 
-      var hemiLight = new THREE.HemisphereLight(0x6688cc, 0x443322, 0.6);
+      var hemiLight = new THREE.HemisphereLight(0x8899cc, 0x332211, 0.9);
       scene.add(hemiLight);
 
       var spotlight = new THREE.SpotLight(0xffeedd, 2.5, 20, Math.PI / 4, 0.5, 1.5);

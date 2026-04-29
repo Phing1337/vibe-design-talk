@@ -104,7 +104,7 @@
 
     lastGameTime = performance.now();
 
-    if (PRES.infoPointMeshes && PRES.infoPointMeshes.length === 0 && PRES.createInfoPoints) PRES.createInfoPoints();
+    if (PRES.createInfoPoints) PRES.createInfoPoints();
     if (PRES.createDeadline) PRES.createDeadline();
     var deadlineObj = PRES.deadlineObj;
     if (deadlineObj) { deadlineObj.visible = true; PRES.deadlinePos = null; }

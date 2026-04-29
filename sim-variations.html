@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wide & Deep Sim — Layout Variations</title>
+<link href="https://fonts.googleapis.com/css2?family=Young+Serif&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #111; color: #eee; font-family: 'Inter', sans-serif; padding: 24px; }
+  h1 { font-family: 'Young Serif', serif; font-size: 1.5rem; margin-bottom: 8px; }
+  .intro { font-size: 0.75rem; color: #777; margin-bottom: 24px; line-height: 1.6; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 1200px) { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: #0f0d0b;
+    border: 1px solid #222;
+    border-radius: 8px;
+    overflow: hidden;
+    aspect-ratio: 16/9;
+    position: relative;
+  }
+  .card .tag {
+    position: absolute; top: 8px; left: 8px; z-index: 5;
+    background: rgba(0,0,0,0.8); color: #fff; font-size: 10px; font-weight: 700;
+    padding: 3px 8px; border-radius: 4px; letter-spacing: 0.05em;
+  }
+
+  /* Mock 3D area */
+  .mock-3d {
+    background: radial-gradient(ellipse at 50% 55%, #1a1714 0%, #0f0d0b 70%);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(255,255,255,0.15); font-size: 11px; letter-spacing: 0.06em;
+  }
+  .mock-3d::after { content: '3D Simulation'; }
+
+  /* Mock controls */
+  .mock-ctrl {
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  }
+  .mock-btn {
+    background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 4px; padding: 3px 8px; font-size: 8px; color: rgba(255,255,255,0.4);
+  }
+  .mock-slider {
+    width: 60px; height: 2px; background: rgba(255,255,255,0.1); border-radius: 1px;
+  }
+  .mock-label { font-size: 7px; color: rgba(255,255,255,0.25); text-transform: uppercase; letter-spacing: 0.08em; }
+  .mock-status { font-size: 9px; color: rgba(196,62,28,0.6); }
+  .mock-dots { display: flex; gap: 3px; }
+  .mock-dots span { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.15); }
+  .mock-dots span:first-child { background: #c43e1c; }
+
+  /* Header bar mock */
+  .mock-header {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 8px; color: rgba(255,255,255,0.2); letter-spacing: 0.06em;
+  }
+  .mock-title { font-family: 'Young Serif', serif; font-size: 11px; color: rgba(255,255,255,0.6); }
+  .mock-sub { font-size: 7px; color: rgba(196,62,28,0.5); text-transform: uppercase; letter-spacing: 0.1em; }
+</style>
+</head>
+<body>
+
+<h1>Wide & Deep Sim — Embed Variations</h1>
+<p class="intro">10 layouts for embedding the 3D sim in a slide without it taking over the full page. Controls are shown in different positions. Pick the one that feels right.</p>
+
+<div class="grid" id="grid"></div>
+
+<script>
+var variations = [
+  {
+    label: '1 · 3D centered with floating controls below',
+    render: function(el) {
+      el.innerHTML = '<div style="width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8% 6% 4%;">'
+        + '<div class="mock-sub" style="margin-bottom:6px;">Goals + Constraints</div>'
+        + '<div class="mock-title" style="margin-bottom:12px;">Wide, then deep.</div>'
+        + '<div class="mock-3d" style="width:80%;flex:1;max-height:60%;"></div>'
+        + '<div class="mock-ctrl" style="margin-top:10px;justify-content:center;">'
+        + '<div class="mock-btn">↔ Breadth</div><div class="mock-btn">↕ Depth</div>'
+        + '<div class="mock-slider"></div><div class="mock-label">Count</div>'
+        + '<div class="mock-btn">Reset</div><div class="mock-status">Gens 0</div>'
+        + '</div>'
+        + '<div class="mock-ctrl" style="margin-top:6px;justify-content:center;">'
+        + '<div class="mock-label">Min R</div><div class="mock-slider"></div>'
+        + '<div class="mock-label">Max R</div><div class="mock-slider"></div>'
+        + '<div class="mock-label">Angle</div><div class="mock-slider"></div>'
+        + '</div></div>';
+    }
+  },
+  {
+    label: '2 · 3D left 60%, controls right panel',
+    render: function(el) {
+      el.innerHTML = '<div style="width:100%;height:100%;display:grid;grid-template-columns:3fr 2fr;">'
+        + '<div style="display:flex;align-items:center;justify-content:center;padding:4%;">'
+        + '<div class="mock-3d" style="width:95%;height:85%;"></div></div>'
+        + '<div style="display:flex;flex-direction:column;justify-content:center;gap:8px;padding:6% 5%;border-left:1px solid rgba(255,255,255,0.06);">'
+        + '<div class="mock-sub">Goals + Constraints</div>'
+        + '<div class="mock-title">Wide, then deep.</div>'
+        + '<div style="margin-top:8px;" class="mock-ctrl"><div class="mock-btn">↔ Breadth</div><div class="mock-btn">↕ Depth</div></div>'
+        + '<div class="mock-ctrl"><div class="mock-label">Count</div><div class="mock-slider"></div><div class="mock-btn">Reset</div></div>'
+        + '<div class="mock-ctrl"><div class="mock-label">Min R</div><div class="mock-slider"></div></div>'
+        + '<div class="mock-ctrl"><div class="mock-label">Max R</div><div class="mock-slider"></div></div>'
+        + '<div class="mock-ctrl"><div class="mock-label">Angle</div><div class="mock-slider"></div></div>'
+        + '<div class="mock-ctrl"><div class="mock-label">Dir</div><div class="mock-slider"></div></div>'
+        + '<div class="mock-status" style="margin-top:4px;">Gens 0 · 0% coverage</div>'
+        + '</div></div>';
+    }
+  },
+  {
+    label: '3 · 3D right 65%, controls left panel',
+    render: function(el) {
+      el.innerHTML = '<div style="width:100%;height:100%;display:grid;grid-template-columns:35fr 65fr;">'
+        + '<div style="display:flex;flex-direction:column;justify-content:center;gap:8px;padding:6% 5%;border-right:1px solid rgba(255,255,255,0.06);">'
+        + '<div class="mock-sub">Goals + Constraints</div>'
+        + '<div class="mock-title">Wide, then deep.</div>'
+        + '<div style="margin-top:8px;" class="mock-ctrl"><div class="mock-btn">↔ Breadth</div><div class="mock-btn">↕ Depth</div></div>'
+        + '<div class="mock-ctrl"><div class="mock-label">Count</div><div class="mock-slider"></div></div>'
+        + '<div class="mock-ctrl"><div class="mock-btn">Reset</div></div>'
+        + '<div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:8px;margin-top:4px;">'
+        + '<div class="mock-ctrl"><div class="mock-label">Min R</div><div class="mock-slider"></div></div>'
+        + '<div class="mock-ctrl" style="margin-top:4px;"><div class="mock-label">Max R</div><div class="mock-slider"></div></div>'
+        + '<div class="mock-ctrl" style="margin-top:4px;"><div class="mock-label">Angle</div><div class="mock-slider"></div></div>'
+        + '</div>'
+        + '<div class="mock-status" style="margin-top:8px;">Gens 0 · 0% coverage</div>'
+        + '</div>'
+        + '<div style="display:flex;align-items:center;justify-content:center;padding:3%;">'
+        + '<div class="mock-3d" style="width:96%;height:90%;"></div></div>'
+        + '</div>';
+    }
+  },
+  {
+    label: '4 · 3D top 70%, controls bottom bar',
+    render: function(el) {
+      el.innerHTML = '<div style="width:100%;height:100%;display:flex;flex-direction:column;">'
+        + '<div style="flex:1;display:flex;align-items:center;justify-content:center;padding:3% 4% 1%;">'
+        + '<div class="mock-3d" style="width:90%;height:92%;"></div></div>'
+        + '<div style="flex-shrink:0;padding:6px 4%;display:flex;align-items:center;justify-content:center;gap:12px;border-top:1px solid rgba(255,255,255,0.06);background:rgba(0,0,0,0.3);">'
+        + '<div class="mock-btn">↔ Breadth</div><div class="mock-btn">↕ Depth</div>'
+        + '<div class="mock-label">Count</div><div class="mock-slider"></div>'
+        + '<div class="mock-btn">Reset</div>'
+        + '<div style="width:1px;height:14px;background:rgba(255,255,255,0.06);"></div>'
+        + '<div class="mock-label">Min R</div><div class="mock-slider"></div>'
+        + '<div class="mock-label">Max R</div><div class="mock-slider"></div>'
+        + '<div class="mock-label">Angle</div><div class="mock-slider"></div>'
+        + '<div style="width:1px;height:14px;background:rgba(255,255,255,0.06);"></div>'
+        + '<div class="mock-status">Gens 0</div>'
+        + '</div></div>';
+    }
+  },
+  {
+    label: '5 · 3D with header bar + bottom controls',
+    render: function(el) {
+      el.innerHTML = '<div style="width:100%;height:100%;display:flex;flex-direction:column;">'
+        + '<div style="flex-shrink:0;padding:8px 4%;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.06);">'
+        + '<div><div class="mock-sub">Goals + Constraints</div><div class="mock-title" style="font-size:13px;">Wide, then deep.</div></div>'
+        + '<div class="mock-status">Gens 0 · 0% coverage</div></div>'
+        + '<div style="flex:1;display:flex;align-items:center;justify-content:center;padding:2%;">'
+        + '<div class="mock-3d" style="width:88%;height:92%;"></div></div>'
+        + '<div style="flex-shrink:0;padding:6px 4%;display:flex;align-items:center;justify-content:center;gap:10px;border-top:1px solid rgba(255,255,255,0.06);background:rgba(0,0,0,0.3);">'
+        + '<div class="mock-btn">↔ Breadth</div><div class="mock-btn">↕ Depth</div>'
+        + '<div class="mock-label">Count</div><div class="mock-slider"></div>'
+        + '<div class="mock-btn">Reset</div>'
+        + '<div style="width:1px;height:14px;background:rgba(255,255,255,0.06);"></div>'
+        + '<div class="mock-label">Radius</div><div class="mock-slider"></div>'
+        + '<div class="mock-label">Angle</div><div class="mock-slider"></div>'
+        + '</div></div>';
+    }
+  },
+  {
+    label: '6 · 3D inset with rounded card, controls overlay bottom',
+    render: function(el) {
+      el.innerHTML = '<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:4%;">'
+        + '<div style="width:85%;height:88%;background:#141210;border:1px solid rgba(255,255,255,0.08);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;position:relative;">'
+        + '<div style="flex:1;display:flex;align-items:center;justify-content:center;">'
+        + '<div class="mock-3d" style="width:92%;height:88%;border-radius:8px;"></div></div>'
+        + '<div style="padding:8px 12px;display:flex;align-items:center;justify-content:center;gap:8px;background:rgba(0,0,0,0.5);backdrop-filter:blur(8px);border-top:1px solid rgba(255,255,255,0.06);">'
+        + '<div class="mock-btn">↔ Breadth</div><div class="mock-btn">↕ Depth</div>'
+        + '<div class="mock-slider"></div><div class="mock-btn">Reset</div>'
+        + '<div class="mock-status">Gens 0</div></div>'
+        + '</div></div>';
+    }
+  },
+  {
+    label: '7 · 3D with side rail for controls',
+    render: function(el) {
+      el.innerHTML = '<div style="width:100%;height:100%;display:grid;grid-template-columns:1fr 48px;">'
+        + '<div style="display:flex;flex-direction:column;">'
+        + '<div style="padding:6px 12px;display:flex;justify-content:space-between;align-items:baseline;">'
+        + '<div class="mock-title" style="font-size:12px;">Wide, then deep.</div>'
+        + '<div class="mock-status">Gens 0</div></div>'
+        + '<div style="flex:1;display:flex;align-items:center;justify-content:center;padding:1% 2%;">'
+        + '<div class="mock-3d" style="width:94%;height:90%;"></div></div></div>'
+        + '<div style="border-left:1px solid rgba(255,255,255,0.06);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:8px 0;">'
+        + '<div class="mock-btn" style="writing-mode:vertical-lr;font-size:7px;">Breadth</div>'
+        + '<div class="mock-btn" style="writing-mode:vertical-lr;font-size:7px;">Depth</div>'
+        + '<div style="width:2px;height:30px;background:rgba(255,255,255,0.08);border-radius:1px;"></div>'
+        + '<div class="mock-btn" style="font-size:7px;">R</div>'
+        + '</div></div>';
+    }
+  },
+  {
+    label: '8 · Split: text left 25%, 3D center, controls right 15%',
+    render: function(el) {
+      el.innerHTML = '<div style="width:100%;height:100%;display:grid;grid-template-columns:25fr 60fr 15fr;">'
+        + '<div style="display:flex;flex-direction:column;justify-content:center;padding:5%;border-right:1px solid rgba(255,255,255,0.06);">'
+        + '<div class="mock-sub">Goals + Constraints</div>'
+        + '<div class="mock-title" style="font-size:11px;margin-top:4px;">Wide, then deep.</div>'
+        + '<div style="font-size:7px;color:rgba(255,255,255,0.2);margin-top:8px;line-height:1.6;">Explore breadth first, then go deep on the best direction.</div>'
+        + '<div class="mock-status" style="margin-top:12px;">Gens 0</div></div>'
+        + '<div style="display:flex;align-items:center;justify-content:center;padding:2%;">'
+        + '<div class="mock-3d" style="width:96%;height:92%;"></div></div>'
+        + '<div style="display:flex;flex-direction:column;justify-content:center;gap:6px;padding:8px;border-left:1px solid rgba(255,255,255,0.06);">'
+        + '<div class="mock-btn" style="font-size:7px;">↔ Breadth</div>'
+        + '<div class="mock-btn" style="font-size:7px;">↕ Depth</div>'
+        + '<div class="mock-btn" style="font-size:7px;">Reset</div>'
+        + '<div style="border-top:1px solid rgba(255,255,255,0.06);padding-top:6px;margin-top:2px;">'
+        + '<div class="mock-label">Count</div><div class="mock-slider" style="margin-top:3px;"></div>'
+        + '<div class="mock-label" style="margin-top:4px;">Radius</div><div class="mock-slider" style="margin-top:3px;"></div>'
+        + '<div class="mock-label" style="margin-top:4px;">Angle</div><div class="mock-slider" style="margin-top:3px;"></div>'
+        + '</div></div></div>';
+    }
+  },
+  {
+    label: '9 · 3D padded center, controls as floating glass pill',
+    render: function(el) {
+      el.innerHTML = '<div style="width:100%;height:100%;position:relative;display:flex;align-items:center;justify-content:center;">'
+        + '<div class="mock-3d" style="width:78%;height:78%;border-radius:10px;"></div>'
+        + '<div style="position:absolute;top:10px;left:50%;transform:translateX(-50%);text-align:center;">'
+        + '<div class="mock-sub">Goals + Constraints</div>'
+        + '<div class="mock-title" style="font-size:12px;">Wide, then deep.</div></div>'
+        + '<div style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:6px;align-items:center;background:rgba(15,13,11,0.8);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.08);border-radius:20px;padding:5px 14px;">'
+        + '<div class="mock-btn">↔</div><div class="mock-btn">↕</div>'
+        + '<div class="mock-slider"></div><div class="mock-btn">Reset</div>'
+        + '<div class="mock-status">Gens 0</div></div>'
+        + '</div>';
+    }
+  },
+  {
+    label: '10 · 3D top-right 70%, info card bottom-left overlay',
+    render: function(el) {
+      el.innerHTML = '<div style="width:100%;height:100%;position:relative;">'
+        + '<div style="position:absolute;top:3%;right:2%;width:72%;height:80%;">'
+        + '<div class="mock-3d" style="width:100%;height:100%;border-radius:8px;"></div></div>'
+        + '<div style="position:absolute;bottom:4%;left:3%;width:40%;background:rgba(15,13,11,0.85);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.08);border-radius:10px;padding:12px 14px;">'
+        + '<div class="mock-sub">Goals + Constraints</div>'
+        + '<div class="mock-title" style="font-size:12px;margin:4px 0 8px;">Wide, then deep.</div>'
+        + '<div class="mock-ctrl"><div class="mock-btn">↔ Breadth</div><div class="mock-btn">↕ Depth</div><div class="mock-btn">Reset</div></div>'
+        + '<div class="mock-ctrl" style="margin-top:4px;"><div class="mock-label">Count</div><div class="mock-slider"></div><div class="mock-label">Radius</div><div class="mock-slider"></div></div>'
+        + '<div class="mock-status" style="margin-top:6px;">Gens 0 · 0% coverage</div>'
+        + '</div></div>';
+    }
+  }
+];
+
+var grid = document.getElementById('grid');
+variations.forEach(function(v) {
+  var card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = '<div class="tag">' + v.label + '</div>';
+  var inner = document.createElement('div');
+  inner.style.cssText = 'width:100%;height:100%;';
+  v.render(inner);
+  card.appendChild(inner);
+  grid.appendChild(card);
+});
+</script>
+
+</body>
+</html>
